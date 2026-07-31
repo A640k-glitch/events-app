@@ -27,7 +27,7 @@ export default function SettingsPage() {
                 System Settings
               </h1>
               <span className="text-[10px] text-blue-400 font-semibold tracking-wider uppercase">
-                FIFTHLAB NIGERIA & CWP PLC
+                FIFTHLAB NIGERIA & CWG PLC
               </span>
             </div>
             <p className="text-xs text-white/60 mt-1 font-light">
@@ -93,7 +93,7 @@ export default function SettingsPage() {
             <div className="space-y-3 text-xs font-light">
               <div className="p-3.5 bg-white/5 border border-white/5 flex items-center justify-between">
                 <div>
-                  <h3 className="text-white font-medium">FifthLab & CWP Enterprise Calendar</h3>
+                  <h3 className="text-white font-medium">FifthLab & CWG Enterprise Calendar</h3>
                   <p className="text-white/50">Auto-pull product owner availability & emit direct invitations</p>
                 </div>
                 <span className="text-[10px] text-emerald-400 font-semibold tracking-wider uppercase">
@@ -116,7 +116,7 @@ export default function SettingsPage() {
           {/* Save Button */}
           <div className="flex items-center justify-between pt-2">
             <span className="text-xs text-white/50 font-light">
-              FifthLab Nigeria & CWP PLC Engine v2.1
+              FifthLab Nigeria & CWG PLC Engine v2.1
             </span>
             <button
               type="submit"

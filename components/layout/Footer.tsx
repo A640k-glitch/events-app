@@ -19,7 +19,7 @@ export default function Footer() {
                 </div>
               </div>
               <span className="text-base font-bold text-white tracking-tight">
-                FifthLab <span className="text-blue-500 font-mono text-xs font-semibold">EVENTS</span>
+                Fifth<span className="text-blue-500 font-mono text-xs font-semibold">Events</span>
               </span>
             </Link>
             <p className="text-xs text-white/60 max-w-sm leading-relaxed">
@@ -54,7 +54,7 @@ export default function Footer() {
         {/* Bottom Bar */}
         <div className="pt-6 border-t border-white/10 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-white/50">
           <div>
-            © {new Date().getFullYear()} FifthLab Events Platform. All rights reserved.
+            © {new Date().getFullYear()} FifthEvents Platform. All rights reserved.
           </div>
           <div className="flex items-center gap-4 text-white/50">
             <Link href="/#pricing" className="hover:text-white transition-colors">Privacy Policy</Link>

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { 
   LayoutDashboard, 
@@ -54,9 +55,15 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           {/* Header */}
           <div className="flex items-center justify-between pb-3 border-b border-white/10">
             <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-500 to-cyan-400 p-0.5 flex items-center justify-center shadow-lg">
-                <div className="w-full h-full bg-black rounded-full flex items-center justify-center">
-                  <Sparkles className="w-4 h-4 text-blue-400" />
+              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-500 to-cyan-400 p-0.5 flex items-center justify-center shadow-lg shrink-0">
+                <div className="w-full h-full bg-black rounded-full overflow-hidden flex items-center justify-center">
+                  <Image
+                    src="/fifthlab_nexus_logo.jpg"
+                    alt="FifthLab Logo"
+                    width={32}
+                    height={32}
+                    className="w-full h-full object-cover rounded-full"
+                  />
                 </div>
               </div>
               <div className="flex flex-col">

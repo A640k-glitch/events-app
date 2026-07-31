@@ -2,6 +2,7 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { 
   Search, 
   Bell, 
@@ -53,10 +54,18 @@ export default function AWSHeader({ onMenuToggle }: AWSHeaderProps) {
           <Menu className="w-4 h-4" />
         </button>
 
-        {/* AWS Logo + Console Home */}
+        {/* AWS & FifthLab Logo + Console Home */}
         <Link href="/dashboard" className="flex items-center gap-2 group">
-          <div className="w-7 h-5 bg-[#ff9900] text-[#161e2e] font-mono font-black text-[11px] flex items-center justify-center rounded-xs shadow-[0_0_8px_rgba(255,153,0,0.5)]">
-            AWS
+          <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 p-0.5 flex items-center justify-center shrink-0 shadow-md">
+            <div className="w-full h-full bg-black rounded-full overflow-hidden flex items-center justify-center">
+              <Image
+                src="/fifthlab_nexus_logo.jpg"
+                alt="FifthLab Logo"
+                width={24}
+                height={24}
+                className="w-full h-full object-cover rounded-full"
+              />
+            </div>
           </div>
           <span className="text-xs font-bold tracking-tight text-white group-hover:text-[#ff9900] transition-colors">
             FifthLab Console

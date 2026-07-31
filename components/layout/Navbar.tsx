@@ -2,6 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { 
   Search, 
@@ -74,15 +75,22 @@ export default function Navbar() {
             
             {/* Left: Brand Logo & Main Nav */}
             <div className="flex items-center gap-3 md:gap-5 flex-1 min-w-0">
-              <Link href="/" className="flex items-center gap-2 group shrink-0">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-500 to-cyan-400 p-0.5 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
-                  <div className="w-full h-full bg-black rounded-full flex items-center justify-center">
-                    <Calendar className="w-4 h-4 text-blue-400" />
+              <Link href="/" className="flex items-center gap-2.5 group shrink-0">
+                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-500 to-cyan-400 p-0.5 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform shrink-0">
+                  <div className="w-full h-full bg-black rounded-full overflow-hidden flex items-center justify-center">
+                    <Image
+                      src="/fifthlab_nexus_logo.jpg"
+                      alt="FifthLab Logo"
+                      width={32}
+                      height={32}
+                      className="w-full h-full object-cover rounded-full"
+                      priority
+                    />
                   </div>
                 </div>
                 <div className="flex flex-col">
                   <span className="text-sm font-extrabold text-white tracking-tight group-hover:text-blue-400 transition-colors">
-                    FifthLab <span className="text-blue-500 font-mono text-xs font-semibold">EVENTS</span>
+                    Fifth<span className="text-blue-500 font-mono text-xs font-semibold">Events</span>
                   </span>
                 </div>
               </Link>

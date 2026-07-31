@@ -66,7 +66,7 @@ export default function LoginPage() {
           </div>
 
           <h1 className="text-xl font-extrabold tracking-tight text-white pt-1">
-            {mode === "signin" ? "Sign In to FifthLab Events" : "Create Enterprise Account"}
+            {mode === "signin" ? "Sign In to FifthEvents" : "Create Enterprise Account"}
           </h1>
           <p className="text-xs text-white/60">
             {mode === "signin"

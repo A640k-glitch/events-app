@@ -18,8 +18,18 @@ const jetbrainsMono = JetBrains_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "FifthLab Events — Enterprise Event & Lead Management Platform",
+  title: {
+    default: "FifthEvents — Enterprise Event & Lead Management Platform",
+    template: "%s | FifthEvents",
+  },
   description: "Enterprise event discovery, staff attendance manifests, and visitor lead acquisition for FifthLab Nigeria & CWG PLC.",
+  icons: {
+    icon: [
+      { url: "/fifthlab_nexus_logo.jpg", type: "image/jpeg" },
+    ],
+    shortcut: "/fifthlab_nexus_logo.jpg",
+    apple: "/fifthlab_nexus_logo.jpg",
+  },
 };
 
 export default function RootLayout({

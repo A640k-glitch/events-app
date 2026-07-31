@@ -59,7 +59,7 @@ export default function Home() {
 
           {/* Product Title */}
           <h1 className="text-4xl sm:text-6xl font-normal tracking-tight text-white leading-tight font-heading">
-            FifthLab Events Platform
+            FifthEvents Platform
           </h1>
 
           <p className="text-base sm:text-xl text-white/70 max-w-2xl mx-auto font-light leading-relaxed">
@@ -182,7 +182,7 @@ export default function Home() {
             </h3>
 
             <p className="text-sm sm:text-base text-[#334155] leading-relaxed font-light">
-              FifthLab Events equips your organization with powerful event tools—like custom ticket passes, instant lead capture forms, responsive live dashboards, and automated attendee check-in across CWG PLC, Texcellence, and FifthLab Nigeria ecosystems.
+              FifthEvents equips your organization with powerful event tools—like custom ticket passes, instant lead capture forms, responsive live dashboards, and automated attendee check-in across CWG PLC, Texcellence, and FifthLab Nigeria ecosystems.
             </p>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-black/10">
@@ -275,7 +275,7 @@ export default function Home() {
           
           <div>
             <span className="text-xs font-mono text-blue-400 uppercase tracking-widest font-semibold">Flexible Event Passes</span>
-            <h2 className="text-3xl sm:text-5xl font-extrabold text-white mt-1">Unlock FifthLab Events Passes</h2>
+            <h2 className="text-3xl sm:text-5xl font-extrabold text-white mt-1">Unlock FifthEvents Passes</h2>
             <p className="text-sm text-white/60 mt-2 max-w-xl mx-auto">
               Simple, transparent event access tiers for solo attendees, growth startups, and enterprise teams.
             </p>
@@ -310,7 +310,7 @@ export default function Home() {
                 </div>
                 <ul className="space-y-2 text-xs text-white/70 pt-4 border-t border-white/10">
                   <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Browse All Nigerian Tech & Industrial Events</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Schedule Executive Briefings with FifthLab & CWP Leads</li>
+                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Schedule Executive Briefings with FifthLab & CWG Leads</li>
                   <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Download .ICS Calendar Invites</li>
                 </ul>
               </div>
@@ -330,7 +330,7 @@ export default function Home() {
                   <p className="text-xs text-white/60 mt-1">For Nigerian growth teams hosting regular events</p>
                 </div>
                 <div className="text-3xl font-extrabold text-white font-mono">
-                  {billingPeriod === "monthly" ? "₦49,000" : "₦39,000"} <span className="text-xs font-normal text-white/50">/ month</span>
+                  {billingPeriod === "monthly" ? "₦15,000" : "₦12,000"} <span className="text-xs font-normal text-white/50">/ month</span>
                 </div>
                 <ul className="space-y-2 text-xs text-white/80 pt-4 border-t border-white/10">
                   <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-blue-400" /> Publish Unlimited Events across Nigeria</li>
@@ -348,11 +348,11 @@ export default function Home() {
             <div className="rounded-2xl border border-white/10 bg-black/60 p-6 space-y-6 flex flex-col justify-between hover:border-white/20 transition-all">
               <div className="space-y-4">
                 <div>
-                  <h3 className="text-lg font-bold text-white">CWP & FifthLab Corporate</h3>
+                  <h3 className="text-lg font-bold text-white">CWG & FifthLab Corporate</h3>
                   <p className="text-xs text-white/50 mt-1">For enterprise scale & dedicated SLA across West Africa</p>
                 </div>
                 <div className="text-3xl font-extrabold text-white font-mono">
-                  {billingPeriod === "monthly" ? "₦199,000" : "₦159,000"} <span className="text-xs font-normal text-white/50">/ month</span>
+                  {billingPeriod === "monthly" ? "₦45,000" : "₦36,000"} <span className="text-xs font-normal text-white/50">/ month</span>
                 </div>
                 <ul className="space-y-2 text-xs text-white/70 pt-4 border-t border-white/10">
                   <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Everything in Pro Pass</li>
@@ -388,7 +388,7 @@ export default function Home() {
         <div className="max-w-3xl mx-auto w-full relative z-10 space-y-8">
           <div className="text-center space-y-2">
             <h2 className="text-2xl sm:text-4xl font-normal text-white font-heading">Frequently Asked Questions</h2>
-            <p className="text-xs sm:text-sm text-white/60 font-light">Everything you need to know about FifthLab Events passes and lead acquisition.</p>
+            <p className="text-xs sm:text-sm text-white/60 font-light">Everything you need to know about FifthEvents passes and lead acquisition.</p>
           </div>
 
           <div className="space-y-3 font-light">

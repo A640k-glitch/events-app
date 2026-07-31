@@ -122,7 +122,7 @@ END:VCALENDAR`;
           </h1>
           
           <p className="text-xs sm:text-sm text-white/70 max-w-2xl mx-auto font-light">
-            Connect directly with designated FifthLab & CWP PLC engineering product leads in West Africa for a personalized architecture walkthrough.
+            Connect directly with designated FifthLab & CWG PLC engineering product leads in West Africa for a personalized architecture walkthrough.
           </p>
         </div>
 
