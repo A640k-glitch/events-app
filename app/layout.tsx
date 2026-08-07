@@ -25,13 +25,12 @@ export const metadata: Metadata = {
   description: "Enterprise event discovery, staff attendance manifests, and visitor lead acquisition for FifthLab Nigeria & CWG PLC.",
   icons: {
     icon: [
-      { url: "/plogo.jpg?v=3", type: "image/jpeg", sizes: "32x32" },
-      { url: "/plogo.jpg?v=3", type: "image/jpeg", sizes: "16x16" },
-      { url: "/plogo.jpg?v=3", type: "image/jpeg", sizes: "any" },
+      { url: "/plogo.jpg", type: "image/jpeg" },
+      { url: "/icon.jpg", type: "image/jpeg" },
     ],
-    shortcut: "/plogo.jpg?v=3",
+    shortcut: "/plogo.jpg",
     apple: [
-      { url: "/plogo.jpg?v=3", sizes: "180x180", type: "image/jpeg" },
+      { url: "/plogo.jpg", sizes: "180x180", type: "image/jpeg" },
     ],
   },
   openGraph: {
@@ -39,7 +38,7 @@ export const metadata: Metadata = {
     description: "Enterprise event discovery, staff attendance manifests, and visitor lead acquisition for FifthLab Nigeria & CWG PLC.",
     images: [
       {
-        url: "/plogo.jpg?v=3",
+        url: "/plogo.jpg",
         width: 1200,
         height: 630,
         alt: "FifthEvents Logo",
@@ -51,7 +50,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     title: "FifthEvents — Enterprise Event & Lead Management Platform",
     description: "Enterprise event discovery, staff attendance manifests, and visitor lead acquisition for FifthLab Nigeria & CWG PLC.",
-    images: ["/plogo.jpg?v=3"],
+    images: ["/plogo.jpg"],
   },
 };
 
