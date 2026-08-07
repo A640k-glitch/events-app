@@ -23,6 +23,7 @@ import {
 } from "lucide-react";
 import EventsCarousel from "@/components/home/EventsCarousel";
 import TestimonialsSection from "@/components/home/TestimonialsSection";
+import TerminalLoader from "@/components/ui/great-ui-terminal-loader";
 import { cn } from "@/lib/utils";
 
 export default function Home() {
@@ -53,8 +54,13 @@ export default function Home() {
     <div className="min-h-screen bg-[#08090b] text-[#f5f5f7] flex flex-col justify-between selection:bg-blue-600 selection:text-white font-sans overflow-x-hidden">
       
       {/* 1. Hero Section */}
-      <section className="relative pt-12 pb-20 px-4 text-center border-b border-white/10 bg-gradient-to-b from-black via-[#0b0d14] to-[#08090b]">
-        <div className="max-w-4xl mx-auto space-y-6">
+      <section 
+        className="relative pt-20 pb-28 px-4 text-center border-b border-white/10 bg-cover bg-center bg-no-repeat overflow-hidden"
+        style={{ 
+          backgroundImage: "radial-gradient(circle at center, rgba(8, 9, 11, 0.5) 0%, rgba(8, 9, 11, 0.95) 90%), url('/hero-page.png')" 
+        }}
+      >
+        <div className="max-w-4xl mx-auto space-y-6 relative z-10">
           
 
           {/* Product Title */}

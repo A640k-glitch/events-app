@@ -107,16 +107,8 @@ export default function EventsCarousel() {
             </p>
           </div>
 
-          {/* Controls & Auto-Play Status */}
+          {/* Controls */}
           <div className="flex items-center gap-3 shrink-0 text-xs font-light">
-            <button
-              onClick={() => setIsPaused(!isPaused)}
-              className="px-3 py-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white/80 transition-all flex items-center gap-2 cursor-pointer"
-            >
-              {isPaused ? <Play className="w-3.5 h-3.5 text-emerald-400" /> : <Pause className="w-3.5 h-3.5 text-blue-400" />}
-              <span>{isPaused ? "Resume Auto-Play" : "Autoplay Active"}</span>
-            </button>
-
             <button
               onClick={prevSlide}
               className="p-2 bg-white/5 hover:bg-white/10 border border-white/10 text-white transition-all cursor-pointer"

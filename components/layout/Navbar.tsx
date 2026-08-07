@@ -71,32 +71,30 @@ export default function Navbar() {
       <header className="fixed top-0 left-0 right-0 z-50 pt-3 md:pt-4 px-2 sm:px-4">
         <div className="max-w-[1400px] mx-auto">
           {/* Main Rectangular Floating Navbar (No Rounded-Full Pills) */}
-          <div className="rounded-xl border border-white/15 bg-black/90 backdrop-blur-xl px-3 sm:px-4 py-2 flex items-center justify-between shadow-2xl transition-all">
+          <div className="rounded-xl border border-white/10 bg-black/90 backdrop-blur-xl px-3 sm:px-4 py-2 flex items-center justify-between shadow-lg transition-all">
             
             {/* Left: Brand Logo & Main Nav */}
             <div className="flex items-center gap-3 md:gap-5 flex-1 min-w-0">
               <Link href="/" className="flex items-center gap-2.5 group shrink-0">
-                <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-500 to-cyan-400 p-0.5 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform shrink-0">
-                  <div className="w-full h-full bg-black rounded-full overflow-hidden flex items-center justify-center">
-                    <Image
-                      src="/fifthlab_nexus_logo.jpg"
-                      alt="FifthLab Logo"
-                      width={32}
-                      height={32}
-                      className="w-full h-full object-cover rounded-full"
-                      priority
-                    />
-                  </div>
+                <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center shrink-0">
+                  <Image
+                    src="/plogo.jpg"
+                    alt="FifthLab Logo"
+                    width={32}
+                    height={32}
+                    className="w-full h-full object-cover rounded-full"
+                    priority
+                  />
                 </div>
                 <div className="flex flex-col">
                   <span className="text-sm font-extrabold text-white tracking-tight group-hover:text-blue-400 transition-colors">
-                    Fifth<span className="text-blue-500 font-mono text-xs font-semibold">Events</span>
+                    Fifth<span className="text-blue-400 font-mono text-xs font-semibold">Events</span>
                   </span>
                 </div>
               </Link>
 
               {/* Vertical Line Separator (Desktop) */}
-              <div className="hidden lg:block h-5 w-px bg-white/20 shrink-0" />
+              <div className="hidden lg:block h-5 w-px bg-black/10 shrink-0" />
 
               {/* Desktop Nav Items */}
               <nav className="hidden lg:flex items-center gap-1 xl:gap-2 text-xs font-semibold">
@@ -107,53 +105,53 @@ export default function Navbar() {
                   onMouseEnter={() => setActiveMegaMenu("explore")}
                   onMouseLeave={() => setActiveMegaMenu(null)}
                 >
-                  <button className="px-3 py-1.5 text-white/80 hover:text-white flex items-center gap-1 rounded-full hover:bg-white/10 transition-colors cursor-pointer">
+                  <button className="px-3 py-1.5 text-slate-200 hover:text-white flex items-center gap-1 rounded-full hover:bg-white/10 transition-colors cursor-pointer">
                     <span>Explore Events</span>
-                    <ChevronDown className="w-3.5 h-3.5 text-white/50 group-hover:rotate-180 transition-transform duration-200" />
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:rotate-180 transition-transform duration-200" />
                   </button>
 
                   <div className={`absolute left-0 top-full pt-2 transition-all duration-200 ${activeMegaMenu === "explore" ? "opacity-100 visible translate-y-0" : "opacity-0 invisible -translate-y-2 pointer-events-none"}`}>
-                    <div className="w-[720px] rounded-2xl border border-white/10 bg-black/95 backdrop-blur-xl p-5 shadow-2xl">
+                    <div className="w-[720px] rounded-2xl border border-black/10 bg-white p-5 shadow-2xl">
                       <div className="grid grid-cols-3 gap-4">
                         
-                        <Link href="/dashboard/events" className="group p-3 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 hover:border-blue-500/30 transition-all flex flex-col gap-2">
-                          <div className="w-9 h-9 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Link href="/dashboard/events" className="group p-3 rounded-xl border border-black/5 bg-slate-50 hover:bg-slate-100 hover:border-blue-500/30 transition-all flex flex-col gap-2">
+                          <div className="w-9 h-9 rounded-lg bg-blue-500/10 text-blue-600 flex items-center justify-center group-hover:scale-110 transition-transform">
                             <Sparkles className="w-5 h-5" />
                           </div>
                           <div>
-                            <h4 className="text-sm font-semibold text-white group-hover:text-blue-400 transition-colors">Tech & AI Summits</h4>
-                            <p className="text-xs text-white/60 line-clamp-2 mt-0.5">Keynotes, developer workshops & AI innovation conferences.</p>
+                            <h4 className="text-sm font-semibold text-slate-900 group-hover:text-blue-600 transition-colors">Tech & AI Summits</h4>
+                            <p className="text-xs text-slate-600 line-clamp-2 mt-0.5">Keynotes, developer workshops & AI innovation conferences.</p>
                           </div>
                         </Link>
 
-                        <Link href="/dashboard/events" className="group p-3 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 hover:border-purple-500/30 transition-all flex flex-col gap-2">
-                          <div className="w-9 h-9 rounded-lg bg-purple-500/10 text-purple-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Link href="/dashboard/events" className="group p-3 rounded-xl border border-black/5 bg-slate-50 hover:bg-slate-100 hover:border-purple-500/30 transition-all flex flex-col gap-2">
+                          <div className="w-9 h-9 rounded-lg bg-purple-500/10 text-purple-600 flex items-center justify-center group-hover:scale-110 transition-transform">
                             <Calendar className="w-5 h-5" />
                           </div>
                           <div>
-                            <h4 className="text-sm font-semibold text-white group-hover:text-purple-400 transition-colors">Music & Festivals</h4>
-                            <p className="text-xs text-white/60 line-clamp-2 mt-0.5">Stadium concerts, indie showcases & festival line-ups.</p>
+                            <h4 className="text-sm font-semibold text-slate-900 group-hover:text-purple-600 transition-colors">Music & Festivals</h4>
+                            <p className="text-xs text-slate-600 line-clamp-2 mt-0.5">Stadium concerts, indie showcases & festival line-ups.</p>
                           </div>
                         </Link>
 
-                        <Link href="/dashboard/events" className="group p-3 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 hover:border-emerald-500/30 transition-all flex flex-col gap-2">
-                          <div className="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center group-hover:scale-110 transition-transform">
+                        <Link href="/dashboard/events" className="group p-3 rounded-xl border border-black/5 bg-slate-50 hover:bg-slate-100 hover:border-emerald-500/30 transition-all flex flex-col gap-2">
+                          <div className="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center group-hover:scale-110 transition-transform">
                             <Ticket className="w-5 h-5" />
                           </div>
                           <div>
-                            <h4 className="text-sm font-semibold text-white group-hover:text-emerald-400 transition-colors">Founder Meetups</h4>
-                            <p className="text-xs text-white/60 line-clamp-2 mt-0.5">Venture networking, pitch nights & executive dinners.</p>
+                            <h4 className="text-sm font-semibold text-slate-900 group-hover:text-emerald-600 transition-colors">Founder Meetups</h4>
+                            <p className="text-xs text-slate-600 line-clamp-2 mt-0.5">Venture networking, pitch nights & executive dinners.</p>
                           </div>
                         </Link>
 
                       </div>
 
-                      <div className="mt-4 pt-3 border-t border-white/10 flex items-center justify-between text-xs text-white/60">
+                      <div className="mt-4 pt-3 border-t border-black/10 flex items-center justify-between text-xs text-slate-600">
                         <span className="flex items-center gap-1.5">
-                          <MapPin className="w-3.5 h-3.5 text-blue-400" />
+                          <MapPin className="w-3.5 h-3.5 text-blue-600" />
                           <span>Over 1,200+ active hybrid & in-person events nationwide</span>
                         </span>
-                        <Link href="/dashboard/events" className="text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1">
+                        <Link href="/dashboard/events" className="text-blue-600 hover:text-blue-700 font-semibold flex items-center gap-1">
                           View All Events <ArrowRight className="w-3 h-3" />
                         </Link>
                       </div>
@@ -167,32 +165,32 @@ export default function Navbar() {
                   onMouseEnter={() => setActiveMegaMenu("host")}
                   onMouseLeave={() => setActiveMegaMenu(null)}
                 >
-                  <button className="px-3 py-1.5 text-white/80 hover:text-white flex items-center gap-1 rounded-full hover:bg-white/10 transition-colors cursor-pointer">
+                  <button className="px-3 py-1.5 text-slate-200 hover:text-white flex items-center gap-1 rounded-full hover:bg-white/10 transition-colors cursor-pointer">
                     <span>Host & Organize</span>
-                    <ChevronDown className="w-3.5 h-3.5 text-white/50 group-hover:rotate-180 transition-transform duration-200" />
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:rotate-180 transition-transform duration-200" />
                   </button>
 
                   <div className={`absolute left-0 top-full pt-2 transition-all duration-200 ${activeMegaMenu === "host" ? "opacity-100 visible translate-y-0" : "opacity-0 invisible -translate-y-2 pointer-events-none"}`}>
-                    <div className="w-[640px] rounded-2xl border border-white/10 bg-black/95 backdrop-blur-xl p-5 shadow-2xl">
+                    <div className="w-[640px] rounded-2xl border border-black/10 bg-white p-5 shadow-2xl">
                       <div className="grid grid-cols-2 gap-4">
                         
-                        <Link href="/dashboard/events" className="flex items-start gap-3 p-3 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition-all">
-                          <div className="w-9 h-9 rounded-lg bg-blue-500/10 text-blue-400 flex items-center justify-center shrink-0">
+                        <Link href="/dashboard/events" className="flex items-start gap-3 p-3 rounded-xl border border-black/5 bg-slate-50 hover:bg-slate-100 transition-all">
+                          <div className="w-9 h-9 rounded-lg bg-blue-500/10 text-blue-600 flex items-center justify-center shrink-0">
                             <Ticket className="w-5 h-5" />
                           </div>
                           <div>
-                            <h4 className="text-sm font-semibold text-white">Events Console & Badges</h4>
-                            <p className="text-xs text-white/60 mt-0.5">Automated QR badges, tier pricing & staff attendance manifest.</p>
+                            <h4 className="text-sm font-semibold text-slate-900">Events Console & Badges</h4>
+                            <p className="text-xs text-slate-600 mt-0.5">Automated QR badges, tier pricing & staff attendance manifest.</p>
                           </div>
                         </Link>
 
-                        <Link href="/dashboard/leads" className="flex items-start gap-3 p-3 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition-all">
-                          <div className="w-9 h-9 rounded-lg bg-indigo-500/10 text-indigo-400 flex items-center justify-center shrink-0">
+                        <Link href="/dashboard/leads" className="flex items-start gap-3 p-3 rounded-xl border border-black/5 bg-slate-50 hover:bg-slate-100 transition-all">
+                          <div className="w-9 h-9 rounded-lg bg-indigo-500/10 text-indigo-600 flex items-center justify-center shrink-0">
                             <TrendingUp className="w-5 h-5" />
                           </div>
                           <div>
-                            <h4 className="text-sm font-semibold text-white">Lead Capture & Analytics</h4>
-                            <p className="text-xs text-white/60 mt-0.5">Real-time check-in metrics, attendee acquisition & CSV exports.</p>
+                            <h4 className="text-sm font-semibold text-slate-900">Lead Capture & Analytics</h4>
+                            <p className="text-xs text-slate-600 mt-0.5">Real-time check-in metrics, attendee acquisition & CSV exports.</p>
                           </div>
                         </Link>
 
@@ -207,32 +205,32 @@ export default function Navbar() {
                   onMouseEnter={() => setActiveMegaMenu("solutions")}
                   onMouseLeave={() => setActiveMegaMenu(null)}
                 >
-                  <button className="px-3 py-1.5 text-white/80 hover:text-white flex items-center gap-1 rounded-full hover:bg-white/10 transition-colors cursor-pointer">
+                  <button className="px-3 py-1.5 text-slate-200 hover:text-white flex items-center gap-1 rounded-full hover:bg-white/10 transition-colors cursor-pointer">
                     <span>Solutions & Tech</span>
-                    <ChevronDown className="w-3.5 h-3.5 text-white/50 group-hover:rotate-180 transition-transform duration-200" />
+                    <ChevronDown className="w-3.5 h-3.5 text-slate-400 group-hover:rotate-180 transition-transform duration-200" />
                   </button>
 
                   <div className={`absolute left-0 top-full pt-2 transition-all duration-200 ${activeMegaMenu === "solutions" ? "opacity-100 visible translate-y-0" : "opacity-0 invisible -translate-y-2 pointer-events-none"}`}>
-                    <div className="w-[600px] rounded-2xl border border-white/10 bg-black/95 backdrop-blur-xl p-5 shadow-2xl">
+                    <div className="w-[600px] rounded-2xl border border-black/10 bg-white p-5 shadow-2xl">
                       <div className="grid grid-cols-2 gap-4">
                         
-                        <Link href="/dashboard/products" className="flex items-start gap-3 p-3 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition-all">
-                          <div className="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-400 flex items-center justify-center shrink-0">
+                        <Link href="/dashboard/products" className="flex items-start gap-3 p-3 rounded-xl border border-black/5 bg-slate-50 hover:bg-slate-100 transition-all">
+                          <div className="w-9 h-9 rounded-lg bg-emerald-500/10 text-emerald-600 flex items-center justify-center shrink-0">
                             <Box className="w-5 h-5" />
                           </div>
                           <div>
-                            <h4 className="text-sm font-semibold text-white">Products Catalog</h4>
-                            <p className="text-xs text-white/60 mt-0.5">Manage FifthLab Payments, Identity, Analytics & Compliance.</p>
+                            <h4 className="text-sm font-semibold text-slate-900">Products Catalog</h4>
+                            <p className="text-xs text-slate-600 mt-0.5">Manage FifthLab Payments, Identity, Analytics & Compliance.</p>
                           </div>
                         </Link>
 
-                        <Link href="/dashboard/settings" className="flex items-start gap-3 p-3 rounded-xl border border-white/5 bg-white/5 hover:bg-white/10 transition-all">
-                          <div className="w-9 h-9 rounded-lg bg-cyan-500/10 text-cyan-400 flex items-center justify-center shrink-0">
+                        <Link href="/dashboard/settings" className="flex items-start gap-3 p-3 rounded-xl border border-black/5 bg-slate-50 hover:bg-slate-100 transition-all">
+                          <div className="w-9 h-9 rounded-lg bg-cyan-500/10 text-cyan-600 flex items-center justify-center shrink-0">
                             <SlidersHorizontal className="w-5 h-5" />
                           </div>
                           <div>
-                            <h4 className="text-sm font-semibold text-white">System Settings</h4>
-                            <p className="text-xs text-white/60 mt-0.5">Configure organization preferences, API keys & WAT timezone rules.</p>
+                            <h4 className="text-sm font-semibold text-slate-900">System Settings</h4>
+                            <p className="text-xs text-slate-600 mt-0.5">Configure organization preferences, API keys & WAT timezone rules.</p>
                           </div>
                         </Link>
 
@@ -242,13 +240,13 @@ export default function Navbar() {
                 </div>
 
                 {/* Direct Links */}
-                <Link href="/#pricing" className="px-3 py-1.5 text-white/80 hover:text-white rounded-full hover:bg-white/10 transition-colors">
+                <Link href="/#pricing" className="px-3 py-1.5 text-slate-200 hover:text-white rounded-full hover:bg-white/10 transition-colors">
                   Pricing
                 </Link>
 
-                <Link href="/demo" className="px-3 py-1.5 text-white/80 hover:text-white rounded-full hover:bg-white/10 transition-colors flex items-center gap-1.5">
+                <Link href="/demo" className="px-3 py-1.5 text-slate-200 hover:text-white rounded-full hover:bg-white/10 transition-colors flex items-center gap-1.5">
                   <span>Live Demo</span>
-                  <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-blue-500/20 text-blue-400 rounded-md border border-blue-500/30">Interactive</span>
+                  <span className="px-1.5 py-0.5 text-[10px] font-bold uppercase tracking-wider bg-blue-600/10 text-blue-600 rounded-md border border-blue-600/20">Interactive</span>
                 </Link>
 
               </nav>
@@ -261,10 +259,10 @@ export default function Navbar() {
               <div className="relative">
                 <button
                   onClick={() => setNotifOpen((prev) => !prev)}
-                  className="h-8 w-8 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 text-white/80 flex items-center justify-center transition-all relative cursor-pointer"
+                  className="h-8 w-8 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-slate-200 flex items-center justify-center transition-all relative cursor-pointer"
                   aria-label="Notifications"
                 >
-                  <Bell className="w-3.5 h-3.5" />
+                  <Bell className="w-3.5 h-3.5 text-slate-300" />
                   {unreadNotifs.length > 0 && (
                     <span className="absolute -top-1 -right-1 w-4 h-4 rounded-full bg-rose-500 text-white text-[10px] font-bold flex items-center justify-center animate-pulse">
                       {unreadNotifs.length}
@@ -273,24 +271,24 @@ export default function Navbar() {
                 </button>
 
                 {notifOpen && (
-                  <div className="absolute right-0 top-full mt-2 w-80 rounded-2xl border border-white/10 bg-black/95 backdrop-blur-xl p-3 shadow-2xl z-50 text-xs">
-                    <div className="flex items-center justify-between px-2 pb-2 border-b border-white/10">
-                      <span className="font-bold text-white">System Notifications</span>
-                      <button onClick={clearNotifications} className="text-[10px] text-blue-400 hover:underline">Clear all</button>
+                  <div className="absolute right-0 top-full mt-2 w-80 rounded-2xl border border-black/10 bg-white p-3 shadow-2xl z-50 text-xs text-left">
+                    <div className="flex items-center justify-between px-2 pb-2 border-b border-black/10">
+                      <span className="font-bold text-slate-900">System Notifications</span>
+                      <button onClick={clearNotifications} className="text-[10px] text-blue-600 hover:underline cursor-pointer">Clear all</button>
                     </div>
                     <div className="max-h-60 overflow-y-auto space-y-2 py-2">
                       {notifications.length === 0 ? (
-                        <div className="text-center py-4 text-white/40">No new notifications</div>
+                        <div className="text-center py-4 text-slate-400">No new notifications</div>
                       ) : (
                         notifications.map((n) => (
                           <div
                             key={n.id}
                             onClick={() => markNotificationAsRead(n.id)}
-                            className={`p-2.5 rounded-xl border transition-all cursor-pointer ${n.read ? "bg-white/5 border-white/5 opacity-60" : "bg-blue-500/10 border-blue-500/30 text-white font-medium"}`}
+                            className={`p-2.5 rounded-xl border transition-all cursor-pointer ${n.read ? "bg-slate-50 border-slate-100 opacity-60" : "bg-blue-50 border-blue-200 text-slate-900 font-medium"}`}
                           >
-                            <h5 className="font-semibold text-white text-xs">{n.title}</h5>
-                            <p className="text-[11px] text-white/70 mt-0.5">{n.message}</p>
-                            <span className="text-[9px] text-white/40 mt-1 block">{n.timestamp}</span>
+                            <h5 className="font-semibold text-slate-900 text-xs">{n.title}</h5>
+                            <p className="text-[11px] text-slate-600 mt-0.5">{n.message}</p>
+                            <span className="text-[9px] text-slate-400 mt-1 block">{n.timestamp}</span>
                           </div>
                         ))
                       )}
@@ -302,12 +300,12 @@ export default function Navbar() {
               {/* Search Trigger Button */}
               <button
                 onClick={() => setSearchOpen(true)}
-                className="h-8 sm:h-9 px-3 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 text-white/70 hover:text-white text-xs sm:text-sm flex items-center gap-2 transition-all shadow-inner cursor-pointer"
+                className="h-8 sm:h-9 px-3 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-slate-300 hover:text-white text-xs sm:text-sm flex items-center gap-2 transition-all shadow-inner cursor-pointer"
               >
-                <Search className="w-3.5 h-3.5 text-white/60" />
+                <Search className="w-3.5 h-3.5 text-slate-400" />
                 <span className="hidden sm:inline">Search...</span>
                 <div className="hidden md:flex items-center gap-1 ml-1">
-                  <kbd className="h-4 px-1 rounded text-[10px] font-mono bg-white/10 text-white/60 border border-white/10">⌘K</kbd>
+                  <kbd className="h-4 px-1 rounded text-[10px] font-mono bg-white/10 text-slate-400 border border-white/10">⌘K</kbd>
                 </div>
               </button>
 
@@ -324,7 +322,7 @@ export default function Navbar() {
                   <button
                     onClick={logout}
                     title="Sign Out"
-                    className="h-8 w-8 rounded-full border border-white/10 bg-white/5 hover:bg-rose-500/20 hover:border-rose-500/40 text-white/70 hover:text-rose-400 flex items-center justify-center transition-colors cursor-pointer"
+                    className="h-8 w-8 rounded-full border border-black/10 bg-black/5 hover:bg-rose-50 hover:border-rose-200 text-slate-600 hover:text-rose-600 flex items-center justify-center transition-colors cursor-pointer"
                   >
                     <LogOut className="w-3.5 h-3.5" />
                   </button>
@@ -333,13 +331,13 @@ export default function Navbar() {
                 <div className="flex items-center gap-2">
                   <Link
                     href="/login"
-                    className="hidden xs:flex h-8 sm:h-9 px-3.5 rounded-full text-white/80 hover:text-white hover:bg-white/10 text-xs sm:text-sm font-medium items-center transition-colors"
+                    className="hidden xs:flex h-8 sm:h-9 px-3.5 rounded-full text-slate-200 hover:text-white hover:bg-white/10 text-xs sm:text-sm font-medium items-center transition-colors"
                   >
                     Login
                   </Link>
                   <Link
                     href="/login"
-                    className="h-8 sm:h-9 px-3.5 sm:px-4 rounded-full bg-white text-black hover:bg-white/90 text-xs sm:text-sm font-bold flex items-center gap-1 transition-all shadow-lg"
+                    className="h-8 sm:h-9 px-3.5 sm:px-4 rounded-full bg-slate-900 text-white hover:bg-slate-800 text-xs sm:text-sm font-bold flex items-center gap-1 transition-all shadow-lg"
                   >
                     <span>Get Started</span>
                   </Link>
@@ -350,10 +348,10 @@ export default function Navbar() {
               <button
                 type="button"
                 onClick={() => setMobileMenuOpen((prev) => !prev)}
-                className="lg:hidden h-8 w-8 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 text-white/80 flex items-center justify-center transition-colors cursor-pointer"
+                className="lg:hidden h-8 w-8 rounded-full border border-white/10 bg-white/5 hover:bg-white/10 text-slate-200 flex items-center justify-center transition-colors cursor-pointer"
                 aria-label="Toggle navigation menu"
               >
-                {mobileMenuOpen ? <X className="w-4 h-4" /> : <Menu className="w-4 h-4" />}
+                {mobileMenuOpen ? <X className="w-4 h-4 text-white" /> : <Menu className="w-4 h-4 text-white" />}
               </button>
 
             </div>

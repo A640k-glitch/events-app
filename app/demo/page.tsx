@@ -17,6 +17,7 @@ import {
   Mail,
   Ticket
 } from "lucide-react";
+import TerminalLoader from "@/components/ui/great-ui-terminal-loader";
 import { cn } from "@/lib/utils";
 
 export default function PublicDemoBookingPage() {
@@ -112,7 +113,7 @@ END:VCALENDAR`;
       <div className="flex-1 max-w-6xl w-full mx-auto px-4 py-8 space-y-8 relative z-10">
         
         {/* Header Title */}
-        <div className="text-center space-y-2">
+        <div className="text-center space-y-4">
           <p className="text-xs font-semibold text-blue-400 uppercase tracking-widest">
             EXECUTIVE BRIEFING PORTAL • WAT TIMEZONE
           </p>

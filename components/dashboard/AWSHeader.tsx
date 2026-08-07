@@ -59,7 +59,7 @@ export default function AWSHeader({ onMenuToggle }: AWSHeaderProps) {
           <div className="w-6 h-6 rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 p-0.5 flex items-center justify-center shrink-0 shadow-md">
             <div className="w-full h-full bg-black rounded-full overflow-hidden flex items-center justify-center">
               <Image
-                src="/fifthlab_nexus_logo.jpg"
+                src="/plogo.jpg"
                 alt="FifthLab Logo"
                 width={24}
                 height={24}

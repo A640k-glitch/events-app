@@ -58,7 +58,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
               <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-500 to-cyan-400 p-0.5 flex items-center justify-center shadow-lg shrink-0">
                 <div className="w-full h-full bg-black rounded-full overflow-hidden flex items-center justify-center">
                   <Image
-                    src="/fifthlab_nexus_logo.jpg"
+                    src="/plogo.jpg"
                     alt="FifthLab Logo"
                     width={32}
                     height={32}

@@ -2,7 +2,8 @@
 
 import React from "react";
 import Link from "next/link";
-import { Calendar, ArrowUpRight, ShieldCheck } from "lucide-react";
+import Image from "next/image";
+import { ArrowUpRight, ShieldCheck } from "lucide-react";
 
 export default function Footer() {
   return (
@@ -13,10 +14,14 @@ export default function Footer() {
           {/* Brand & Overview */}
           <div className="md:col-span-2 space-y-4">
             <Link href="/" className="flex items-center gap-2 group">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-500 to-cyan-400 p-0.5 flex items-center justify-center shadow-lg group-hover:scale-105 transition-transform">
-                <div className="w-full h-full bg-black rounded-full flex items-center justify-center">
-                  <Calendar className="w-4 h-4 text-blue-400" />
-                </div>
+              <div className="w-8 h-8 rounded-full overflow-hidden flex items-center justify-center">
+                <Image
+                  src="/plogo.jpg"
+                  alt="FifthLab Logo"
+                  width={32}
+                  height={32}
+                  className="w-full h-full object-cover rounded-full"
+                />
               </div>
               <span className="text-base font-bold text-white tracking-tight">
                 Fifth<span className="text-blue-500 font-mono text-xs font-semibold">Events</span>

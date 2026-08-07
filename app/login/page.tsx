@@ -75,12 +75,12 @@ export default function LoginPage() {
           </p>
         </div>
 
-        {/* Enterprise SSO Buttons (Microsoft & Google / Gmail) */}
-        <div className="space-y-2.5">
+        {/* Enterprise SSO Buttons (Microsoft, Google, Teams, Outlook) */}
+        <div className="grid grid-cols-2 gap-2">
           <button
             type="button"
             onClick={() => handleSsoLogin("Microsoft", "Alex Rivera (Microsoft)", "alex.rivera@microsoft.com")}
-            className="w-full py-2.5 px-4 bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-white rounded-xl transition-all flex items-center justify-center gap-2.5 cursor-pointer shadow-sm"
+            className="py-2.5 px-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] sm:text-xs font-semibold text-white rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
           >
             <svg className="w-4 h-4 shrink-0" viewBox="0 0 23 23">
               <path fill="#f35325" d="M1 1h10v10H1z"/>
@@ -88,13 +88,13 @@ export default function LoginPage() {
               <path fill="#05a6f0" d="M1 12h10v10H1z"/>
               <path fill="#ffba08" d="M12 12h10v10H12z"/>
             </svg>
-            <span>{mode === "signin" ? "Sign in with Microsoft 365" : "Sign up with Microsoft 365"}</span>
+            <span>Microsoft 365</span>
           </button>
 
           <button
             type="button"
             onClick={() => handleSsoLogin("Google", "Alex Rivera (Google)", "alex.rivera@gmail.com")}
-            className="w-full py-2.5 px-4 bg-white/5 hover:bg-white/10 border border-white/10 text-xs font-semibold text-white rounded-xl transition-all flex items-center justify-center gap-2.5 cursor-pointer shadow-sm"
+            className="py-2.5 px-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] sm:text-xs font-semibold text-white rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
           >
             <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
               <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
@@ -102,7 +102,35 @@ export default function LoginPage() {
               <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
               <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
             </svg>
-            <span>{mode === "signin" ? "Sign in with Google / Gmail" : "Sign up with Google / Gmail"}</span>
+            <span>Google / Gmail</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleSsoLogin("Teams", "Alex Rivera (Teams)", "alex.rivera@teams.com")}
+            className="py-2.5 px-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] sm:text-xs font-semibold text-white rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+          >
+            <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none">
+              <circle cx="17" cy="9" r="3" fill="#54579E" />
+              <path d="M12 17c0-2.2 1.8-4 4-4h2c2.2 0 4 1.8 4 4v1H12v-1z" fill="#54579E" />
+              <rect x="2" y="6" width="12" height="12" rx="2" fill="#464EB8" />
+              <path d="M5 9h6M8 9v6" stroke="white" strokeWidth="2" strokeLinecap="round" />
+            </svg>
+            <span>Microsoft Teams</span>
+          </button>
+
+          <button
+            type="button"
+            onClick={() => handleSsoLogin("Outlook", "Alex Rivera (Outlook)", "alex.rivera@outlook.com")}
+            className="py-2.5 px-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] sm:text-xs font-semibold text-white rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+          >
+            <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none">
+              <rect x="6" y="6" width="16" height="12" rx="2" fill="#0078D4" />
+              <path d="M6 8l8 5 8-5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+              <rect x="2" y="8" width="8" height="8" rx="1.5" fill="#106EBE" />
+              <circle cx="6" cy="12" r="2.5" stroke="white" strokeWidth="1.5" fill="none" />
+            </svg>
+            <span>Outlook Mail</span>
           </button>
         </div>
 
