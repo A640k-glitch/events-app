@@ -32,7 +32,7 @@
 
 ```mermaid
 gitGraph
-    commit id: "main (Production - Protected)"
+    commit id: "main (Production)"
     branch backend/core
     branch frontend/core
     checkout backend/core
@@ -40,8 +40,8 @@ gitGraph
     checkout frontend/core
     commit id: "frontend feature"
     checkout main
-    merge backend/core id: "PR: Merge to Prod"
-    merge frontend/core id: "PR: Merge to Prod"
+    merge backend/core id: "PR: Merge Backend"
+    merge frontend/core id: "PR: Merge Frontend"
 ```
 
 ---
