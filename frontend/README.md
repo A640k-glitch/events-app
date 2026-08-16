@@ -1,6 +1,11 @@
 # 🎨 FifthLab Events — Frontend Web Application
 
+> ⚠️ **CRITICAL REMINDER FOR FOLAJIMI:**
+> **Always work on the `frontend/core` branch.** Do **NOT** commit or push directly to `main`.
+> Verify before coding: `git branch` (should show `* frontend/core`).
+
 **Frontend Lead:** Folajimi Ajayi (`folajimi.ajayi@thefifthlab.com`)  
+**Dedicated Branch:** `frontend/core`  
 **Stack:** Next.js 16 (App Router), React 19, Tailwind CSS 4, Framer Motion, Lucide React
 
 ---

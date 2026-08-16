@@ -1,6 +1,21 @@
 # 🏢 Fifth Events — Enterprise Event & Lead Management Platform
 
-Welcome to **Fifth Events**, the enterprise event management, lead conversion, and attendance manifest platform designed for [The FifthLab](https://thefifthlab.com/).
+> # 🚨🚨 CRITICAL TEAM RULE — READ BEFORE WRITING ANY CODE 🚨🚨
+> 
+> ### 🛑 DO NOT WRITE CODE OR PUSH ON THE `main` BRANCH!
+> - The `main` branch is connected directly to **Vercel Production Auto-Deployment**.
+> - Working or pushing directly to `main` **WILL BREAK PRODUCTION**.
+> 
+> ### ✅ MANDATORY FIRST STEP EVERY MORNING:
+> Run this command in your terminal before typing any code:
+> ```bash
+> git branch
+> ```
+> - If you are **Abraham (Backend)**, the star `*` **MUST** be on `backend/core`.
+> - If you are **Folajimi (Frontend)**, the star `*` **MUST** be on `frontend/core`.
+> - If you see `* main`, **IMMEDIATELY** run:
+>   - For Abraham: `git checkout backend/core`
+>   - For Folajimi: `git checkout frontend/core`
 
 ---
 
@@ -15,11 +30,9 @@ Welcome to **Fifth Events**, the enterprise event management, lead conversion, a
 
 ## 🌿 Git Branching & Collaboration Workflow
 
-> ⚠️ **CRITICAL RULE:** **NEVER push directly to `main`.** Production auto-deploys from `main`. All work must be developed, tested locally, and merged via Pull Request.
-
 ```mermaid
 gitGraph
-    commit id: "main (Production)"
+    commit id: "main (Production - Protected)"
     branch backend/core
     branch frontend/core
     checkout backend/core
@@ -27,8 +40,8 @@ gitGraph
     checkout frontend/core
     commit id: "frontend feature"
     checkout main
-    merge backend/core id: "PR: Merge Backend"
-    merge frontend/core id: "PR: Merge Frontend"
+    merge backend/core id: "PR: Merge to Prod"
+    merge frontend/core id: "PR: Merge to Prod"
 ```
 
 ---
@@ -37,7 +50,7 @@ gitGraph
 
 ### 1️⃣ For Abraham (Backend Lead)
 
-#### First-time Setup:
+#### 🔹 Day 1 / First-time Setup:
 ```bash
 git fetch origin
 git checkout backend/core
@@ -47,34 +60,34 @@ cp .env.example .env
 npm run prisma:generate
 ```
 
-#### Daily Work Loop:
+#### 🔹 Daily Work Routine:
 ```bash
-# 1. Sync latest main into your branch
+# 1. Ensure you are on backend/core and synced with main
 git checkout backend/core
 git pull origin main
 
-# 2. Make your backend changes in backend/
+# 2. Work ONLY inside the backend/ folder
 
-# 3. Commit your work
+# 3. Commit your changes
 git add backend/
 git commit -m "feat(backend): implement event rsvp endpoints"
 
-# 4. Push to your remote branch
-git push -u origin backend/core
+# 4. Push to remote backend branch
+git push origin backend/core
 ```
 
-#### Pre-Merge Test Checklist (Must pass before merging to `main`):
+#### 🔹 Pre-Merge Verification (Must pass before merging to `main`):
 ```bash
 cd backend
-npx tsc --noEmit        # Must have 0 TypeScript errors
-npm run dev             # Verify API runs cleanly on http://localhost:5000
+npx tsc --noEmit        # Must exit with 0 TypeScript errors
+npm run dev             # Verify API server starts cleanly on :5000
 ```
 
 ---
 
 ### 2️⃣ For Folajimi (Frontend Lead)
 
-#### First-time Setup:
+#### 🔹 Day 1 / First-time Setup:
 ```bash
 git fetch origin
 git checkout frontend/core
@@ -82,37 +95,36 @@ cd frontend
 npm install
 ```
 
-#### Daily Work Loop:
+#### 🔹 Daily Work Routine:
 ```bash
-# 1. Sync latest main into your branch
+# 1. Ensure you are on frontend/core and synced with main
 git checkout frontend/core
 git pull origin main
 
-# 2. Make your UI changes in frontend/
+# 2. Work ONLY inside the frontend/ folder
 
-# 3. Commit your work
+# 3. Commit your changes
 git add frontend/
 git commit -m "feat(frontend): redesign public event cards"
 
-# 4. Push to your remote branch
-git push -u origin frontend/core
+# 4. Push to remote frontend branch
+git push origin frontend/core
 ```
 
-#### Pre-Merge Test Checklist (Must pass before merging to `main`):
+#### 🔹 Pre-Merge Verification (Must pass before merging to `main`):
 ```bash
 cd frontend
-npm run build           # Must compile cleanly with 0 errors
+npm run build           # Must compile with 0 errors (Turbopack)
 ```
 
 ---
 
 ### 3️⃣ Merging Changes to `main` (Production Release)
 
-1. Go to GitHub repository -> **Pull Requests** -> **New Pull Request**.
+1. Open GitHub repository -> **Pull Requests** -> **New Pull Request**.
 2. Set **Base:** `main` ⟵ **Compare:** `backend/core` or `frontend/core`.
-3. Review files changed and click **Create Pull Request**.
-4. Once verified, click **Merge Pull Request**.
-5. Vercel automatically deploys the updated `main` branch to production without build errors.
+3. Verify tests and click **Create Pull Request**.
+4. Once merged, Vercel automatically deploys the updated code to production without downtime.
 
 ---
 

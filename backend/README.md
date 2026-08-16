@@ -1,6 +1,11 @@
 # 🚀 FifthLab Events — Backend Service
 
+> ⚠️ **CRITICAL REMINDER FOR ABRAHAM:**
+> **Always work on the `backend/core` branch.** Do **NOT** commit or push directly to `main`.
+> Verify before coding: `git branch` (should show `* backend/core`).
+
 **Backend Lead:** Abraham Akinwole (`abraham.akinwole@thefifthlab.com`)  
+**Dedicated Branch:** `backend/core`  
 **Stack:** Node.js, Express, TypeScript, Prisma ORM, Neon PostgreSQL (Serverless), Nodemailer, QRCode
 
 ---
