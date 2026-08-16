@@ -1,0 +1,139 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum UserRole {
+  ADMIN
+  STAFF
+  SALES
+  OPS
+  PRODUCT_OWNER
+  VISITOR
+}
+
+enum EventPriority {
+  HIGH
+  MEDIUM
+  LOW
+}
+
+enum EventCategory {
+  CONFERENCE
+  SUMMIT
+  EXPOSITION
+  EXECUTIVE_BRIEFING
+  WEBINAR
+}
+
+enum AttendanceStatus {
+  ATTENDING
+  DECLINED
+  MAYBE
+}
+
+enum LeadStatus {
+  UNREAD
+  FOLLOWED_UP
+  QUALIFIED
+  CONVERTED
+  CLOSED
+}
+
+model User {
+  id            String   @id @default(cuid())
+  name          String
+  email         String   @unique
+  role          UserRole @default(STAFF)
+  avatarUrl     String?
+  timezone      String   @default("WAT")
+  workingHours  String?  @default("9:00 AM - 5:00 PM")
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  rsvps         AttendanceRecord[]
+  assignedLeads Lead[]
+  ownedProducts Product[]
+
+  @@map("users")
+}
+
+model Event {
+  id                  String        @id @default(cuid())
+  title               String
+  category            EventCategory @default(CONFERENCE)
+  priority            EventPriority @default(MEDIUM)
+  date                DateTime
+  time                String
+  location            String
+  city                String
+  country             String        @default("Nigeria")
+  description         String        @db.Text
+  strategicNotes      String?       @db.Text
+  boothNumber         String?
+  expectedAttendance  Int           @default(0)
+  isFifthLabAttending Boolean       @default(false)
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+
+  attendanceManifest  AttendanceRecord[]
+
+  @@map("events")
+}
+
+model AttendanceRecord {
+  id          String           @id @default(cuid())
+  userId      String
+  eventId     String
+  status      AttendanceStatus @default(ATTENDING)
+  confirmedAt DateTime         @default(now())
+
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+  event       Event            @relation(fields: [eventId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, eventId])
+  @@map("attendance_records")
+}
+
+model Lead {
+  id                    String     @id @default(cuid())
+  visitorName           String
+  company               String
+  email                 String
+  phone                 String
+  productInterested     String
+  assignedProductOwnerId String?
+  bookingDate           DateTime?
+  bookingTime           String?
+  status                LeadStatus @default(UNREAD)
+  notes                 String?    @db.Text
+  createdAt             DateTime   @default(now())
+  updatedAt             DateTime   @updatedAt
+
+  assignedOwner         User?      @relation(fields: [assignedProductOwnerId], references: [id], onDelete: SetNull)
+
+  @@map("leads")
+}
+
+model Product {
+  id                   String   @id @default(cuid())
+  slug                 String   @unique
+  name                 String
+  tagline              String
+  description          String   @db.Text
+  iconName             String   @default("Briefcase")
+  bgColor              String   @default("#F4F4FF")
+  ownerId              String?
+  activeDemosThisMonth Int      @default(0)
+  availableSlots       String[] @default(["09:00 AM", "11:00 AM", "02:00 PM", "04:00 PM"])
+  createdAt            DateTime @default(now())
+  updatedAt            DateTime @updatedAt
+
+  owner                User?    @relation(fields: [ownerId], references: [id], onDelete: SetNull)
+
+  @@map("products")
+}

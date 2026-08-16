@@ -1,0 +1,92 @@
+export type UserRole = "Admin" | "Sales" | "Ops" | "Product Owner" | "Staff" | "Visitor";
+
+export type EventPriority = "High" | "Medium" | "Low";
+export type EventCategory = "Conference" | "Summit" | "Exposition" | "Executive Briefing" | "Webinar";
+
+export type AttendanceStatus = "Attending" | "Declined" | "Maybe";
+
+export interface AttendanceRecord {
+  userId: string;
+  userName: string;
+  userRole: string;
+  avatarUrl: string;
+  confirmedAt: string;
+  status: AttendanceStatus;
+}
+
+export interface FifthLabEvent {
+  id: string;
+  title: string;
+  category: EventCategory;
+  priority: EventPriority;
+  date: string;
+  time: string;
+  location: string;
+  city: string;
+  country: string;
+  description: string;
+  strategicNotes: string;
+  boothNumber?: string;
+  expectedAttendance: number;
+  confirmedStaffCount: number;
+  isFifthLabAttending: boolean;
+  attendanceManifest: AttendanceRecord[];
+}
+
+export type LeadStatus = "Unread" | "Followed Up" | "Qualified" | "Converted" | "Closed";
+
+export interface Lead {
+  id: string;
+  visitorName: string;
+  company: string;
+  email: string;
+  phone: string;
+  productInterested: string;
+  assignedProductOwner: string;
+  bookingDate: string;
+  bookingTime: string;
+  status: LeadStatus;
+  notes: string;
+  createdAt: string;
+}
+
+export interface ProductOwner {
+  id: string;
+  name: string;
+  role: string;
+  email: string;
+  timezone: string;
+  workingHours: string;
+  assignedProducts: string[];
+  avatarUrl: string;
+}
+
+export interface FifthLabProduct {
+  id: string;
+  name: string;
+  tagline: string;
+  description: string;
+  ownerId: string;
+  ownerName: string;
+  iconName: string;
+  activeDemosThisMonth: number;
+  availableSlots: string[];
+}
+
+export interface BookingSubmission {
+  productId: string;
+  date: string;
+  timeSlot: string;
+  visitorName: string;
+  company: string;
+  email: string;
+  phone: string;
+  notes?: string;
+}
+
+export interface DashboardKPI {
+  upcomingEventsCount: number;
+  demoRequestsThisMonth: number;
+  conversionRate: string;
+  activeProductOwners: number;
+}
