@@ -6,10 +6,113 @@ Welcome to **Fifth Events**, the enterprise event management, lead conversion, a
 
 ## 👥 Team & Ownership
 
-| Role | Team Member | Primary Directory | Focus Area |
+| Role | Team Member | Primary Directory | Dedicated Git Branch |
 |---|---|---|---|
-| **Backend & Database** | **Abraham Akinwole** | [`backend/`](./backend/) | API routes, Prisma schemas, Neon DB, Auth, Email & QR services |
-| **Frontend & UI/UX** | **Folajimi Ajayi** | [`frontend/`](./frontend/) | Next.js App Router, Tailwind 4, Framer Motion, Dual theme, Apple-compact UI |
+| **Backend & Database** | **Abraham Akinwole** | [`backend/`](./backend/) | `backend/core` |
+| **Frontend & UI/UX** | **Folajimi Ajayi** | [`frontend/`](./frontend/) | `frontend/core` |
+
+---
+
+## 🌿 Git Branching & Collaboration Workflow
+
+> ⚠️ **CRITICAL RULE:** **NEVER push directly to `main`.** Production auto-deploys from `main`. All work must be developed, tested locally, and merged via Pull Request.
+
+```mermaid
+gitGraph
+    commit id: "main (Production)"
+    branch backend/core
+    branch frontend/core
+    checkout backend/core
+    commit id: "backend feature"
+    checkout frontend/core
+    commit id: "frontend feature"
+    checkout main
+    merge backend/core id: "PR: Merge Backend"
+    merge frontend/core id: "PR: Merge Frontend"
+```
+
+---
+
+### 🚀 Step-by-Step Instructions per Member
+
+### 1️⃣ For Abraham (Backend Lead)
+
+#### First-time Setup:
+```bash
+git fetch origin
+git checkout backend/core
+cd backend
+npm install
+cp .env.example .env
+npm run prisma:generate
+```
+
+#### Daily Work Loop:
+```bash
+# 1. Sync latest main into your branch
+git checkout backend/core
+git pull origin main
+
+# 2. Make your backend changes in backend/
+
+# 3. Commit your work
+git add backend/
+git commit -m "feat(backend): implement event rsvp endpoints"
+
+# 4. Push to your remote branch
+git push -u origin backend/core
+```
+
+#### Pre-Merge Test Checklist (Must pass before merging to `main`):
+```bash
+cd backend
+npx tsc --noEmit        # Must have 0 TypeScript errors
+npm run dev             # Verify API runs cleanly on http://localhost:5000
+```
+
+---
+
+### 2️⃣ For Folajimi (Frontend Lead)
+
+#### First-time Setup:
+```bash
+git fetch origin
+git checkout frontend/core
+cd frontend
+npm install
+```
+
+#### Daily Work Loop:
+```bash
+# 1. Sync latest main into your branch
+git checkout frontend/core
+git pull origin main
+
+# 2. Make your UI changes in frontend/
+
+# 3. Commit your work
+git add frontend/
+git commit -m "feat(frontend): redesign public event cards"
+
+# 4. Push to your remote branch
+git push -u origin frontend/core
+```
+
+#### Pre-Merge Test Checklist (Must pass before merging to `main`):
+```bash
+cd frontend
+npm run build           # Must compile cleanly with 0 errors
+```
+
+---
+
+### 3️⃣ Merging Changes to `main` (Production Release)
+
+1. Go to GitHub repository -> **Pull Requests** -> **New Pull Request**.
+2. Set **Base:** `main` ⟵ **Compare:** `backend/core` or `frontend/core`.
+3. Review files changed and click **Create Pull Request**.
+4. Once verified, click **Merge Pull Request**.
+5. Vercel automatically deploys the updated `main` branch to production without build errors.
 
 ---
 
@@ -47,24 +150,16 @@ events-app/
 
 ---
 
-## 🚀 Getting Started
+## ⚡ Local Development Quick Reference
 
-Both frontend and backend are standalone modules. Navigate into whichever folder corresponds to your role:
-
-### Running the Frontend (Folajimi)
+### Frontend:
 ```bash
-cd frontend
-npm install
-npm run dev
+cd frontend && npm run dev
 ```
-Open **[http://localhost:3000](http://localhost:3000)** in your browser.
+> Runs on **`http://localhost:3000`**
 
-### Running the Backend (Abraham)
+### Backend:
 ```bash
-cd backend
-npm install
-cp .env.example .env
-npm run prisma:generate
-npm run dev
+cd backend && npm run dev
 ```
-API runs on **[http://localhost:5000](http://localhost:5000)**.
+> Runs on **`http://localhost:5000`**
