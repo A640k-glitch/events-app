@@ -36,10 +36,10 @@ export default function Footer() {
           <div className="space-y-3">
             <h4 className="text-xs font-semibold uppercase tracking-wider text-white">Platform</h4>
             <ul className="space-y-2 text-xs">
-              <li><Link href="/#events" className="hover:text-blue-400 transition-colors">Explore Events</Link></li>
-              <li><Link href="/#pricing" className="hover:text-blue-400 transition-colors">Pricing & Passes</Link></li>
-              <li><Link href="/demo" className="hover:text-blue-400 transition-colors flex items-center gap-1">Live Demo <ArrowUpRight className="w-3 h-3" /></Link></li>
-              <li><Link href="/dashboard" className="hover:text-blue-400 transition-colors">Organizer Hub</Link></li>
+              <li><Link href="/#events" className="hover:text-cyan-400 transition-colors">Explore Events</Link></li>
+              <li><Link href="/#pricing" className="hover:text-cyan-400 transition-colors">Pricing & Passes</Link></li>
+              <li><Link href="/demo" className="hover:text-cyan-400 transition-colors flex items-center gap-1">Live Demo <ArrowUpRight className="w-3 h-3" /></Link></li>
+              <li><Link href="/login" className="hover:text-cyan-400 transition-colors">Staff Operations Portal</Link></li>
             </ul>
           </div>
 

@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useApp } from "@/context/AppContext";
 import { EventCategory, EventPriority } from "@/lib/types";
-import { X, Plus } from "lucide-react";
+import { X, Plus, Image as ImageIcon, Sparkles } from "lucide-react";
 
 interface AddEventModalProps {
   isOpen: boolean;
@@ -15,21 +15,23 @@ export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState<EventCategory>("Summit");
   const [priority, setPriority] = useState<EventPriority>("High");
-  const [date, setDate] = useState("2026-09-12");
-  const [time, setTime] = useState("09:00 AM - 05:00 PM EST");
+  const [date, setDate] = useState("2026-09-15");
+  const [time, setTime] = useState("09:00 AM - 05:00 PM WAT");
   const [location, setLocation] = useState("");
-  const [city, setCity] = useState("");
-  const [country, setCountry] = useState("");
+  const [city, setCity] = useState("Lagos");
+  const [country, setCountry] = useState("Nigeria");
   const [description, setDescription] = useState("");
   const [strategicNotes, setStrategicNotes] = useState("");
+  const [imageUrl, setImageUrl] = useState("");
+  const [isFeatured, setIsFeatured] = useState(true);
   const [boothNumber, setBoothNumber] = useState("");
-  const [expectedAttendance, setExpectedAttendance] = useState(5000);
+  const [expectedAttendance, setExpectedAttendance] = useState(2500);
 
   if (!isOpen) return null;
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    addEvent({
+    await addEvent({
       title,
       category,
       priority,
@@ -43,7 +45,10 @@ export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
       boothNumber,
       expectedAttendance,
       isFifthLabAttending: true,
-    });
+      imageUrl: imageUrl || "https://images.unsplash.com/photo-1540575467063-178a50c2df87?q=80&w=800&auto=format&fit=crop",
+      isFeatured,
+      isPublished: true,
+    } as any);
     onClose();
   };
 
@@ -53,14 +58,19 @@ export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
       onClick={onClose}
     >
       <div 
-        className="w-full max-w-2xl bg-[#0e1017] border border-white/10 shadow-2xl rounded-2xl p-6 space-y-6 max-h-[90vh] overflow-y-auto font-sans"
+        className="w-full max-w-2xl bg-[#0e1017] border border-white/10 shadow-2xl rounded-2xl p-6 space-y-6 max-h-[90vh] overflow-y-auto font-sans text-left"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-white/10 pb-3">
-          <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2">
-            <Plus className="w-4 h-4 text-blue-400" /> Create New Industry Event
-          </h2>
-          <button onClick={onClose} className="p-1 text-white/50 hover:text-white">
+          <div>
+            <h2 className="text-base font-bold text-white tracking-tight flex items-center gap-2">
+              <Plus className="w-4 h-4 text-cyan-400" /> Publish Event to Database & Homepage
+            </h2>
+            <p className="text-xs text-white/50 mt-0.5">
+              Creates live database record in Neon PostgreSQL and syncs to homepage carousel.
+            </p>
+          </div>
+          <button type="button" onClick={onClose} className="p-1 text-white/50 hover:text-white cursor-pointer">
             <X className="w-5 h-5" />
           </button>
         </div>
@@ -71,10 +81,10 @@ export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
             <input
               type="text"
               required
-              placeholder="e.g. AWS Financial Services Cloud Summit 2026"
+              placeholder="e.g. West Africa Digital Core Banking Forum 2026"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 focus:border-blue-500 text-white p-2.5 rounded-xl outline-none"
+              className="w-full bg-white/5 border border-white/10 focus:border-cyan-500 text-white p-2.5 rounded-xl outline-none"
             />
           </div>
 
@@ -84,7 +94,7 @@ export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
               <select
                 value={category}
                 onChange={(e) => setCategory(e.target.value as EventCategory)}
-                className="w-full bg-black/80 border border-white/10 focus:border-blue-500 text-white p-2.5 rounded-xl outline-none"
+                className="w-full bg-black/80 border border-white/10 focus:border-cyan-500 text-white p-2.5 rounded-xl outline-none"
               >
                 <option value="Summit">Summit</option>
                 <option value="Exposition">Exposition</option>
@@ -99,7 +109,7 @@ export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
               <select
                 value={priority}
                 onChange={(e) => setPriority(e.target.value as EventPriority)}
-                className="w-full bg-black/80 border border-white/10 focus:border-blue-500 text-white p-2.5 rounded-xl outline-none"
+                className="w-full bg-black/80 border border-white/10 focus:border-cyan-500 text-white p-2.5 rounded-xl outline-none"
               >
                 <option value="High">High Priority</option>
                 <option value="Medium">Medium Priority</option>
@@ -114,7 +124,7 @@ export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
                 required
                 value={date}
                 onChange={(e) => setDate(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 focus:border-blue-500 text-white p-2.5 rounded-xl outline-none"
+                className="w-full bg-white/5 border border-white/10 focus:border-cyan-500 text-white p-2.5 rounded-xl outline-none"
               />
             </div>
           </div>
@@ -125,10 +135,10 @@ export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
               <input
                 type="text"
                 required
-                placeholder="e.g. Moscone Center"
+                placeholder="e.g. Eko Convention Centre"
                 value={location}
                 onChange={(e) => setLocation(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 focus:border-blue-500 text-white p-2.5 rounded-xl outline-none"
+                className="w-full bg-white/5 border border-white/10 focus:border-cyan-500 text-white p-2.5 rounded-xl outline-none"
               />
             </div>
 
@@ -137,10 +147,10 @@ export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
               <input
                 type="text"
                 required
-                placeholder="San Francisco"
+                placeholder="Lagos"
                 value={city}
                 onChange={(e) => setCity(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 focus:border-blue-500 text-white p-2.5 rounded-xl outline-none"
+                className="w-full bg-white/5 border border-white/10 focus:border-cyan-500 text-white p-2.5 rounded-xl outline-none"
               />
             </div>
 
@@ -149,23 +159,54 @@ export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
               <input
                 type="text"
                 required
-                placeholder="USA"
+                placeholder="Nigeria"
                 value={country}
                 onChange={(e) => setCountry(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 focus:border-blue-500 text-white p-2.5 rounded-xl outline-none"
+                className="w-full bg-white/5 border border-white/10 focus:border-cyan-500 text-white p-2.5 rounded-xl outline-none"
               />
             </div>
           </div>
 
           <div className="space-y-1.5">
-            <label className="text-white/70 font-semibold">Strategic Notes & Description *</label>
+            <label className="text-white/70 font-semibold flex items-center gap-1.5">
+              <ImageIcon className="w-3.5 h-3.5 text-cyan-400" />
+              <span>Cover Photo URL (Populates Homepage Carousel Card)</span>
+            </label>
+            <input
+              type="url"
+              placeholder="https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=800"
+              value={imageUrl}
+              onChange={(e) => setImageUrl(e.target.value)}
+              className="w-full bg-white/5 border border-white/10 focus:border-cyan-500 text-white p-2.5 rounded-xl outline-none"
+            />
+          </div>
+
+          <div className="space-y-1.5">
+            <label className="text-white/70 font-semibold">Description & Strategic Goals *</label>
             <textarea
               required
               rows={3}
-              placeholder="Outline target accounts, pitch goals, and key staff mandates..."
-              value={strategicNotes}
-              onChange={(e) => setStrategicNotes(e.target.value)}
-              className="w-full bg-white/5 border border-white/10 focus:border-blue-500 text-white p-2.5 rounded-xl outline-none resize-none"
+              placeholder="Describe event agenda, keynote speakers, and exhibition solutions..."
+              value={description}
+              onChange={(e) => { setDescription(e.target.value); setStrategicNotes(e.target.value); }}
+              className="w-full bg-white/5 border border-white/10 focus:border-cyan-500 text-white p-2.5 rounded-xl outline-none resize-none"
+            />
+          </div>
+
+          <div className="p-3 bg-white/5 border border-white/10 rounded-xl flex items-center justify-between">
+            <div className="space-y-0.5">
+              <span className="text-xs font-semibold text-white flex items-center gap-1.5">
+                <Sparkles className="w-3.5 h-3.5 text-cyan-400" /> Feature on Homepage Hero Carousel
+              </span>
+              <p className="text-[11px] text-white/50">
+                Instantly displays in the top showcase card for public visitors.
+              </p>
+            </div>
+            <input
+              type="checkbox"
+              checked={isFeatured}
+              onChange={(e) => setIsFeatured(e.target.checked)}
+              className="w-4 h-4 accent-cyan-500 cursor-pointer"
             />
           </div>
 
@@ -173,16 +214,16 @@ export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
             <button
               type="button"
               onClick={onClose}
-              className="px-5 py-2.5 rounded-full border border-white/10 text-white/60 hover:text-white"
+              className="px-5 py-2.5 rounded-full border border-white/10 text-white/60 hover:text-white cursor-pointer"
             >
               Cancel
             </button>
 
             <button
               type="submit"
-              className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white font-bold rounded-full shadow-lg"
+              className="px-6 py-2.5 bg-cyan-500 hover:bg-cyan-400 text-black font-bold rounded-full shadow-lg cursor-pointer"
             >
-              Publish Event to Discovery
+              Publish Event Live
             </button>
           </div>
         </form>

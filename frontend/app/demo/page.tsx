@@ -6,26 +6,30 @@ import confetti from "canvas-confetti";
 import { useApp } from "@/context/AppContext";
 import { 
   ArrowRight, 
-  Calendar as CalendarIcon, 
-  Clock, 
   CheckCircle2, 
   Download, 
-  Sparkles, 
   ArrowLeft,
   User,
   Building,
   Mail,
   Ticket
 } from "lucide-react";
-import TerminalLoader from "@/components/ui/great-ui-terminal-loader";
 import { cn } from "@/lib/utils";
+
+const defaultProductFallback = {
+  id: "bulkwave",
+  name: "Bulkwave Core Payments",
+  tagline: "High-Volume Enterprise Settlement",
+  description: "Direct-to-bank high-throughput settlement engine built for tier-1 financial institutions and payment processors in West Africa.",
+  ownerName: "FifthLab Solutions Lead",
+};
 
 export default function PublicDemoBookingPage() {
   const { products, addLead } = useApp();
 
   const [step, setStep] = useState<1 | 2 | 3 | 4>(1);
-  const [selectedProductId, setSelectedProductId] = useState<string>("prod-paynaira");
-  const [selectedDate, setSelectedDate] = useState<string>("2026-08-04");
+  const [selectedProductId, setSelectedProductId] = useState<string>("");
+  const [selectedDate, setSelectedDate] = useState<string>("2026-08-20");
   const [selectedTime, setSelectedTime] = useState<string>("11:30 AM");
 
   const [visitorName, setVisitorName] = useState("");
@@ -33,45 +37,47 @@ export default function PublicDemoBookingPage() {
   const [company, setCompany] = useState("");
   const [notes, setNotes] = useState("");
 
-  const [liveTimeUtc, setLiveTimeUtc] = useState("");
+  const activeProducts = products.length > 0 ? products : [defaultProductFallback];
 
   useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      setLiveTimeUtc(now.toUTCString().slice(17, 25) + " WAT");
-    };
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
+    if (activeProducts.length > 0 && (!selectedProductId || !activeProducts.some((p) => p.id === selectedProductId))) {
+      setSelectedProductId(activeProducts[0].id);
+    }
+  }, [activeProducts, selectedProductId]);
 
-  const selectedProduct = products.find((p) => p.id === selectedProductId) || products[0];
+  const selectedProduct =
+    activeProducts.find((p) => p.id === selectedProductId) ||
+    activeProducts[0] ||
+    defaultProductFallback;
 
   const availableDates = [
-    { label: "Tue, Aug 4", value: "2026-08-04" },
-    { label: "Wed, Aug 5", value: "2026-08-05" },
-    { label: "Thu, Aug 6", value: "2026-08-06" },
-    { label: "Fri, Aug 7", value: "2026-08-07" },
-    { label: "Mon, Aug 10", value: "2026-08-10" },
+    { label: "Thu, Aug 20", value: "2026-08-20" },
+    { label: "Fri, Aug 21", value: "2026-08-21" },
+    { label: "Mon, Aug 24", value: "2026-08-24" },
+    { label: "Tue, Aug 25", value: "2026-08-25" },
+    { label: "Wed, Aug 26", value: "2026-08-26" },
   ];
 
   const timeSlots = ["09:00 AM", "11:30 AM", "02:00 PM", "04:30 PM"];
 
-  const handleFormSubmit = (e: React.FormEvent) => {
+  const handleFormSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!visitorName || !visitorEmail || !company) return;
 
-    addLead({
+    const prodName = selectedProduct?.name || "Bulkwave Core Payments";
+    const ownName = selectedProduct?.ownerName || "FifthLab Solutions Lead";
+
+    await addLead({
       visitorName,
-      email: visitorEmail,
+      email: visitorEmail.trim().toLowerCase(),
       company,
       phone: "+234 803 123 4567",
-      productInterested: selectedProduct.name,
-      assignedProductOwner: selectedProduct.ownerName,
+      productInterested: prodName,
+      assignedProductOwner: ownName,
       bookingDate: selectedDate,
       bookingTime: selectedTime,
       status: "Unread",
-      notes: notes || "Visitor booked via public portal.",
+      notes: notes || "Visitor booked via public briefing portal.",
     });
 
     confetti({
@@ -84,14 +90,17 @@ export default function PublicDemoBookingPage() {
   };
 
   const handleDownloadIcs = () => {
+    const prodName = selectedProduct?.name || "Enterprise Product";
+    const ownName = selectedProduct?.ownerName || "FifthLab Solutions Lead";
+
     const icsContent = `BEGIN:VCALENDAR
 VERSION:2.0
 PRODID:-//FifthLab Systems//Nexus Briefing//EN
 BEGIN:VEVENT
-SUMMARY:FifthLab ${selectedProduct.name} Executive Briefing
-DESCRIPTION:Executive product briefing with ${selectedProduct.ownerName}.
-DTSTART:20260804T113000Z
-DTEND:20260804T121500Z
+SUMMARY:FifthLab ${prodName} Executive Briefing
+DESCRIPTION:Executive product briefing with ${ownName}.
+DTSTART:20260820T113000Z
+DTEND:20260820T121500Z
 LOCATION:FifthLab Virtual Briefing Room (Google Meet)
 STATUS:CONFIRMED
 END:VEVENT
@@ -100,7 +109,7 @@ END:VCALENDAR`;
     const blob = new Blob([icsContent], { type: "text/calendar;charset=utf-8" });
     const link = document.createElement("a");
     link.href = window.URL.createObjectURL(blob);
-    link.setAttribute("download", `FifthLab_Briefing_${selectedProduct.tagline}.ics`);
+    link.setAttribute("download", `FifthLab_Briefing_${prodName.replace(/\s+/g, "_")}.ics`);
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
@@ -127,7 +136,7 @@ END:VCALENDAR`;
           </p>
         </div>
 
-        {/* Step Progress Indicators (No Pills) */}
+        {/* Step Progress Indicators */}
         <div className="flex items-center justify-center gap-6 text-xs font-medium max-w-lg mx-auto">
           {[
             { num: 1, label: "Product" },
@@ -150,21 +159,12 @@ END:VCALENDAR`;
           ))}
         </div>
 
-        {/* Expanded High-Contrast Cream Workspace Container with Backdrop Blur */}
-        <div className="border border-black/15 bg-[#faf8f5]/90 backdrop-blur-xl text-[#090a0f] p-8 sm:p-12 shadow-2xl relative overflow-hidden bg-geometric-lines">
+        {/* High-Contrast Workspace Container */}
+        <div className="border border-black/15 bg-[#faf8f5]/95 backdrop-blur-xl text-[#090a0f] p-8 sm:p-12 shadow-2xl relative overflow-hidden bg-geometric-lines">
           
-          {/* Floating Vector Lines Graphic Overlay */}
-          <div className="absolute inset-0 pointer-events-none opacity-20">
-            <svg className="w-full h-full" viewBox="0 0 1000 600" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <line x1="0" y1="100" x2="1000" y2="500" stroke="#2563eb" strokeWidth="0.75" strokeDasharray="6 6" />
-              <line x1="0" y1="500" x2="1000" y2="100" stroke="#000" strokeWidth="0.5" opacity="0.2" />
-              <circle cx="500" cy="300" r="220" stroke="#2563eb" strokeWidth="0.75" strokeDasharray="4 4" opacity="0.2" />
-            </svg>
-          </div>
-
           <div className="relative z-10 space-y-8">
             
-            {/* STEP 1: Select Product (Expanded Cards & No Pills) */}
+            {/* STEP 1: Select Product */}
             {step === 1 && (
               <div className="space-y-8">
                 <div className="space-y-1 text-left border-b border-black/10 pb-4">
@@ -173,7 +173,7 @@ END:VCALENDAR`;
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  {products.map((p) => {
+                  {activeProducts.map((p) => {
                     const isSelected = selectedProductId === p.id;
                     return (
                       <div
@@ -188,7 +188,6 @@ END:VCALENDAR`;
                       >
                         <div className="space-y-3">
                           <div className="flex items-center justify-between">
-                            {/* Plain text tagline (NO PILL WRAPPER) */}
                             <p className={cn(
                               "text-xs font-semibold uppercase tracking-wider",
                               isSelected ? "text-blue-400" : "text-blue-700"
@@ -234,7 +233,7 @@ END:VCALENDAR`;
               </div>
             )}
 
-            {/* STEP 2: Select Date & Time (No Pills) */}
+            {/* STEP 2: Select Date & Time */}
             {step === 2 && (
               <div className="space-y-8 text-left">
                 <div className="flex items-center justify-between border-b border-black/10 pb-4">
@@ -304,7 +303,7 @@ END:VCALENDAR`;
               </div>
             )}
 
-            {/* STEP 3: Enter Visitor Details (No Pills) */}
+            {/* STEP 3: Enter Visitor Details */}
             {step === 3 && (
               <form onSubmit={handleFormSubmit} className="space-y-8 text-left">
                 <div className="flex items-center justify-between border-b border-black/10 pb-4">
@@ -340,7 +339,7 @@ END:VCALENDAR`;
                       <input
                         type="email"
                         required
-                        placeholder="gbenga.o@flutterwave.com"
+                        placeholder="your-email@company.com"
                         value={visitorEmail}
                         onChange={(e) => setVisitorEmail(e.target.value)}
                         className="w-full bg-white border border-black/15 focus:border-blue-600 text-[#090a0f] pl-10 pr-3 py-3 text-sm outline-none font-medium shadow-sm"
@@ -355,7 +354,7 @@ END:VCALENDAR`;
                       <input
                         type="text"
                         required
-                        placeholder="Flutterwave Technologies Nigeria"
+                        placeholder="Your Company Name"
                         value={company}
                         onChange={(e) => setCompany(e.target.value)}
                         className="w-full bg-white border border-black/15 focus:border-blue-600 text-[#090a0f] pl-10 pr-3 py-3 text-sm outline-none font-medium shadow-sm"
@@ -379,7 +378,7 @@ END:VCALENDAR`;
               </form>
             )}
 
-            {/* STEP 4: Confirmed Success State (No Pills) */}
+            {/* STEP 4: Confirmed Success State */}
             {step === 4 && (
               <div className="text-center space-y-8 py-8">
                 <div className="w-16 h-16 mx-auto bg-emerald-600/10 border border-emerald-600/30 text-emerald-700 flex items-center justify-center shadow-lg">
@@ -403,8 +402,8 @@ END:VCALENDAR`;
                     <span className="font-medium text-blue-700">WAT (UTC+1, West Africa Time)</span>
                   </div>
                   <div className="flex justify-between text-[#475569]">
-                    <span>Calendar Invite:</span>
-                    <span className="font-medium text-emerald-700">Emitted to {visitorEmail}</span>
+                    <span>Calendar Invite & Email:</span>
+                    <span className="font-medium text-emerald-700">Dispatched to {visitorEmail}</span>
                   </div>
                 </div>
 
@@ -418,10 +417,10 @@ END:VCALENDAR`;
                   </button>
 
                   <Link
-                    href="/dashboard/leads"
+                    href="/"
                     className="px-6 py-3.5 border border-black/20 bg-black/5 hover:bg-black/10 text-[#090a0f] transition-all"
                   >
-                    View Lead in Command Hub
+                    Return to Homepage
                   </Link>
                 </div>
               </div>

@@ -22,7 +22,8 @@ import {
   SlidersHorizontal,
   CheckCircle2,
   Box,
-  Layers
+  Layers,
+  Lock
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 
@@ -331,15 +332,16 @@ export default function Navbar() {
                 <div className="flex items-center gap-2">
                   <Link
                     href="/login"
-                    className="hidden xs:flex h-8 sm:h-9 px-3.5 rounded-full text-slate-200 hover:text-white hover:bg-white/10 text-xs sm:text-sm font-medium items-center transition-colors"
+                    className="flex h-8 sm:h-9 px-3 sm:px-3.5 rounded-full border border-white/20 hover:border-white/40 bg-white/5 hover:bg-white/10 text-white text-xs sm:text-sm font-medium items-center gap-1.5 transition-all cursor-pointer"
                   >
-                    Login
+                    <Lock className="w-3 h-3 text-cyan-400" />
+                    <span>Staff Login</span>
                   </Link>
                   <Link
-                    href="/login"
-                    className="h-8 sm:h-9 px-3.5 sm:px-4 rounded-full bg-slate-900 text-white hover:bg-slate-800 text-xs sm:text-sm font-bold flex items-center gap-1 transition-all shadow-lg"
+                    href="/demo"
+                    className="h-8 sm:h-9 px-3.5 sm:px-4 rounded-full bg-cyan-500 text-black hover:bg-cyan-400 text-xs sm:text-sm font-semibold flex items-center gap-1 transition-all shadow-lg cursor-pointer"
                   >
-                    <span>Get Started</span>
+                    <span>Book Demo</span>
                   </Link>
                 </div>
               )}
@@ -421,16 +423,18 @@ export default function Navbar() {
               ) : (
                 <>
                   <Link
-                    href="/login"
-                    className="w-full py-2.5 rounded-xl border border-white/10 bg-white/5 text-white font-semibold text-sm text-center"
+                    href="/demo"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full py-2.5 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-black font-semibold text-sm text-center shadow-lg"
                   >
-                    Login to Account
+                    Schedule Briefing
                   </Link>
                   <Link
-                    href="/dashboard"
-                    className="w-full py-2.5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-bold text-sm text-center shadow-lg"
+                    href="/login"
+                    onClick={() => setMobileMenuOpen(false)}
+                    className="w-full py-2.5 rounded-xl border border-white/10 bg-white/5 text-white font-medium text-sm text-center"
                   >
-                    Get Started Free
+                    Staff Portal Sign In
                   </Link>
                 </>
               )}

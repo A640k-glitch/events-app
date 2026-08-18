@@ -13,7 +13,8 @@ import {
   ChevronRight,
   LogOut,
   Sparkles,
-  Ticket
+  Ticket,
+  UserCheck
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useApp } from "@/context/AppContext";
@@ -32,6 +33,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
     { name: "Events Manifest", href: "/dashboard/events", icon: CalendarDays },
     { name: "Captured Leads", href: "/dashboard/leads", icon: Users },
     { name: "Products Console", href: "/dashboard/products", icon: Layers },
+    { name: "Team & Personnel", href: "/dashboard/team", icon: UserCheck },
     { name: "System Settings", href: "/dashboard/settings", icon: Settings },
   ];
 
@@ -134,24 +136,25 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
 
         {/* User Account Info */}
         <div className="pt-4 border-t border-white/10">
-          <div className="p-3 rounded-xl border border-white/10 bg-white/5 flex items-center justify-between">
+          <div className="p-3 border border-white/10 bg-white/5 flex items-center justify-between">
             <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-8 h-8 rounded-full bg-blue-600/30 border border-blue-500/50 flex items-center justify-center text-white font-bold text-xs">
-                {user ? user.name.charAt(0) : "A"}
+              <div className="w-8 h-8 rounded-full bg-cyan-500/20 border border-cyan-500/40 flex items-center justify-center text-cyan-400 font-bold text-xs shrink-0">
+                {user?.name ? user.name.trim().charAt(0).toUpperCase() : "S"}
               </div>
               <div className="flex flex-col min-w-0 text-xs">
                 <span className="font-semibold text-white truncate">
-                  {user ? user.name : "Alex Rivera"}
+                  {user?.name ? user.name.trim().split(" ")[0] : "Staff"}
                 </span>
-                <span className="text-[10px] text-white/50 truncate">
-                  {user ? user.role : "Staff Architect"}
+                <span className="text-[10px] text-white/50 truncate font-mono">
+                  {user?.role || "STAFF"}
                 </span>
               </div>
             </div>
             {user && (
               <button 
+                type="button"
                 onClick={logout}
-                className="text-white/50 hover:text-rose-400 p-1 transition-colors cursor-pointer"
+                className="text-white/40 hover:text-rose-400 p-1 transition-colors cursor-pointer"
                 title="Sign Out"
               >
                 <LogOut className="w-4 h-4" />

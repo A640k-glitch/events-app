@@ -1,219 +1,297 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/context/AppContext";
-import { Calendar, ArrowRight, Lock, Mail, ShieldCheck, User } from "lucide-react";
+import { Calendar, ArrowRight, Mail, ShieldCheck, User, KeyRound, RefreshCw, ArrowLeft } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 export default function LoginPage() {
   const router = useRouter();
-  const { loginAs } = useApp();
+  const { requestOtp, verifyOtpAndLogin } = useApp();
 
+  const [step, setStep] = useState<"credentials" | "otp">("credentials");
   const [mode, setMode] = useState<"signin" | "signup">("signin");
-  const [name, setName] = useState("Alex Rivera");
-  const [email, setEmail] = useState("alex.rivera@fifthlab.io");
-  const [password, setPassword] = useState("••••••••••••");
+  const [name, setName] = useState("");
+  const [email, setEmail] = useState("");
+  const [otp, setOtp] = useState("");
+  
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [successMessage, setSuccessMessage] = useState<string | null>(null);
 
-  const handleEmailAuth = (e: React.FormEvent) => {
+  // Resend cooldown timer (30s)
+  const [resendCooldown, setResendCooldown] = useState(0);
+
+  useEffect(() => {
+    if (resendCooldown <= 0) return;
+    const timer = setInterval(() => {
+      setResendCooldown((prev) => prev - 1);
+    }, 1000);
+    return () => clearInterval(timer);
+  }, [resendCooldown]);
+
+  const handleRequestOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    loginAs(name || "Alex Rivera", email, "Email");
-    router.push("/dashboard");
+    const cleanEmail = email.trim().toLowerCase();
+
+    if (!cleanEmail) {
+      setErrorMessage("Please enter your corporate email address.");
+      return;
+    }
+
+    if (!cleanEmail.endsWith("@thefifthlab.com")) {
+      setErrorMessage("Access restricted. Authorized organization accounts only.");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      setErrorMessage(null);
+      const res = await requestOtp(cleanEmail, name.trim());
+      setSuccessMessage(res.message);
+      setStep("otp");
+      setResendCooldown(30);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Failed to dispatch access code";
+      setErrorMessage(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleSsoLogin = (provider: string, defaultName: string, defaultEmail: string) => {
-    loginAs(defaultName, defaultEmail, provider);
-    router.push("/dashboard");
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    const cleanOtp = otp.trim().replace(/\s+/g, "");
+
+    if (!cleanOtp || cleanOtp.length < 6) {
+      setErrorMessage("Please enter the complete 6-digit access code.");
+      return;
+    }
+
+    try {
+      setIsSubmitting(true);
+      setErrorMessage(null);
+      await verifyOtpAndLogin(email.trim().toLowerCase(), cleanOtp);
+      router.push("/dashboard");
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Verification failed";
+      setErrorMessage(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  const handleResendOtp = async () => {
+    if (resendCooldown > 0) return;
+    try {
+      setIsSubmitting(true);
+      setErrorMessage(null);
+      const res = await requestOtp(email.trim().toLowerCase(), name.trim());
+      setSuccessMessage(res.message);
+      setResendCooldown(30);
+    } catch (err: unknown) {
+      const msg = err instanceof Error ? err.message : "Could not resend code";
+      setErrorMessage(msg);
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="min-h-[85vh] text-[#f5f5f7] flex flex-col justify-center items-center px-4 py-12 selection:bg-blue-600 selection:text-white font-sans">
+    <div className="min-h-[85vh] text-[#f5f5f7] flex flex-col justify-center items-center px-4 py-12 selection:bg-cyan-500 selection:text-black font-sans">
       
       {/* Auth Card Container */}
-      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-black/80 backdrop-blur-xl p-8 space-y-6 shadow-2xl relative overflow-hidden">
+      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-black/90 backdrop-blur-xl p-8 space-y-6 shadow-2xl relative overflow-hidden text-left">
         
-        {/* Glow backdrop accent */}
-        <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
-
         {/* Card Header */}
         <div className="space-y-3 text-center">
-          <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 p-0.5 flex items-center justify-center shadow-xl">
-            <div className="w-full h-full bg-black rounded-full flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-blue-400" />
-            </div>
+          <div className="w-12 h-12 mx-auto rounded-full bg-cyan-500/20 border border-cyan-500/40 p-0.5 flex items-center justify-center shadow-xl">
+            {step === "otp" ? (
+              <KeyRound className="w-6 h-6 text-cyan-400" />
+            ) : (
+              <Calendar className="w-6 h-6 text-cyan-400" />
+            )}
           </div>
 
-          {/* Mode Switcher Tabs */}
-          <div className="flex bg-white/5 p-1 rounded-full border border-white/10 max-w-[240px] mx-auto text-xs font-semibold">
-            <button
-              onClick={() => setMode("signin")}
-              className={cn(
-                "flex-1 py-1.5 rounded-full transition-all cursor-pointer",
-                mode === "signin" ? "bg-blue-600 text-white shadow-md" : "text-white/60 hover:text-white"
-              )}
-            >
-              Sign In
-            </button>
-            <button
-              onClick={() => setMode("signup")}
-              className={cn(
-                "flex-1 py-1.5 rounded-full transition-all cursor-pointer",
-                mode === "signup" ? "bg-blue-600 text-white shadow-md" : "text-white/60 hover:text-white"
-              )}
-            >
-              Create Account
-            </button>
+          {step === "credentials" ? (
+            <>
+              {/* Mode Switcher */}
+              <div className="flex bg-white/5 p-1 rounded-full border border-white/10 max-w-[240px] mx-auto text-xs font-semibold">
+                <button
+                  type="button"
+                  onClick={() => { setMode("signin"); setErrorMessage(null); }}
+                  className={cn(
+                    "flex-1 py-1.5 rounded-full transition-all cursor-pointer",
+                    mode === "signin" ? "bg-cyan-500 text-black font-bold shadow-md" : "text-white/60 hover:text-white"
+                  )}
+                >
+                  Sign In
+                </button>
+                <button
+                  type="button"
+                  onClick={() => { setMode("signup"); setErrorMessage(null); }}
+                  className={cn(
+                    "flex-1 py-1.5 rounded-full transition-all cursor-pointer",
+                    mode === "signup" ? "bg-cyan-500 text-black font-bold shadow-md" : "text-white/60 hover:text-white"
+                  )}
+                >
+                  Register
+                </button>
+              </div>
+
+              <h1 className="text-xl font-bold tracking-tight text-white pt-1">
+                {mode === "signin" ? "FifthLab Events Portal" : "Register Corporate Account"}
+              </h1>
+              <p className="text-xs text-white/60 font-light">
+                Internal event management, lead tracking & attendance manifest.
+              </p>
+            </>
+          ) : (
+            <>
+              <h1 className="text-xl font-bold tracking-tight text-white pt-1">
+                Verify Corporate Access
+              </h1>
+              <p className="text-xs text-white/60 font-light">
+                Enter the single-use 6-digit access code delivered to <br />
+                <strong className="text-cyan-400">{email}</strong>
+              </p>
+            </>
+          )}
+        </div>
+
+        {errorMessage && (
+          <div className="p-3 bg-rose-500/15 border border-rose-500/30 text-rose-300 text-xs rounded-xl font-light">
+            {errorMessage}
           </div>
+        )}
 
-          <h1 className="text-xl font-extrabold tracking-tight text-white pt-1">
-            {mode === "signin" ? "Sign In to FifthEvents" : "Create Enterprise Account"}
-          </h1>
-          <p className="text-xs text-white/60">
-            {mode === "signin"
-              ? "Access your event organizer console, ticket payouts & attendee lead data."
-              : "Register your organization to publish events, capture leads, and sync team calendars."}
-          </p>
-        </div>
+        {successMessage && step === "otp" && (
+          <div className="p-3 bg-cyan-500/10 border border-cyan-500/30 text-cyan-300 text-xs rounded-xl font-light">
+            {successMessage}
+          </div>
+        )}
 
-        {/* Enterprise SSO Buttons (Microsoft, Google, Teams, Outlook) */}
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={() => handleSsoLogin("Microsoft", "Alex Rivera (Microsoft)", "alex.rivera@microsoft.com")}
-            className="py-2.5 px-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] sm:text-xs font-semibold text-white rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
-          >
-            <svg className="w-4 h-4 shrink-0" viewBox="0 0 23 23">
-              <path fill="#f35325" d="M1 1h10v10H1z"/>
-              <path fill="#81bc06" d="M12 1h10v10H12z"/>
-              <path fill="#05a6f0" d="M1 12h10v10H1z"/>
-              <path fill="#ffba08" d="M12 12h10v10H12z"/>
-            </svg>
-            <span>Microsoft 365</span>
-          </button>
+        {/* STEP 1: Enter Corporate Email */}
+        {step === "credentials" && (
+          <form onSubmit={handleRequestOtp} className="space-y-4">
+            {mode === "signup" && (
+              <div className="space-y-1.5">
+                <label className="block text-xs font-semibold text-white/70">
+                  Full Name
+                </label>
+                <div className="relative">
+                  <User className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
+                  <input
+                    type="text"
+                    required
+                    placeholder="Enter your name"
+                    value={name}
+                    onChange={(e) => setName(e.target.value)}
+                    className="w-full bg-white/5 border border-white/10 focus:border-cyan-500 text-xs text-white pl-10 pr-3 py-2.5 rounded-xl outline-none transition-colors"
+                  />
+                </div>
+              </div>
+            )}
 
-          <button
-            type="button"
-            onClick={() => handleSsoLogin("Google", "Alex Rivera (Google)", "alex.rivera@gmail.com")}
-            className="py-2.5 px-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] sm:text-xs font-semibold text-white rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
-          >
-            <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-            </svg>
-            <span>Google / Gmail</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleSsoLogin("Teams", "Alex Rivera (Teams)", "alex.rivera@teams.com")}
-            className="py-2.5 px-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] sm:text-xs font-semibold text-white rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
-          >
-            <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none">
-              <circle cx="17" cy="9" r="3" fill="#54579E" />
-              <path d="M12 17c0-2.2 1.8-4 4-4h2c2.2 0 4 1.8 4 4v1H12v-1z" fill="#54579E" />
-              <rect x="2" y="6" width="12" height="12" rx="2" fill="#464EB8" />
-              <path d="M5 9h6M8 9v6" stroke="white" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-            <span>Microsoft Teams</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleSsoLogin("Outlook", "Alex Rivera (Outlook)", "alex.rivera@outlook.com")}
-            className="py-2.5 px-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] sm:text-xs font-semibold text-white rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
-          >
-            <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none">
-              <rect x="6" y="6" width="16" height="12" rx="2" fill="#0078D4" />
-              <path d="M6 8l8 5 8-5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              <rect x="2" y="8" width="8" height="8" rx="1.5" fill="#106EBE" />
-              <circle cx="6" cy="12" r="2.5" stroke="white" strokeWidth="1.5" fill="none" />
-            </svg>
-            <span>Outlook Mail</span>
-          </button>
-        </div>
-
-        <div className="flex items-center gap-3 text-[10px] text-white/40 uppercase font-mono">
-          <div className="flex-1 h-px bg-white/10" />
-          <span>or email authentication</span>
-          <div className="flex-1 h-px bg-white/10" />
-        </div>
-
-        {/* Credentials Form */}
-        <form onSubmit={handleEmailAuth} className="space-y-4">
-          
-          {mode === "signup" && (
             <div className="space-y-1.5">
               <label className="block text-xs font-semibold text-white/70">
-                Full Name
+                Corporate Email Address
               </label>
               <div className="relative">
-                <User className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
+                <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
                 <input
-                  type="text"
+                  type="email"
                   required
-                  placeholder="e.g. Alex Rivera"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 focus:border-blue-500 text-xs text-white pl-10 pr-3 py-2.5 rounded-xl outline-none transition-colors"
+                  placeholder="name@company.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                  className="w-full bg-white/5 border border-white/10 focus:border-cyan-500 text-xs text-white pl-10 pr-3 py-2.5 rounded-xl outline-none transition-colors"
                 />
               </div>
             </div>
-          )}
 
-          <div className="space-y-1.5">
-            <label className="block text-xs font-semibold text-white/70">
-              Work Email Address
-            </label>
-            <div className="relative">
-              <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
-              <input
-                type="email"
-                required
-                placeholder="alex.rivera@fifthlab.io"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 focus:border-blue-500 text-xs text-white pl-10 pr-3 py-2.5 rounded-xl outline-none transition-colors"
-              />
-            </div>
-          </div>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full py-3 px-4 bg-white/10 hover:bg-white/15 border border-white/15 text-xs font-semibold text-white rounded-full transition-all flex items-center justify-center gap-2.5 cursor-pointer shadow-lg hover:shadow-cyan-500/10 mt-3 disabled:opacity-50"
+            >
+              <svg className="w-4 h-4 shrink-0" viewBox="0 0 23 23">
+                <path fill="#f35325" d="M1 1h10v10H1z"/>
+                <path fill="#81bc06" d="M12 1h10v10H12z"/>
+                <path fill="#05a6f0" d="M1 12h10v10H1z"/>
+                <path fill="#ffba08" d="M12 12h10v10H12z"/>
+              </svg>
+              <span>
+                {isSubmitting
+                  ? "Dispatching Verification Code..."
+                  : mode === "signin"
+                  ? "Sign In with Work Email"
+                  : "Register with Work Email"}
+              </span>
+            </button>
+          </form>
+        )}
 
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <label className="block text-xs font-semibold text-white/70">
-                Password
+        {/* STEP 2: Enter 6-Digit OTP Code */}
+        {step === "otp" && (
+          <form onSubmit={handleVerifyOtp} className="space-y-5">
+            <div className="space-y-2 text-center">
+              <label className="block text-xs font-semibold text-white/70 text-left">
+                6-Digit Access Code
               </label>
-              {mode === "signin" && (
-                <a href="#" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">
-                  Forgot password?
-                </a>
-              )}
-            </div>
-            <div className="relative">
-              <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
               <input
-                type="password"
+                type="text"
                 required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 focus:border-blue-500 text-xs text-white pl-10 pr-3 py-2.5 rounded-xl outline-none transition-colors"
+                maxLength={6}
+                autoFocus
+                placeholder="123456"
+                value={otp}
+                onChange={(e) => setOtp(e.target.value)}
+                className="w-full bg-white/5 border-2 border-cyan-500/40 focus:border-cyan-400 text-xl font-mono text-center tracking-[10px] text-white py-3 rounded-xl outline-none transition-all"
               />
+              <p className="text-[11px] text-white/40 text-left font-light">
+                Code expires in 10 minutes. Check spam folder if not received.
+              </p>
             </div>
-          </div>
 
-          <button
-            type="submit"
-            className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-full transition-all shadow-lg hover:shadow-blue-500/25 flex items-center justify-center gap-2 cursor-pointer mt-2"
-          >
-            <span>{mode === "signin" ? "Sign In to Dashboard" : "Create & Enter Dashboard"}</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full py-3 px-4 bg-cyan-500 hover:bg-cyan-400 text-black text-xs font-bold rounded-full transition-all shadow-lg hover:shadow-cyan-500/25 flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+            >
+              <span>{isSubmitting ? "Validating Session..." : "Verify Code & Enter Command Hub"}</span>
+              <ArrowRight className="w-4 h-4" />
+            </button>
+
+            <div className="flex items-center justify-between pt-2 text-xs font-light">
+              <button
+                type="button"
+                onClick={() => { setStep("credentials"); setErrorMessage(null); }}
+                className="text-white/60 hover:text-white flex items-center gap-1 cursor-pointer"
+              >
+                <ArrowLeft className="w-3.5 h-3.5" /> Use different email
+              </button>
+
+              <button
+                type="button"
+                disabled={resendCooldown > 0 || isSubmitting}
+                onClick={handleResendOtp}
+                className={cn(
+                  "flex items-center gap-1 cursor-pointer transition-colors",
+                  resendCooldown > 0 ? "text-white/40 cursor-not-allowed" : "text-cyan-400 hover:text-cyan-300"
+                )}
+              >
+                <RefreshCw className={cn("w-3.5 h-3.5", isSubmitting && "animate-spin")} />
+                <span>{resendCooldown > 0 ? `Resend (${resendCooldown}s)` : "Resend code"}</span>
+              </button>
+            </div>
+          </form>
+        )}
 
         <div className="pt-2 text-center border-t border-white/5">
-          <p className="text-[11px] text-white/40 flex items-center justify-center gap-1">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Secured with 256-bit SSL Enterprise Encryption
+          <p className="text-[11px] text-white/40 flex items-center justify-center gap-1 font-light">
+            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Restrictive Corporate Access • The FifthLab Nigeria
           </p>
         </div>
 
