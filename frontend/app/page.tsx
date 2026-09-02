@@ -63,11 +63,6 @@ export default function Home() {
         <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:24px_24px] opacity-40 -z-10 pointer-events-none" />
 
         <div className="max-w-4xl mx-auto space-y-6 relative z-10 pb-8">
-          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-slate-200 bg-white/90 backdrop-blur-xs text-slate-700 text-xs font-semibold shadow-2xs">
-            <span className="w-2 h-2 rounded-full bg-[#0090AD] animate-pulse" />
-            <span>The FifthLab & CWG PLC Event Operations Suite</span>
-          </div>
-
           <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.12]">
             Building the Future of <br className="hidden sm:inline" />
             Integrated Event & Lead Operations.
@@ -103,7 +98,7 @@ export default function Home() {
       </section>
 
       {/* 2. Customer-Facing Dynamic Live Events Carousel */}
-      <section className="py-12 bg-slate-50/40 backdrop-blur-2xs border-t border-slate-200/60 relative z-10">
+      <section className="py-12 bg-slate-50/40 backdrop-blur-2xs border-t border-slate-200/60 relative z-10 w-full overflow-hidden">
         <LiveEventsCarousel 
           events={events} 
           onClaimPass={handleOpenPassModal} 
@@ -130,7 +125,7 @@ export default function Home() {
               <div className="space-y-4">
                 <div className="relative h-40 w-full rounded-2xl overflow-hidden bg-slate-100">
                   <Image
-                    src="/images/keynote_lagos.jpg"
+                    src="/images/auth/real_lagos_keynote.jpg"
                     alt="Event Discovery"
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
@@ -166,7 +161,7 @@ export default function Home() {
               <div className="space-y-4">
                 <div className="relative h-40 w-full rounded-2xl overflow-hidden bg-slate-100">
                   <Image
-                    src="/images/exhibition_hall.jpg"
+                    src="/images/auth/developer.jpg"
                     alt="Exhibition Hall"
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"

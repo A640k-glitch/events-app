@@ -68,7 +68,7 @@ interface AppContextType {
   user: AppUser | null;
   loginAs: (name?: string, email?: string, provider?: string) => Promise<void>;
   requestOtp: (email: string, name?: string) => Promise<{ success: boolean; message: string }>;
-  verifyOtpAndLogin: (email: string, otp: string) => Promise<void>;
+  verifyOtpAndLogin: (email: string, otp: string) => Promise<{ isFirstTime: boolean }>;
   updateUserProfile: (profileData: { name?: string; timezone?: string; workingHours?: string; avatarUrl?: string }) => Promise<void>;
   logout: () => void;
   refreshData: () => Promise<void>;
@@ -324,6 +324,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setUser(loggedUser);
       localStorage.setItem("fifthlab_user", JSON.stringify(loggedUser));
       await refreshData();
+      return { isFirstTime: Boolean(res.data?.isFirstTime) };
     } else {
       throw new Error(res.error || "Invalid or expired verification code.");
     }

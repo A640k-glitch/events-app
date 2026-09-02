@@ -61,14 +61,9 @@ export default function DashboardOverviewPage() {
           className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4"
         >
           <div className="space-y-1">
-            <div className="flex items-center gap-2.5">
-              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
-                Dashboard Overview
-              </h1>
-              <span className="px-2.5 py-0.5 rounded-full bg-[#0090AD] text-white text-[10px] font-bold font-mono tracking-wider shadow-xs">
-                LIVE
-              </span>
-            </div>
+            <h1 className="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900">
+              Dashboard Overview
+            </h1>
             <p className="text-xs sm:text-sm text-slate-600 font-medium max-w-2xl">
               Get an overview of your events, team attendance rosters, inbound attendee leads, and demo routing.
             </p>

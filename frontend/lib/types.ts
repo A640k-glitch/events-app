@@ -33,6 +33,7 @@ export interface FifthLabEvent {
 }
 
 export type Event = FifthLabEvent;
+export type EventItem = FifthLabEvent;
 
 export type LeadStatus = "Unread" | "Followed Up" | "Qualified" | "Converted" | "Closed";
 

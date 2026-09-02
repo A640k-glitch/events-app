@@ -99,12 +99,16 @@ export default function FifthEventsLogo({
     return <FifthEventsEmblem size={size} className={className} monochrome={isMono} />;
   }
 
+  const numSize = typeof size === "number" ? size : 32;
+  const titleStyle = numSize > 48 ? { fontSize: `${Math.round(numSize * 0.55)}px` } : undefined;
+  const subStyle = numSize > 48 ? { fontSize: `${Math.round(numSize * 0.22)}px` } : undefined;
+
   if (variant === "stacked") {
     return (
       <div className={cn("inline-flex flex-col items-center text-center gap-2 select-none", className)}>
         <FifthEventsEmblem size={typeof size === "number" ? size * 1.3 : size} monochrome={isMono} />
         <div className="flex flex-col items-center leading-none">
-          <span className="font-bold text-[19px] tracking-tight font-sans">
+          <span className="font-bold text-[19px] tracking-tight font-sans" style={titleStyle}>
             <span className={isMono ? "text-current" : theme === "dark" ? "text-[#00B4D8]" : "text-[#0090AD]"}>
               Fifth
             </span>
@@ -113,7 +117,10 @@ export default function FifthEventsLogo({
             </span>
           </span>
           {showSubtitle && (
-            <span className="text-[9px] uppercase font-mono tracking-widest text-[#8E8EA0] font-semibold mt-1">
+            <span 
+              className="text-[9px] uppercase font-mono tracking-widest text-[#8E8EA0] font-semibold mt-1"
+              style={subStyle}
+            >
               A FIFTHLAB PRODUCT
             </span>
           )}
@@ -128,7 +135,7 @@ export default function FifthEventsLogo({
       <FifthEventsEmblem size={size} monochrome={isMono} />
 
       <div className="flex flex-col text-left leading-none justify-center">
-        <span className="font-bold text-[19px] tracking-tight font-sans">
+        <span className="font-bold text-[19px] tracking-tight font-sans" style={titleStyle}>
           <span className={isMono ? "text-current" : theme === "dark" ? "text-[#00B4D8]" : "text-[#0090AD]"}>
             Fifth
           </span>
@@ -142,6 +149,7 @@ export default function FifthEventsLogo({
               "text-[9px] uppercase font-sans font-semibold tracking-wider mt-1",
               theme === "dark" ? "text-[#A3A3B2]" : "text-[#7C7C7C]"
             )}
+            style={subStyle}
           >
             A FIFTHLAB PRODUCT
           </span>

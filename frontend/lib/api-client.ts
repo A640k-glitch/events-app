@@ -60,7 +60,7 @@ export const api = {
   },
 
   verifyOtp: async (email: string, otp: string) => {
-    return request<{ success: boolean; message: string; data?: { token: string; user: any }; error?: string }>("/auth/verify-otp", {
+    return request<{ success: boolean; message: string; data?: { token: string; user: any; isFirstTime?: boolean }; error?: string }>("/auth/verify-otp", {
       method: "POST",
       body: JSON.stringify({ email, otp }),
     });

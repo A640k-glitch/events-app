@@ -140,14 +140,9 @@ export default function EventsPage() {
         {/* Header Title Bar Card */}
         <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-2.5">
-              <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">
-                Events & Attendance Operations
-              </h1>
-              <span className="text-[11px] text-[#0090AD] font-bold px-2.5 py-0.5 rounded-full bg-[#E8F8FA] border border-[#20B2AA]/20 font-mono">
-                {events.length} Published
-              </span>
-            </div>
+            <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+              Events & Attendance Operations
+            </h1>
             <p className="text-xs text-slate-500 font-medium mt-1">
               Internal staff attendance rosters, public attendee passes, and organizer proposals.
             </p>

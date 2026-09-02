@@ -8,6 +8,15 @@ import Footer from "@/components/layout/Footer";
 export default function LayoutShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isDashboard = pathname.startsWith("/dashboard");
+  const isAuth = pathname.startsWith("/login") || pathname.startsWith("/register");
+
+  if (isAuth) {
+    return (
+      <div className="h-screen w-screen overflow-hidden m-0 p-0 bg-white">
+        {children}
+      </div>
+    );
+  }
 
   if (isDashboard) {
     return (

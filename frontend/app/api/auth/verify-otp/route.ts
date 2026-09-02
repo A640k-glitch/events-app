@@ -25,7 +25,9 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: "Invalid or expired security code" }, { status: 401 });
     }
 
-    // Clear OTP
+    const isFirstTime = !user.lastLoginAt;
+
+    // Clear OTP & mark verified
     await sql`
       UPDATE users 
       SET "isVerified" = true, "otpCode" = NULL, "lastLoginAt" = NOW()
@@ -39,6 +41,7 @@ export async function POST(request: NextRequest) {
       message: "Authentication successful",
       data: {
         token,
+        isFirstTime,
         user: {
           id: user.id,
           name: user.name,

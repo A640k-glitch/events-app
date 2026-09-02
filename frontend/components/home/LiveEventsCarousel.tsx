@@ -1,42 +1,36 @@
 "use client";
 
-import React, { useRef, useState, useEffect } from "react";
-import Link from "next/link";
+import React, { useRef, useState } from "react";
 import Image from "next/image";
-import { motion } from "framer-motion";
 import { 
   Calendar, 
   MapPin, 
   Users, 
-  ArrowRight, 
   Ticket, 
-  Sparkles, 
   ChevronLeft, 
-  ChevronRight,
-  ShieldCheck
+  ChevronRight 
 } from "lucide-react";
-import { Event } from "@/lib/types";
-import { cn } from "@/lib/utils";
+import { EventItem } from "@/lib/types";
 
 interface LiveEventsCarouselProps {
-  events: Event[];
-  onClaimPass: (tier: "FREE_VISITOR" | "PRO_ORGANIZER" | "ENTERPRISE_PARTNER", eventId?: string) => void;
+  events: EventItem[];
+  onClaimPass: (passType: "FREE_VISITOR" | "PRO_ORGANIZER" | "ENTERPRISE_PARTNER", eventId?: string) => void;
 }
 
 const FALLBACK_IMAGES = [
-  "/images/keynote_lagos.jpg",
-  "/images/exhibition_hall.jpg",
+  "/images/auth/real_lagos_keynote.jpg",
+  "/images/auth/real_lagos_checkin.jpg",
+  "/images/auth/developer.jpg",
   "/images/vip_lounge.jpg",
-  "/images/qr_registration.jpg",
 ];
 
 export default function LiveEventsCarousel({ events, onClaimPass }: LiveEventsCarouselProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(true);
-  const [isHovered, setIsHovered] = useState(false);
+  const [, setIsHovered] = useState(false);
 
-  const checkScroll = () => {
+  const checkScrollability = () => {
     if (scrollContainerRef.current) {
       const { scrollLeft, scrollWidth, clientWidth } = scrollContainerRef.current;
       setCanScrollLeft(scrollLeft > 10);
@@ -44,36 +38,29 @@ export default function LiveEventsCarousel({ events, onClaimPass }: LiveEventsCa
     }
   };
 
-  useEffect(() => {
-    checkScroll();
-    const container = scrollContainerRef.current;
-    if (container) {
-      container.addEventListener("scroll", checkScroll);
-      return () => container.removeEventListener("scroll", checkScroll);
-    }
-  }, [events]);
-
   const scroll = (direction: "left" | "right") => {
     if (scrollContainerRef.current) {
-      const cardWidth = 360;
-      const scrollAmount = direction === "left" ? -cardWidth : cardWidth;
-      scrollContainerRef.current.scrollBy({ left: scrollAmount, behavior: "smooth" });
+      const scrollAmount = 380;
+      scrollContainerRef.current.scrollBy({ 
+        left: direction === "left" ? -scrollAmount : scrollAmount, 
+        behavior: "smooth" 
+      });
+      setTimeout(checkScrollability, 350);
     }
   };
 
   if (!events || events.length === 0) return null;
 
   return (
-    <div className="relative w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-10 font-sans">
+    <div className="relative w-full py-6 font-sans overflow-hidden">
       
-      {/* Header with Navigation Arrows */}
-      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-8">
+      {/* Header with Navigation Arrows - Full Width with edge padding */}
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 px-4 sm:px-8 lg:px-12 w-full">
         <div className="space-y-1.5 text-left">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-[#E8F8FA] border border-[#20B2AA]/30 text-[#00829B] text-xs font-mono font-bold">
-            <span className="w-2 h-2 rounded-full bg-[#20B2AA] animate-pulse" />
-            LIVE SUMMIT SCHEDULE • WAT (UTC+1)
+          <div className="text-xs font-mono font-bold text-[#0090AD] uppercase tracking-wider">
+            Live Summit Schedule • WAT (UTC+1)
           </div>
-          <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+          <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900">
             Featured Summits & Keynote Conferences
           </h2>
           <p className="text-sm text-slate-600 max-w-2xl">
@@ -103,12 +90,13 @@ export default function LiveEventsCarousel({ events, onClaimPass }: LiveEventsCa
         </div>
       </div>
 
-      {/* Horizontal Carousel Track */}
+      {/* Horizontal Carousel Track - Full Width Edge-to-Edge */}
       <div
         ref={scrollContainerRef}
+        onScroll={checkScrollability}
         onMouseEnter={() => setIsHovered(true)}
         onMouseLeave={() => setIsHovered(false)}
-        className="flex gap-6 overflow-x-auto no-scrollbar scroll-smooth pb-4 -mx-4 px-4 sm:mx-0 sm:px-0"
+        className="flex gap-6 overflow-x-auto no-scrollbar scroll-smooth pb-4 px-4 sm:px-8 lg:px-12 w-full"
       >
         {events.map((evt, idx) => {
           const imgSource = evt.imageUrl && evt.imageUrl.startsWith("/images/") 
@@ -129,18 +117,6 @@ export default function LiveEventsCarousel({ events, onClaimPass }: LiveEventsCa
                   sizes="(max-width: 768px) 300px, 350px"
                   className="object-cover group-hover:scale-105 transition-transform duration-500"
                 />
-                
-                {/* Category & Status Overlay */}
-                <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between pointer-events-none">
-                  <span className="px-2.5 py-1 rounded-full bg-slate-900/80 backdrop-blur-md text-white text-[10px] font-mono font-bold tracking-wider uppercase border border-white/20 shadow-xs">
-                    {evt.category}
-                  </span>
-
-                  <span className="px-2.5 py-1 rounded-full bg-emerald-600/90 backdrop-blur-md text-white text-[10px] font-mono font-bold shadow-xs flex items-center gap-1">
-                    <span className="w-1.5 h-1.5 rounded-full bg-white animate-pulse" />
-                    WAT LIVE
-                  </span>
-                </div>
 
                 {/* Bottom Image Gradient Fade */}
                 <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-black/60 to-transparent pointer-events-none flex items-end p-3.5">
@@ -159,7 +135,7 @@ export default function LiveEventsCarousel({ events, onClaimPass }: LiveEventsCa
                     <span>{evt.date} • {evt.time}</span>
                   </div>
 
-                  <h3 className="text-base font-bold text-slate-900 line-clamp-2 leading-snug group-hover:text-[#0090AD] transition-colors">
+                  <h3 className="text-base font-semibold text-slate-900 line-clamp-2 leading-snug group-hover:text-[#0090AD] transition-colors">
                     {evt.title}
                   </h3>
 
@@ -175,7 +151,7 @@ export default function LiveEventsCarousel({ events, onClaimPass }: LiveEventsCa
                     <span>{evt.expectedAttendance || 1200}+ RSVPs</span>
                   </div>
 
-                  <span className="text-[11px] font-bold text-emerald-700 bg-emerald-50 px-2.5 py-0.5 rounded-full border border-emerald-200">
+                  <span className="text-xs font-semibold text-emerald-600">
                     Passes Open
                   </span>
                 </div>
@@ -184,7 +160,7 @@ export default function LiveEventsCarousel({ events, onClaimPass }: LiveEventsCa
                 <div className="pt-1">
                   <button
                     onClick={() => onClaimPass("FREE_VISITOR", evt.id)}
-                    className="w-full py-2.5 px-4 rounded-xl bg-[#0090AD] hover:bg-[#007A94] text-white text-xs font-bold shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
+                    className="w-full py-2.5 px-4 rounded-xl bg-[#0090AD] hover:bg-[#007A94] text-white text-xs font-semibold shadow-xs transition-all flex items-center justify-center gap-2 cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
                   >
                     <Ticket className="w-3.5 h-3.5" />
                     <span>Claim Digital Pass</span>
