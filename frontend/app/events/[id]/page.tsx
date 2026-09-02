@@ -1,6 +1,7 @@
 "use client";
 
-import { use, useState } from "react";
+import { useState } from "react";
+import { useParams } from "next/navigation";
 import Link from "next/link";
 import { 
   Calendar, 
@@ -23,17 +24,14 @@ import { BrandButton } from "@/components/ui/BrandButtons";
 import RegisterPassModal from "@/components/modals/RegisterPassModal";
 import { cn } from "@/lib/utils";
 
-interface PageProps {
-  params: Promise<{ id: string }>;
-}
-
-export default function EventDetailPage({ params }: PageProps) {
-  const resolvedParams = use(params);
+export default function EventDetailPage() {
+  const params = useParams();
+  const eventId = typeof params?.id === "string" ? params.id : Array.isArray(params?.id) ? params.id[0] : "";
   const { events, user, toggleAttendance } = useApp();
   const [isPassModalOpen, setIsPassModalOpen] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
 
-  const event = events.find((e) => e.id === resolvedParams.id) || events[0];
+  const event = events.find((e) => e.id === eventId) || events[0];
 
   if (!event) {
     return (
