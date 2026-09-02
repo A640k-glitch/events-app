@@ -97,8 +97,8 @@ export default function LogoChargingLoader({
 
           {/* 1. Left Vertical Pillar (Charges with Indigo) */}
           <rect 
-            x="6" 
-            y="8" 
+            x="4.5" 
+            y="4.5" 
             width="7.5" 
             height="32" 
             rx="3.75" 
@@ -109,7 +109,7 @@ export default function LogoChargingLoader({
 
           {/* 2. Top 'F' Wing (Glowing Teal Charge) */}
           <path
-            d="M14 8H38C41.866 8 45 11.134 45 15C45 18.866 41.866 22 38 22H14V8Z"
+            d="M12.5 4.5H36.5C40.366 4.5 43.5 7.634 43.5 11.5C43.5 15.366 40.366 18.5 36.5 18.5H12.5V4.5Z"
             fill="#26B5BA"
             filter="url(#chargingGlow)"
           >
@@ -123,7 +123,7 @@ export default function LogoChargingLoader({
 
           {/* 3. Middle Crossbar (Royal Indigo Charge) */}
           <path
-            d="M14 20H32C35.3137 20 38 22.6863 38 26C38 29.3137 35.3137 32 32 32H14V20Z"
+            d="M12.5 16.5H30.5C33.8137 16.5 36.5 19.1863 36.5 22.5C36.5 25.8137 33.8137 28.5 30.5 28.5H12.5V16.5Z"
             fill="#382C84"
           >
             <animate
@@ -137,7 +137,7 @@ export default function LogoChargingLoader({
 
           {/* 4. Lower 'E' Wing (Mint Charge) */}
           <path
-            d="M14 33H35C38.866 33 42 36.134 42 40C42 43.866 38.866 47 35 47H14V33Z"
+            d="M12.5 29.5H33.5C37.366 29.5 40.5 32.634 40.5 36.5C40.5 40.366 37.366 43.5 33.5 43.5H12.5V29.5Z"
             fill="#2DD4BF"
             filter="url(#chargingGlow)"
           >
@@ -151,7 +151,7 @@ export default function LogoChargingLoader({
           </path>
 
           {/* 5. Modern Broadcast Pulse Dot */}
-          <circle cx="9.75" cy="43" r="3.75" fill="#7BC043">
+          <circle cx="8.25" cy="39.5" r="3.75" fill="#7BC043">
             <animate
               attributeName="r"
               values="3.2; 4.4; 3.2"
