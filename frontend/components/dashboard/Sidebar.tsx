@@ -132,7 +132,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
               ADMIN CONSOLE
             </span>
             <div className="pt-0.5">
-              <FifthEventsLogo size={22} theme="dark" showSubtitle={true} />
+              <FifthEventsLogo size={22} theme="dark" showSubtitle={false} />
             </div>
           </div>
 

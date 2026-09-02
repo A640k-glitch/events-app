@@ -9,10 +9,7 @@
   </g>
 
   <!-- Wordmark "FifthEvents" -->
-  <text x="60" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#111827" letter-spacing="-0.4px">
-    FifthEvents
-  </text>
-  <text x="61" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="8" font-weight="600" fill="#7C7C7C" letter-spacing="1px">
-    A FIFTHLAB PRODUCT
+  <text x="60" y="35" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" letter-spacing="-0.4px">
+    <tspan fill="#0090AD">Fifth</tspan><tspan fill="#1C1852">Events</tspan>
   </text>
 </svg>

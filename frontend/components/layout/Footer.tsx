@@ -47,7 +47,7 @@ export default function Footer() {
           {/* Column 1: Logo & Brief Description */}
           <div className="space-y-4">
             <Link href="/" className="inline-block">
-              <FifthEventsLogo theme="dark" size={32} />
+              <FifthEventsLogo theme="dark" size={32} showSubtitle={true} />
             </Link>
 
             <p className="text-xs text-[#A3A3B2]/80 leading-relaxed">
