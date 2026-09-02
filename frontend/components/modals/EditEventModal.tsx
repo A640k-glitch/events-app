@@ -1,15 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
-import { useApp } from "@/context/AppContext";
-import { EventCategory, EventPriority } from "@/lib/types";
-import { X, Calendar, Image as ImageIcon, Sparkles } from "lucide-react";
+import { EventCategory, EventPriority, FifthLabEvent } from "@/lib/types";
+import { X, Edit3, Image as ImageIcon, Sparkles } from "lucide-react";
 import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
+import { api } from "@/lib/api-client";
 
-interface AddEventModalProps {
+interface EditEventModalProps {
   isOpen: boolean;
   onClose: () => void;
+  event: FifthLabEvent | null;
+  onEventUpdated: () => void;
 }
 
 const PRESET_IMAGES = [
@@ -19,17 +21,16 @@ const PRESET_IMAGES = [
   { label: "Door Registration", url: "/images/qr_registration.jpg" },
 ];
 
-export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
+export default function EditEventModal({ isOpen, onClose, event, onEventUpdated }: EditEventModalProps) {
   useBodyScrollLock(isOpen);
 
-  const { addEvent } = useApp();
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState<EventCategory>("Summit");
   const [priority, setPriority] = useState<EventPriority>("High");
-  const [date, setDate] = useState("2026-09-15");
-  const [time, setTime] = useState("09:00 AM - 05:00 PM WAT");
+  const [date, setDate] = useState("");
+  const [time, setTime] = useState("");
   const [location, setLocation] = useState("");
-  const [city, setCity] = useState("Lagos");
+  const [city, setCity] = useState("");
   const [country, setCountry] = useState("Nigeria");
   const [description, setDescription] = useState("");
   const [boothNumber, setBoothNumber] = useState("");
@@ -38,17 +39,46 @@ export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
   const [customImage, setCustomImage] = useState("");
   const [isFeatured, setIsFeatured] = useState(true);
   const [isPublished, setIsPublished] = useState(true);
-  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-  if (!isOpen) return null;
+  useEffect(() => {
+    if (event) {
+      setTitle(event.title || "");
+      setCategory(event.category || "Summit");
+      setPriority(event.priority || "High");
+      
+      const parsedDate = new Date(event.date);
+      setDate(!isNaN(parsedDate.getTime()) ? parsedDate.toISOString().split("T")[0] : "2026-09-15");
+      
+      setTime(event.time || "09:00 AM - 05:00 PM WAT");
+      setLocation(event.location || "");
+      setCity(event.city || "Lagos");
+      setCountry(event.country || "Nigeria");
+      setDescription(event.description || "");
+      setBoothNumber(event.boothNumber || "");
+      setExpectedAttendance(event.expectedAttendance || 1500);
+      
+      const currentImg = event.imageUrl || "/images/keynote_lagos.jpg";
+      if (PRESET_IMAGES.some(p => p.url === currentImg)) {
+        setImageUrl(currentImg);
+        setCustomImage("");
+      } else {
+        setCustomImage(currentImg);
+      }
+      setIsFeatured(true);
+      setIsPublished(true);
+    }
+  }, [event]);
+
+  if (!isOpen || !event) return null;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      setIsSubmitting(true);
+      setIsSaving(true);
       const finalImage = customImage.trim() ? customImage.trim() : imageUrl;
 
-      await addEvent({
+      await api.updateEvent(event.id, {
         title,
         category,
         priority,
@@ -61,16 +91,17 @@ export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
         strategicNotes: description,
         boothNumber,
         expectedAttendance: Number(expectedAttendance) || 1000,
-        isFifthLabAttending: true,
         imageUrl: finalImage,
         isFeatured,
         isPublished,
-      } as any);
+      });
+
+      onEventUpdated();
       onClose();
     } catch (err) {
-      console.error("Failed to add event:", err);
+      console.error("Failed to update event:", err);
     } finally {
-      setIsSubmitting(false);
+      setIsSaving(false);
     }
   };
 
@@ -86,10 +117,10 @@ export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
         <div className="flex items-center justify-between border-b border-gray-100 pb-3">
           <div>
             <h2 className="text-base font-bold text-[#111827] tracking-tight flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-[#0090AD]" /> Publish New Event Schedule
+              <Edit3 className="w-4 h-4 text-[#0090AD]" /> Edit Summit & Carousel Details
             </h2>
             <p className="text-xs text-[#6B7280] mt-0.5">
-              Updates homepage spotlight carousel, visitor pass tiers, and staff attendance rosters.
+              Updates will synchronize across the homepage carousel, digital door badges, and event rosters.
             </p>
           </div>
           <button type="button" onClick={onClose} className="p-1.5 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-100 cursor-pointer">
@@ -103,7 +134,6 @@ export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
             <input
               type="text"
               required
-              placeholder="e.g. West Africa Digital Banking Summit 2026"
               value={title}
               onChange={(e) => setTitle(e.target.value)}
               className="w-full bg-white border border-gray-200 rounded-xl p-2.5 text-[#111827] focus:outline-none focus:border-[#0090AD]"
@@ -117,7 +147,7 @@ export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
                 <ImageIcon className="w-3.5 h-3.5 text-[#0090AD]" />
                 <span>Carousel Cover Image</span>
               </label>
-              <span className="text-[10px] text-slate-500">Appears on Homepage Carousel</span>
+              <span className="text-[10px] text-slate-500">Live on Homepage Spotlight Carousel</span>
             </div>
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
@@ -269,12 +299,12 @@ export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
             <div className="flex items-center gap-2 pt-5">
               <input
                 type="checkbox"
-                id="isFeatured"
+                id="editIsFeatured"
                 checked={isFeatured}
                 onChange={(e) => setIsFeatured(e.target.checked)}
                 className="w-4 h-4 text-[#0090AD] rounded border-gray-300 focus:ring-[#0090AD]"
               />
-              <label htmlFor="isFeatured" className="font-semibold text-gray-800 text-[11px] cursor-pointer flex items-center gap-1">
+              <label htmlFor="editIsFeatured" className="font-semibold text-gray-800 text-[11px] cursor-pointer flex items-center gap-1">
                 <Sparkles className="w-3.5 h-3.5 text-amber-500" />
                 <span>Feature in Carousel</span>
               </label>
@@ -283,12 +313,12 @@ export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
             <div className="flex items-center gap-2 pt-5">
               <input
                 type="checkbox"
-                id="isPublished"
+                id="editIsPublished"
                 checked={isPublished}
                 onChange={(e) => setIsPublished(e.target.checked)}
                 className="w-4 h-4 text-[#0090AD] rounded border-gray-300 focus:ring-[#0090AD]"
               />
-              <label htmlFor="isPublished" className="font-semibold text-gray-800 text-[11px] cursor-pointer">
+              <label htmlFor="editIsPublished" className="font-semibold text-gray-800 text-[11px] cursor-pointer">
                 <span>Publish Live</span>
               </label>
             </div>
@@ -298,7 +328,6 @@ export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
             <label className="font-semibold text-gray-700">Event Overview & Strategic Goals</label>
             <textarea
               rows={3}
-              placeholder="Enter details on focus areas, keynote panels, and products showcased..."
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               className="w-full bg-white border border-gray-200 rounded-xl p-2.5 text-[#111827] focus:outline-none focus:border-[#0090AD] resize-none"
@@ -316,10 +345,10 @@ export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
 
             <button
               type="submit"
-              disabled={isSubmitting}
+              disabled={isSaving}
               className="px-5 py-2 bg-[#0090AD] hover:bg-[#007A94] text-white font-semibold rounded-xl shadow-xs disabled:opacity-50 cursor-pointer"
             >
-              {isSubmitting ? "Publishing..." : "Publish Event Record"}
+              {isSaving ? "Saving..." : "Save Changes"}
             </button>
           </div>
         </form>

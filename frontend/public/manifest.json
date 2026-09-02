@@ -1,0 +1,28 @@
+{
+  "name": "FifthEvents — Enterprise Event & Lead Platform",
+  "short_name": "FifthEvents",
+  "description": "Enterprise event discovery, staff attendance manifests, and visitor lead acquisition for The FifthLab Nigeria & CWG PLC.",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0B0D13",
+  "theme_color": "#0090AD",
+  "icons": [
+    {
+      "src": "/fifth-events-logo.png",
+      "sizes": "192x192",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/fifth-events-logo.png",
+      "sizes": "512x512",
+      "type": "image/png",
+      "purpose": "any maskable"
+    },
+    {
+      "src": "/brand/fifthevents-emblem.svg",
+      "sizes": "any",
+      "type": "image/svg+xml"
+    }
+  ]
+}

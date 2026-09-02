@@ -4,11 +4,13 @@ import { useState, useEffect, useCallback } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { useApp } from "@/context/AppContext";
 import AddEventModal from "@/components/modals/AddEventModal";
+import EditEventModal from "@/components/modals/EditEventModal";
 import { 
   MapPin, 
   Plus, 
   Search, 
   Trash2, 
+  Edit3,
   Download, 
   QrCode,
   Loader2
@@ -18,10 +20,12 @@ import { api } from "@/lib/api-client";
 import LogoChargingLoader from "@/components/brand/LogoChargingLoader";
 
 export default function EventsPage() {
-  const { events, deleteEvent, pitches, approvePitch, declinePitch } = useApp();
+  const { events, deleteEvent, pitches, approvePitch, declinePitch, refreshData } = useApp();
   const [selectedEventId, setSelectedEventId] = useState<string>(events[0]?.id || "");
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
+  const [editingEvent, setEditingEvent] = useState<any>(null);
   const [viewTab, setViewTab] = useState<"CATALOG" | "ATTENDEES_ROSTER" | "PITCHES">("CATALOG");
 
   const [attendeeRoster, setAttendeeRoster] = useState<any[]>([]);
@@ -237,16 +241,30 @@ export default function EventsPage() {
                         <p className="text-xs text-[#6B7280] line-clamp-2">{evt.description}</p>
                       </div>
 
-                      <button
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          deleteEvent(evt.id);
-                        }}
-                        title="Delete Event"
-                        className="p-1.5 text-gray-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
+                      <div className="flex items-center gap-1">
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setEditingEvent(evt);
+                            setIsEditModalOpen(true);
+                          }}
+                          title="Edit Event & Carousel Fields"
+                          className="p-1.5 text-gray-400 hover:text-[#0090AD] rounded-lg hover:bg-[#0090AD]/10 transition-colors cursor-pointer"
+                        >
+                          <Edit3 className="w-4 h-4" />
+                        </button>
+
+                        <button
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            deleteEvent(evt.id);
+                          }}
+                          title="Delete Event"
+                          className="p-1.5 text-gray-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer"
+                        >
+                          <Trash2 className="w-4 h-4" />
+                        </button>
+                      </div>
                     </div>
 
                     <div className="pt-2 border-t border-gray-100 flex items-center justify-between text-xs text-[#6B7280]">
@@ -465,6 +483,13 @@ export default function EventsPage() {
         <AddEventModal
           isOpen={isAddModalOpen}
           onClose={() => setIsAddModalOpen(false)}
+        />
+
+        <EditEventModal
+          isOpen={isEditModalOpen}
+          onClose={() => setIsEditModalOpen(false)}
+          event={editingEvent}
+          onEventUpdated={refreshData}
         />
 
       </div>

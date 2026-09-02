@@ -10,14 +10,15 @@ export const metadata: Metadata = {
     template: "%s | FifthEvents",
   },
   description: "Enterprise event discovery, staff attendance manifests, and visitor lead acquisition for The FifthLab Nigeria & CWG PLC.",
+  manifest: "/manifest.json",
   icons: {
     icon: [
       { url: "/brand/fifthevents-emblem.svg", type: "image/svg+xml" },
-      { url: "/icon.jpg", type: "image/jpeg" },
+      { url: "/apple-touch-icon.png", type: "image/png" },
     ],
-    shortcut: "/brand/fifthevents-emblem.svg",
+    shortcut: "/apple-touch-icon.png",
     apple: [
-      { url: "/brand/fifthevents-emblem.svg", sizes: "180x180", type: "image/svg+xml" },
+      { url: "/apple-touch-icon.png", sizes: "180x180", type: "image/png" },
     ],
   },
   openGraph: {

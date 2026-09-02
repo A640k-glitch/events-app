@@ -17,15 +17,16 @@ import {
   ChevronRight
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { useApp } from "@/context/AppContext";
 
-const SPOTLIGHT_SLIDES = [
+const FALLBACK_SLIDES = [
   {
     id: "keynote",
     title: "West Africa Digital Banking Summit 2026",
     tagline: "Keynote Indexing • WAT Synchronized",
     description: "Multi-track fintech keynote indexed with real-time door badge scanning and 1-on-1 executive demo routing across Lagos & Abuja.",
     image: "/images/keynote_lagos.jpg",
-    city: "Lagos, Nigeria",
+    city: "Eko Convention Centre, Lagos",
     date: "Sept 15, 2026",
     badge: "2,500+ RSVPs",
     category: "Banking Keynote",
@@ -37,9 +38,9 @@ const SPOTLIGHT_SLIDES = [
     tagline: "Live Booth Acquisition & CRM Sync",
     description: "Direct booth visitor lead capture with instant CRM routing to engineering specialists for Bulkwave, Finedge, and SMERP.",
     image: "/images/exhibition_hall.jpg",
-    city: "Abuja, Nigeria",
+    city: "Landmark Event Centre, Lagos",
     date: "Sept 24, 2026",
-    badge: "48 Qualified Leads",
+    badge: "1,800+ RSVPs",
     category: "Expo Pavilion",
     accentColor: "#2563EB",
   },
@@ -49,7 +50,7 @@ const SPOTLIGHT_SLIDES = [
     tagline: "VIP Access & Cross-Border Briefings",
     description: "Private executive lounges and strategic briefings with unified attendee credentials and encrypted NDPR compliance.",
     image: "/images/vip_lounge.jpg",
-    city: "Nairobi, Kenya",
+    city: "Villa Rosa Kempinski, Nairobi",
     date: "Oct 08, 2026",
     badge: "Executive Tier",
     category: "VIP Roundtable",
@@ -57,32 +58,49 @@ const SPOTLIGHT_SLIDES = [
   },
   {
     id: "doorpass",
-    title: "Sub-Second Digital Pass Verification Desk",
-    tagline: "0.8s Door Scan • Cryptographic QR Passes",
-    description: "Automated door check-in desk eliminating venue queues with live operations manifest synchronization.",
+    title: "Africa Cloud Architecture & DevOps Conference",
+    tagline: "WAT Synchronized • 0.8s Door Verification",
+    description: "High-throughput cloud architecture, microservices scaling, and cryptographic QR access badge engineering.",
     image: "/images/qr_registration.jpg",
-    city: "Accra, Ghana",
+    city: "Transcorp Hilton, Abuja",
     date: "Oct 22, 2026",
-    badge: "98.4% Verified",
-    category: "Pass Desk",
+    badge: "1,200+ RSVPs",
+    category: "Cloud Summit",
     accentColor: "#059669",
   },
 ];
 
 export default function HeroSpotlightCarousel() {
+  const { events } = useApp();
   const [currentSlide, setCurrentSlide] = useState(0);
   const [isPaused, setIsPaused] = useState(false);
-  const total = SPOTLIGHT_SLIDES.length;
+
+  const slides = (events && events.length > 0)
+    ? events.map((evt, idx) => ({
+        id: evt.id,
+        title: evt.title,
+        tagline: `${evt.category} • WAT Synchronized`,
+        description: evt.description,
+        image: evt.imageUrl && evt.imageUrl.startsWith("/") ? evt.imageUrl : (evt.imageUrl || FALLBACK_SLIDES[idx % FALLBACK_SLIDES.length].image),
+        city: `${evt.location}, ${evt.city}`,
+        date: evt.date,
+        badge: `${evt.expectedAttendance || 1200}+ RSVPs`,
+        category: evt.category,
+        accentColor: FALLBACK_SLIDES[idx % FALLBACK_SLIDES.length].accentColor,
+      }))
+    : FALLBACK_SLIDES;
+
+  const total = slides.length;
 
   useEffect(() => {
-    if (isPaused) return;
+    if (isPaused || total <= 1) return;
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev + 1) % total);
     }, 4500);
     return () => clearInterval(timer);
   }, [isPaused, total]);
 
-  const slide = SPOTLIGHT_SLIDES[currentSlide];
+  const slide = slides[currentSlide % total] || slides[0];
 
   return (
     <div 
@@ -99,7 +117,7 @@ export default function HeroSpotlightCarousel() {
               <span className="px-3 py-1 rounded-full bg-[#E8F8FA] border border-[#20B2AA]/30 text-[#00829B] text-[11px] font-mono font-bold">
                 {slide.category}
               </span>
-              <span className="text-[11px] font-mono text-slate-500 font-semibold">
+              <span className="text-[11px] font-mono text-slate-500 font-semibold truncate max-w-[200px]">
                 {slide.city}
               </span>
             </div>
@@ -128,32 +146,32 @@ export default function HeroSpotlightCarousel() {
             {/* Pagination Controls */}
             <div className="flex items-center justify-between pt-1">
               <div className="flex items-center gap-2">
-                {SPOTLIGHT_SLIDES.map((_, i) => (
+                {slides.map((_, i) => (
                   <button
                     key={i}
                     onClick={() => setCurrentSlide(i)}
                     className={cn(
                       "h-2 rounded-full transition-all cursor-pointer",
-                      i === currentSlide
+                      i === (currentSlide % total)
                         ? "w-7 bg-[#0090AD]"
                         : "w-2 bg-slate-300 hover:bg-slate-400"
                     )}
-                    aria-label={`Slide ${i + 1}`}
+                    aria-label={`Go to slide ${i + 1}`}
                   />
                 ))}
               </div>
 
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-1">
                 <button
                   onClick={() => setCurrentSlide((prev) => (prev - 1 + total) % total)}
-                  className="p-2 rounded-full bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 shadow-2xs transition-colors cursor-pointer"
+                  className="p-1.5 rounded-full hover:bg-slate-100 text-slate-600 cursor-pointer"
                   aria-label="Previous slide"
                 >
                   <ChevronLeft className="w-4 h-4" />
                 </button>
                 <button
                   onClick={() => setCurrentSlide((prev) => (prev + 1) % total)}
-                  className="p-2 rounded-full bg-white border border-slate-200 text-slate-700 hover:bg-slate-100 shadow-2xs transition-colors cursor-pointer"
+                  className="p-1.5 rounded-full hover:bg-slate-100 text-slate-600 cursor-pointer"
                   aria-label="Next slide"
                 >
                   <ChevronRight className="w-4 h-4" />
@@ -163,15 +181,15 @@ export default function HeroSpotlightCarousel() {
           </div>
         </div>
 
-        {/* Right: Rich Natural-Lighting Photography with Overlays (7 cols) */}
-        <div className="lg:col-span-7 relative min-h-[220px] lg:min-h-[380px] overflow-hidden bg-slate-900">
+        {/* Right: Rich Visual Hero Pane (7 cols) */}
+        <div className="lg:col-span-7 relative h-64 sm:h-80 lg:h-auto overflow-hidden bg-slate-900">
           <AnimatePresence mode="wait">
             <motion.div
-              key={slide.id}
+              key={slide.id || currentSlide}
               initial={{ opacity: 0, scale: 1.05 }}
               animate={{ opacity: 1, scale: 1 }}
               exit={{ opacity: 0 }}
-              transition={{ duration: 0.5, ease: "easeOut" }}
+              transition={{ duration: 0.5 }}
               className="absolute inset-0"
             >
               <Image
@@ -182,18 +200,38 @@ export default function HeroSpotlightCarousel() {
                 sizes="(max-width: 1024px) 100vw, 60vw"
                 className="object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-black/10 pointer-events-none" />
-              
-              {/* Bottom Live Tag on Image */}
-              <div className="absolute bottom-4 left-4 right-4 flex items-center justify-between text-white pointer-events-none">
-                <div className="flex items-center gap-2 text-xs font-semibold bg-black/50 backdrop-blur-md px-3 py-1.5 rounded-full border border-white/20">
-                  <MapPin className="w-3.5 h-3.5 text-[#20B2AA]" />
-                  <span>{slide.city}</span>
+
+              {/* Natural Lighting & Atmospheric Gradient Overlays */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/30 to-transparent" />
+              <div className="absolute inset-0 bg-gradient-to-r from-black/40 via-transparent to-transparent hidden lg:block" />
+
+              {/* Live Badge Overlays */}
+              <div className="absolute top-4 right-4 flex items-center gap-2">
+                <div className="px-3 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/20 text-white text-xs font-mono font-bold flex items-center gap-1.5 shadow-lg">
+                  <span className="w-2 h-2 rounded-full bg-[#00B4D8] animate-pulse" />
+                  <span>WAT SYNCHRONIZED</span>
+                </div>
+              </div>
+
+              {/* Card Bottom Tagline */}
+              <div className="absolute bottom-4 left-4 right-4 p-4 rounded-2xl bg-black/40 backdrop-blur-md border border-white/10 text-white flex items-center justify-between">
+                <div className="space-y-0.5">
+                  <span className="text-[10px] text-slate-300 font-mono uppercase tracking-wider">
+                    OPERATIONAL FOCUS
+                  </span>
+                  <div className="text-xs font-bold text-white flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-[#00B4D8]" />
+                    <span>{slide.tagline}</span>
+                  </div>
                 </div>
 
-                <span className="text-[11px] font-mono font-bold bg-[#0090AD] px-3 py-1 rounded-full text-white shadow-xs">
-                  {slide.tagline}
-                </span>
+                <Link
+                  href="/events"
+                  className="px-3.5 py-1.5 rounded-xl bg-white/20 hover:bg-white/30 text-white text-xs font-semibold backdrop-blur-md transition-all flex items-center gap-1"
+                >
+                  <span>Details</span>
+                  <ArrowRight className="w-3 h-3" />
+                </Link>
               </div>
             </motion.div>
           </AnimatePresence>

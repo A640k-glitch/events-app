@@ -27,7 +27,7 @@ interface AWSHeaderProps {
 }
 
 export default function AWSHeader({ onMenuToggle }: AWSHeaderProps) {
-  const { currentRegion, setRegion, notifications, markNotificationAsRead, clearNotifications, setCommandPaletteOpen } = useApp();
+  const { currentRegion, setRegion, notifications, markNotificationAsRead, clearNotifications, setCommandPaletteOpen, user, logout } = useApp();
   const [isRegionDropdownOpen, setRegionDropdownOpen] = useState(false);
   const [isServicesOpen, setServicesOpen] = useState(false);
   const [isNotifOpen, setNotifOpen] = useState(false);
@@ -238,31 +238,46 @@ export default function AWSHeader({ onMenuToggle }: AWSHeaderProps) {
 
         {/* AWS User Account & IAM Role Selector */}
         <div className="relative">
-          <button
-            onClick={() => setAccountOpen(!isAccountOpen)}
-            className="flex items-center gap-1.5 px-2 py-1 hover:bg-[#232f3e] hover:text-white rounded-xs border border-transparent hover:border-[#3c4e66] transition-all text-[11px]"
-          >
-            <span className="text-[#ff9900] font-bold">Alex Rivera</span>
-            <span className="text-[#7d8f9e] hidden xl:inline">@ 9842-1049-3321</span>
-            <ChevronDown className="w-3 h-3" />
-          </button>
+          {user ? (
+            <button
+              onClick={() => setAccountOpen(!isAccountOpen)}
+              className="flex items-center gap-1.5 px-2 py-1 hover:bg-[#232f3e] hover:text-white rounded-xs border border-transparent hover:border-[#3c4e66] transition-all text-[11px]"
+            >
+              <span className="text-[#ff9900] font-bold">{user.name || "FifthLab Staff"}</span>
+              <span className="text-[#7d8f9e] hidden xl:inline">({user.role || "Staff"})</span>
+              <ChevronDown className="w-3 h-3" />
+            </button>
+          ) : (
+            <Link
+              href="/login"
+              className="inline-flex items-center gap-1 px-3 py-1 bg-[#ff9900] hover:bg-[#ec8b00] text-black font-bold rounded-xs text-[11px] transition-all"
+            >
+              Sign In to Console
+            </Link>
+          )}
 
-          {isAccountOpen && (
+          {isAccountOpen && user && (
             <div className="absolute right-0 top-full mt-1 w-64 bg-[#1b2537] border border-[#29364d] shadow-2xl rounded-xs p-3 z-50 space-y-3 text-xs">
               <div className="space-y-1 border-b border-[#29364d] pb-2">
-                <span className="text-[10px] text-[#7d8f9e] uppercase">AWS Account Info</span>
-                <p className="text-white font-bold">Alex Rivera (Staff Architect)</p>
-                <p className="text-[10px] text-[#aab7c4]">Account ID: 9842-1049-3321</p>
-                <p className="text-[10px] text-[#30d158]">Role: AdministratorAccess / Nexus-Master</p>
+                <span className="text-[10px] text-[#7d8f9e] uppercase">Authenticated Identity</span>
+                <p className="text-white font-bold">{user.name}</p>
+                <p className="text-[10px] text-[#aab7c4] truncate">{user.email}</p>
+                <p className="text-[10px] text-[#30d158]">Role: {user.role || "Staff Operator"}</p>
               </div>
 
               <div className="space-y-1 text-[11px]">
                 <Link href="/dashboard/settings" onClick={() => setAccountOpen(false)} className="block p-1.5 hover:bg-[#29364d] text-white rounded-xs">
                   Account Settings
                 </Link>
-                <Link href="/login" onClick={() => setAccountOpen(false)} className="block p-1.5 hover:bg-[#29364d] text-[#ff453a] rounded-xs">
+                <button 
+                  onClick={() => {
+                    setAccountOpen(false);
+                    logout();
+                  }} 
+                  className="w-full text-left block p-1.5 hover:bg-[#29364d] text-[#ff453a] rounded-xs cursor-pointer"
+                >
                   Sign Out of Console
-                </Link>
+                </button>
               </div>
             </div>
           )}
