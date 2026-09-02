@@ -12,12 +12,6 @@ export default function SettingsPage() {
   const [saved, setSaved] = useState(false);
   const [isSaving, setIsSaving] = useState(false);
 
-  useEffect(() => {
-    if (user?.name) {
-      setDisplayName(user.name);
-    }
-  }, [user?.name]);
-
   const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
