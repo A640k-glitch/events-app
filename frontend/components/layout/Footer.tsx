@@ -42,12 +42,7 @@ export default function Footer() {
   };
 
   return (
-    <footer className="bg-[#000000] text-[#A3A3B2] border-t border-white/[0.08] font-sans text-left relative overflow-hidden">
-      {/* Ambient Footer Colored Logo Watermark */}
-      <div className="absolute -bottom-16 -right-16 pointer-events-none -z-0 opacity-[0.14] select-none rotate-[-6deg] filter drop-shadow-[0_20px_40px_rgba(0,144,173,0.3)]">
-        <FifthEventsEmblem size={440} monochrome={false} />
-      </div>
-
+    <footer className="bg-[#0B0D13]/80 backdrop-blur-md text-[#A3A3B2] border-t border-white/[0.08] font-sans text-left relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pt-16 pb-12 space-y-12 relative z-10">
         
         {/* 4-Column Layout */}
