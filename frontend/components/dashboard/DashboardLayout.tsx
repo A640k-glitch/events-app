@@ -20,7 +20,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   useEffect(() => {
     if (user === null) {
-      router.push("/login");
+      router.push("/");
     }
   }, [user, router]);
 

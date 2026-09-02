@@ -346,7 +346,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     clearAuthToken();
     setUser(null);
     localStorage.removeItem("fifthlab_user");
-    router.push("/login");
+    router.push("/");
   };
 
   const updateUserProfile = async (profileData: { name?: string; timezone?: string; workingHours?: string; avatarUrl?: string }) => {
