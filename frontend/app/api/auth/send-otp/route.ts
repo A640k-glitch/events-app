@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
+import { sendOtpVerificationEmail } from "@/lib/email";
 
 // POST /api/auth/send-otp
 export async function POST(request: NextRequest) {
@@ -17,6 +18,8 @@ export async function POST(request: NextRequest) {
 
     const [existing] = await sql`SELECT * FROM users WHERE email = ${cleanEmail}`;
 
+    const defaultName = name?.trim() || cleanEmail.split("@")[0].replace(/[._]/g, " ");
+
     if (existing) {
       await sql`
         UPDATE users 
@@ -25,7 +28,6 @@ export async function POST(request: NextRequest) {
       `;
     } else {
       const id = `usr-${Date.now()}`;
-      const defaultName = name?.trim() || cleanEmail.split("@")[0].replace(/[._]/g, " ");
       await sql`
         INSERT INTO users (
           id, name, email, role, "otpCode", "otpExpiresAt", "otpLastSentAt", "createdAt", "updatedAt"
@@ -35,12 +37,23 @@ export async function POST(request: NextRequest) {
       `;
     }
 
-    // In production, dispatch SMTP if available, or return demo code
-    console.log(`[AUTH] Dispatched OTP code ${otp} to ${cleanEmail}`);
+    const recipientName = existing?.name || defaultName;
+
+    // Dispatch real email via Nodemailer (Gmail / SMTP)
+    const emailResult = await sendOtpVerificationEmail({
+      to: cleanEmail,
+      recipientName,
+      otpCode: otp,
+      expiresInMinutes: 10,
+    });
+
+    if (emailResult.simulated) {
+      console.warn(`[AUTH] ⚠️ Running in simulation mode (no SMTP configured). Generated OTP for ${cleanEmail}: ${otp}`);
+    }
 
     return NextResponse.json({
       success: true,
-      message: `Security passcode dispatched to ${cleanEmail}. (Code: ${otp})`,
+      message: `Security passcode dispatched to ${cleanEmail}.`,
       expiresInMinutes: 10,
     });
   } catch (error: any) {
