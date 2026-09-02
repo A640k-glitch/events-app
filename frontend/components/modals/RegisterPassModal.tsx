@@ -7,6 +7,7 @@ import { useApp } from "@/context/AppContext";
 import TicketPassModal, { TicketPassData } from "./TicketPassModal";
 import { BrandButton } from "@/components/ui/BrandButtons";
 import { cn } from "@/lib/utils";
+import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 
 interface RegisterPassModalProps {
   isOpen: boolean;
@@ -28,6 +29,9 @@ export default function RegisterPassModal(props: RegisterPassModalProps) {
     initialEventId,
     eventId: propEventId,
   } = props;
+
+  // Lock background scrolling when modal is open
+  useBodyScrollLock(isOpen);
 
   const { events } = useApp();
   const effectiveEventId = initialEventId || selectedEventId || propEventId || (events[0]?.id || "");

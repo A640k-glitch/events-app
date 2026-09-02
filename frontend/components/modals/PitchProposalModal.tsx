@@ -4,6 +4,7 @@ import { useState } from "react";
 import { X, Sparkles, Send, CheckCircle2, Building, Mail, Phone, Calendar, MapPin, Users } from "lucide-react";
 import { api } from "@/lib/api-client";
 import { useApp } from "@/context/AppContext";
+import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 
 interface PitchProposalModalProps {
   isOpen: boolean;
@@ -11,6 +12,9 @@ interface PitchProposalModalProps {
 }
 
 export default function PitchProposalModal({ isOpen, onClose }: PitchProposalModalProps) {
+  // Lock background scroll when modal is open
+  useBodyScrollLock(isOpen);
+
   const { refreshData } = useApp();
 
   const [organizerName, setOrganizerName] = useState("");

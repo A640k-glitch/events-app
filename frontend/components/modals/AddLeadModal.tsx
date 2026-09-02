@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useApp } from "@/context/AppContext";
 import { LeadStatus } from "@/lib/types";
 import { X, UserPlus, ArrowRight } from "lucide-react";
+import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 
 interface AddLeadModalProps {
   isOpen: boolean;
@@ -11,6 +12,9 @@ interface AddLeadModalProps {
 }
 
 export default function AddLeadModal({ isOpen, onClose }: AddLeadModalProps) {
+  // Lock background scrolling when modal is open
+  useBodyScrollLock(isOpen);
+
   const { addLead, products, owners } = useApp();
   const [visitorName, setVisitorName] = useState("");
   const [company, setCompany] = useState("");

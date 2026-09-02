@@ -4,6 +4,7 @@ import { useState } from "react";
 import { useApp } from "@/context/AppContext";
 import { EventCategory, EventPriority } from "@/lib/types";
 import { X, Calendar } from "lucide-react";
+import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 
 interface AddEventModalProps {
   isOpen: boolean;
@@ -11,6 +12,9 @@ interface AddEventModalProps {
 }
 
 export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
+  // Lock background scrolling when modal is open
+  useBodyScrollLock(isOpen);
+
   const { addEvent } = useApp();
   const [title, setTitle] = useState("");
   const [category, setCategory] = useState<EventCategory>("Summit");

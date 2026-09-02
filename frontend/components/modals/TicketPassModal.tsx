@@ -2,6 +2,7 @@
 
 import { X, Download, CheckCircle2 } from "lucide-react";
 import { BrandButton } from "@/components/ui/BrandButtons";
+import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 
 export interface TicketPassData {
   visitorName: string;
@@ -26,6 +27,9 @@ interface TicketPassModalProps {
 }
 
 export default function TicketPassModal({ isOpen, onClose, ticket }: TicketPassModalProps) {
+  // Lock background scrolling when modal is open
+  useBodyScrollLock(isOpen && Boolean(ticket));
+
   if (!isOpen || !ticket) return null;
 
   const downloadBadge = () => {

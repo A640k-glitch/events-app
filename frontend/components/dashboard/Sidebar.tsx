@@ -16,6 +16,7 @@ import {
 import { cn } from "@/lib/utils";
 import { useApp } from "@/context/AppContext";
 import FifthEventsLogo, { FifthEventsEmblem } from "@/components/brand/FifthEventsLogo";
+import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -23,6 +24,9 @@ interface SidebarProps {
 }
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
+  // Lock background scroll when mobile sidebar drawer is open
+  useBodyScrollLock(Boolean(isOpen));
+
   const pathname = usePathname();
   const { user, logout, stats } = useApp();
 

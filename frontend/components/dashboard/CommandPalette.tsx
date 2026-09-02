@@ -4,9 +4,14 @@ import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/context/AppContext";
 import { Search, CalendarDays, Users, Layers, X, ArrowRight } from "lucide-react";
+import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 
 export default function CommandPalette() {
   const { isCommandPaletteOpen, setCommandPaletteOpen, events, leads, products } = useApp();
+
+  // Lock background scroll when command palette is open
+  useBodyScrollLock(isCommandPaletteOpen);
+
   const [query, setQuery] = useState("");
   const router = useRouter();
 
