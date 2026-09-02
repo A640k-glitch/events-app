@@ -1,0 +1,18 @@
+<svg viewBox="0 0 240 56" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- FE Emblem (Positioned at Left) -->
+  <g transform="translate(4, 4)">
+    <rect x="6" y="8" width="7.5" height="32" rx="3.75" fill="#4B3FC4" />
+    <path d="M14 8H38C41.866 8 45 11.134 45 15C45 18.866 41.866 22 38 22H14V8Z" fill="#2ED4DC" />
+    <path d="M14 20H32C35.3137 20 38 22.6863 38 26C38 29.3137 35.3137 32 32 32H14V20Z" fill="#818CF8" />
+    <path d="M14 33H35C38.866 33 42 36.134 42 40C42 43.866 38.866 47 35 47H14V33Z" fill="#34D399" />
+    <circle cx="9.75" cy="43" r="3.75" fill="#A3E635" />
+  </g>
+
+  <!-- Wordmark "FifthEvents" -->
+  <text x="60" y="32" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="22" font-weight="700" fill="#FFFFFF" letter-spacing="-0.4px">
+    FifthEvents
+  </text>
+  <text x="61" y="44" font-family="-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif" font-size="8" font-weight="600" fill="#A3A3B2" letter-spacing="1px">
+    A FIFTHLAB PRODUCT
+  </text>
+</svg>

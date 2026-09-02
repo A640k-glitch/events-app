@@ -1,222 +1,211 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useApp } from "@/context/AppContext";
-import { Calendar, ArrowRight, Lock, Mail, ShieldCheck, User } from "lucide-react";
+import { ArrowRight, Mail, ShieldCheck, User, KeyRound, ArrowLeft, Lock, CheckCircle2 } from "lucide-react";
+import { BrandButton } from "@/components/ui/BrandButtons";
 import { cn } from "@/lib/utils";
+import FifthEventsLogo from "@/components/brand/FifthEventsLogo";
 
 export default function LoginPage() {
-  const router = useRouter();
-  const { loginAs } = useApp();
+  const { requestOtp, verifyOtpAndLogin, loginAs } = useApp();
 
-  const [mode, setMode] = useState<"signin" | "signup">("signin");
-  const [name, setName] = useState("Alex Rivera");
-  const [email, setEmail] = useState("alex.rivera@fifthlab.io");
-  const [password, setPassword] = useState("••••••••••••");
+  const [step, setStep] = useState<"EMAIL" | "OTP">("EMAIL");
+  const [email, setEmail] = useState("");
+  const [otpCode, setOtpCode] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [errorMessage, setErrorMessage] = useState("");
+  const [successMessage, setSuccessMessage] = useState("");
 
-  const handleEmailAuth = (e: React.FormEvent) => {
+  const handleSendOtp = async (e: React.FormEvent) => {
     e.preventDefault();
-    loginAs(name || "Alex Rivera", email, "Email");
-    router.push("/dashboard");
+    if (!email.trim()) return;
+
+    try {
+      setIsSubmitting(true);
+      setErrorMessage("");
+      const res = await requestOtp(email.trim().toLowerCase());
+      if (res.success) {
+        setSuccessMessage(res.message || "OTP code delivered to corporate inbox.");
+        setStep("OTP");
+      } else {
+        setErrorMessage("Failed to deliver OTP.");
+      }
+    } catch (err: unknown) {
+      setErrorMessage(err instanceof Error ? err.message : "Authentication error");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
-  const handleSsoLogin = (provider: string, defaultName: string, defaultEmail: string) => {
-    loginAs(defaultName, defaultEmail, provider);
-    router.push("/dashboard");
+  const handleVerifyOtp = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!otpCode.trim()) return;
+
+    try {
+      setIsSubmitting(true);
+      setErrorMessage("");
+      await verifyOtpAndLogin(email.trim().toLowerCase(), otpCode.trim());
+    } catch (err: unknown) {
+      setErrorMessage(err instanceof Error ? err.message : "Verification error");
+    } finally {
+      setIsSubmitting(false);
+    }
+  };
+
+  // Quick dev bypass
+  const handleQuickBypass = async (role: "ADMIN" | "STAFF") => {
+    try {
+      setIsSubmitting(true);
+      setErrorMessage("");
+      const name = role === "ADMIN" ? "System Admin" : "Akinwole Abraham";
+      const targetEmail = role === "ADMIN" ? "admin@thefifthlab.com" : "akinwole.a@thefifthlab.com";
+      await loginAs(name, targetEmail, "credentials");
+    } catch (err: unknown) {
+      setErrorMessage(err instanceof Error ? err.message : "Dev bypass failed");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   return (
-    <div className="min-h-[85vh] text-[#f5f5f7] flex flex-col justify-center items-center px-4 py-12 selection:bg-blue-600 selection:text-white font-sans">
+    <div className="min-h-screen bg-[#F9FAFB] flex flex-col justify-between font-sans text-left">
       
-      {/* Auth Card Container */}
-      <div className="w-full max-w-md rounded-2xl border border-white/10 bg-black/80 backdrop-blur-xl p-8 space-y-6 shadow-2xl relative overflow-hidden">
-        
-        {/* Glow backdrop accent */}
-        <div className="absolute -top-24 -right-24 w-48 h-48 bg-blue-600/20 rounded-full blur-3xl pointer-events-none" />
+      {/* Top Bar */}
+      <div className="p-6">
+        <Link href="/" className="inline-flex items-center gap-1.5 text-xs text-gray-500 hover:text-gray-900 transition-colors">
+          <ArrowLeft className="w-4 h-4" /> Back to Platform
+        </Link>
+      </div>
 
-        {/* Card Header */}
-        <div className="space-y-3 text-center">
-          <div className="w-12 h-12 mx-auto rounded-full bg-gradient-to-tr from-blue-600 to-indigo-500 p-0.5 flex items-center justify-center shadow-xl">
-            <div className="w-full h-full bg-black rounded-full flex items-center justify-center">
-              <Calendar className="w-6 h-6 text-blue-400" />
+      {/* Main Login Card */}
+      <div className="w-full max-w-md mx-auto px-4 py-8">
+        <div className="rounded-xl border border-gray-200 bg-white p-8 space-y-6 shadow-xs">
+          
+          {/* Logo & Heading */}
+          <div className="text-center space-y-3">
+            <div className="flex justify-center">
+              <FifthEventsLogo variant="stacked" size={38} theme="light" />
+            </div>
+            <div>
+              <h1 className="text-xl font-bold text-[#111827] tracking-tight">
+                FifthLab Operations Portal
+              </h1>
+              <p className="text-xs text-[#6B7280] mt-1">
+                Sign in with your corporate @thefifthlab.com credentials.
+              </p>
             </div>
           </div>
 
-          {/* Mode Switcher Tabs */}
-          <div className="flex bg-white/5 p-1 rounded-full border border-white/10 max-w-[240px] mx-auto text-xs font-semibold">
-            <button
-              onClick={() => setMode("signin")}
-              className={cn(
-                "flex-1 py-1.5 rounded-full transition-all cursor-pointer",
-                mode === "signin" ? "bg-blue-600 text-white shadow-md" : "text-white/60 hover:text-white"
-              )}
-            >
-              Sign In
-            </button>
-            <button
-              onClick={() => setMode("signup")}
-              className={cn(
-                "flex-1 py-1.5 rounded-full transition-all cursor-pointer",
-                mode === "signup" ? "bg-blue-600 text-white shadow-md" : "text-white/60 hover:text-white"
-              )}
-            >
-              Create Account
-            </button>
-          </div>
-
-          <h1 className="text-xl font-extrabold tracking-tight text-white pt-1">
-            {mode === "signin" ? "Sign In to FifthEvents" : "Create Enterprise Account"}
-          </h1>
-          <p className="text-xs text-white/60">
-            {mode === "signin"
-              ? "Access your event organizer console, ticket payouts & attendee lead data."
-              : "Register your organization to publish events, capture leads, and sync team calendars."}
-          </p>
-        </div>
-
-        {/* Enterprise SSO Buttons (Microsoft, Google, Teams, Outlook) */}
-        <div className="grid grid-cols-2 gap-2">
-          <button
-            type="button"
-            onClick={() => handleSsoLogin("Microsoft", "Alex Rivera (Microsoft)", "alex.rivera@microsoft.com")}
-            className="py-2.5 px-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] sm:text-xs font-semibold text-white rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
-          >
-            <svg className="w-4 h-4 shrink-0" viewBox="0 0 23 23">
-              <path fill="#f35325" d="M1 1h10v10H1z"/>
-              <path fill="#81bc06" d="M12 1h10v10H12z"/>
-              <path fill="#05a6f0" d="M1 12h10v10H1z"/>
-              <path fill="#ffba08" d="M12 12h10v10H12z"/>
-            </svg>
-            <span>Microsoft 365</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleSsoLogin("Google", "Alex Rivera (Google)", "alex.rivera@gmail.com")}
-            className="py-2.5 px-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] sm:text-xs font-semibold text-white rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
-          >
-            <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24">
-              <path fill="#4285F4" d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92c-.26 1.37-1.04 2.53-2.21 3.31v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.09z"/>
-              <path fill="#34A853" d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z"/>
-              <path fill="#FBBC05" d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.06H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.94l2.85-2.22.81-.63z"/>
-              <path fill="#EA4335" d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.06l3.66 2.84c.87-2.6 3.3-4.52 6.16-4.52z"/>
-            </svg>
-            <span>Google / Gmail</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleSsoLogin("Teams", "Alex Rivera (Teams)", "alex.rivera@teams.com")}
-            className="py-2.5 px-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] sm:text-xs font-semibold text-white rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
-          >
-            <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none">
-              <circle cx="17" cy="9" r="3" fill="#54579E" />
-              <path d="M12 17c0-2.2 1.8-4 4-4h2c2.2 0 4 1.8 4 4v1H12v-1z" fill="#54579E" />
-              <rect x="2" y="6" width="12" height="12" rx="2" fill="#464EB8" />
-              <path d="M5 9h6M8 9v6" stroke="white" strokeWidth="2" strokeLinecap="round" />
-            </svg>
-            <span>Microsoft Teams</span>
-          </button>
-
-          <button
-            type="button"
-            onClick={() => handleSsoLogin("Outlook", "Alex Rivera (Outlook)", "alex.rivera@outlook.com")}
-            className="py-2.5 px-2.5 bg-white/5 hover:bg-white/10 border border-white/10 text-[10px] sm:text-xs font-semibold text-white rounded-xl transition-all flex items-center justify-center gap-2 cursor-pointer shadow-sm"
-          >
-            <svg className="w-4 h-4 shrink-0" viewBox="0 0 24 24" fill="none">
-              <rect x="6" y="6" width="16" height="12" rx="2" fill="#0078D4" />
-              <path d="M6 8l8 5 8-5" stroke="white" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-              <rect x="2" y="8" width="8" height="8" rx="1.5" fill="#106EBE" />
-              <circle cx="6" cy="12" r="2.5" stroke="white" strokeWidth="1.5" fill="none" />
-            </svg>
-            <span>Outlook Mail</span>
-          </button>
-        </div>
-
-        <div className="flex items-center gap-3 text-[10px] text-white/40 uppercase font-mono">
-          <div className="flex-1 h-px bg-white/10" />
-          <span>or email authentication</span>
-          <div className="flex-1 h-px bg-white/10" />
-        </div>
-
-        {/* Credentials Form */}
-        <form onSubmit={handleEmailAuth} className="space-y-4">
-          
-          {mode === "signup" && (
-            <div className="space-y-1.5">
-              <label className="block text-xs font-semibold text-white/70">
-                Full Name
-              </label>
-              <div className="relative">
-                <User className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
-                <input
-                  type="text"
-                  required
-                  placeholder="e.g. Alex Rivera"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
-                  className="w-full bg-white/5 border border-white/10 focus:border-blue-500 text-xs text-white pl-10 pr-3 py-2.5 rounded-xl outline-none transition-colors"
-                />
-              </div>
+          {errorMessage && (
+            <div className="p-3 rounded-lg bg-rose-50 border border-rose-200 text-rose-700 text-xs">
+              {errorMessage}
             </div>
           )}
 
-          <div className="space-y-1.5">
-            <label className="block text-xs font-semibold text-white/70">
-              Work Email Address
-            </label>
-            <div className="relative">
-              <Mail className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
-              <input
-                type="email"
-                required
-                placeholder="alex.rivera@fifthlab.io"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 focus:border-blue-500 text-xs text-white pl-10 pr-3 py-2.5 rounded-xl outline-none transition-colors"
-              />
+          {successMessage && step === "OTP" && (
+            <div className="p-3 rounded-lg bg-emerald-50 border border-emerald-200 text-emerald-700 text-xs flex items-center gap-2">
+              <CheckCircle2 className="w-4 h-4 shrink-0" />
+              <span>{successMessage}</span>
+            </div>
+          )}
+
+          {step === "EMAIL" ? (
+            <form onSubmit={handleSendOtp} className="space-y-4 text-xs">
+              <div className="space-y-1.5">
+                <label className="font-medium text-gray-700">Work Email Address</label>
+                <div className="relative">
+                  <Mail className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="email"
+                    required
+                    placeholder="name@thefifthlab.com"
+                    value={email}
+                    onChange={(e) => setEmail(e.target.value)}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-lg pl-9 pr-3 py-2.5 text-xs text-[#111827] focus:outline-none focus:border-[#00B4D8] focus:bg-white"
+                  />
+                </div>
+              </div>
+
+              <BrandButton
+                type="submit"
+                variant="primary"
+                size="md"
+                className="w-full"
+                isLoading={isSubmitting}
+                rightIcon={<ArrowRight className="w-4 h-4" />}
+              >
+                Send One-Time Passcode
+              </BrandButton>
+            </form>
+          ) : (
+            <form onSubmit={handleVerifyOtp} className="space-y-4 text-xs">
+              <div className="space-y-1.5">
+                <label className="font-medium text-gray-700">6-Digit Verification Code</label>
+                <div className="relative">
+                  <KeyRound className="w-4 h-4 absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+                  <input
+                    type="text"
+                    required
+                    maxLength={6}
+                    placeholder="123456"
+                    value={otpCode}
+                    onChange={(e) => setOtpCode(e.target.value)}
+                    className="w-full bg-gray-50 border border-gray-200 rounded-lg pl-9 pr-3 py-2.5 text-center text-sm font-mono tracking-widest text-[#111827] focus:outline-none focus:border-[#00B4D8] focus:bg-white"
+                  />
+                </div>
+              </div>
+
+              <BrandButton
+                type="submit"
+                variant="primary"
+                size="md"
+                className="w-full"
+                isLoading={isSubmitting}
+              >
+                Verify & Enter Console
+              </BrandButton>
+
+              <button
+                type="button"
+                onClick={() => setStep("EMAIL")}
+                className="w-full text-center text-xs text-gray-500 hover:text-gray-900 cursor-pointer pt-1"
+              >
+                Use different email address
+              </button>
+            </form>
+          )}
+
+          {/* Dev Bypass Section */}
+          <div className="pt-4 border-t border-gray-100 space-y-2">
+            <span className="text-[10px] font-mono font-semibold uppercase text-gray-400 block text-center">
+              Quick Dev Access
+            </span>
+            <div className="grid grid-cols-2 gap-2">
+              <button
+                type="button"
+                onClick={() => handleQuickBypass("ADMIN")}
+                className="p-2 rounded-lg border border-gray-200 bg-gray-50 hover:bg-gray-100 text-xs font-medium text-gray-700 transition-colors cursor-pointer text-center"
+              >
+                Admin Mode
+              </button>
+              <button
+                type="button"
+                onClick={() => handleQuickBypass("STAFF")}
+                className="p-2 rounded-lg border border-gray-200 bg-gray-50 hover:bg-gray-100 text-xs font-medium text-gray-700 transition-colors cursor-pointer text-center"
+              >
+                Staff Mode
+              </button>
             </div>
           </div>
 
-          <div className="space-y-1.5">
-            <div className="flex items-center justify-between">
-              <label className="block text-xs font-semibold text-white/70">
-                Password
-              </label>
-              {mode === "signin" && (
-                <a href="#" className="text-xs text-blue-400 hover:text-blue-300 transition-colors">
-                  Forgot password?
-                </a>
-              )}
-            </div>
-            <div className="relative">
-              <Lock className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-white/40" />
-              <input
-                type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                className="w-full bg-white/5 border border-white/10 focus:border-blue-500 text-xs text-white pl-10 pr-3 py-2.5 rounded-xl outline-none transition-colors"
-              />
-            </div>
-          </div>
-
-          <button
-            type="submit"
-            className="w-full py-3 px-4 bg-blue-600 hover:bg-blue-500 text-white text-xs font-bold rounded-full transition-all shadow-lg hover:shadow-blue-500/25 flex items-center justify-center gap-2 cursor-pointer mt-2"
-          >
-            <span>{mode === "signin" ? "Sign In to Dashboard" : "Create & Enter Dashboard"}</span>
-            <ArrowRight className="w-4 h-4" />
-          </button>
-        </form>
-
-        <div className="pt-2 text-center border-t border-white/5">
-          <p className="text-[11px] text-white/40 flex items-center justify-center gap-1">
-            <ShieldCheck className="w-3.5 h-3.5 text-emerald-400" /> Secured with 256-bit SSL Enterprise Encryption
-          </p>
         </div>
+      </div>
 
+      {/* Footer info */}
+      <div className="py-6 text-center text-[11px] text-gray-400 font-mono">
+        The FifthLab Nigeria • Enterprise Operations Portal
       </div>
 
     </div>

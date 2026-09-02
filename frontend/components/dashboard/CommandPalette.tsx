@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/context/AppContext";
-import { Search, CalendarDays, Users, Layers, Settings, ExternalLink, X, ArrowRight } from "lucide-react";
+import { Search, CalendarDays, Users, Layers, X, ArrowRight } from "lucide-react";
 
 export default function CommandPalette() {
   const { isCommandPaletteOpen, setCommandPaletteOpen, events, leads, products } = useApp();
@@ -35,125 +35,139 @@ export default function CommandPalette() {
 
   return (
     <div 
-      className="fixed inset-0 z-50 bg-black/80 backdrop-blur-sm flex items-start justify-center pt-20 px-4 animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 bg-black/40 backdrop-blur-2xs flex items-start justify-center pt-20 px-4 animate-in fade-in duration-150"
       onClick={() => setCommandPaletteOpen(false)}
     >
       <div 
-        className="w-full max-w-2xl bg-[#161e2e] border border-[#29364d] shadow-2xl rounded-xs overflow-hidden font-sans space-y-0"
+        className="w-full max-w-2xl bg-white border border-gray-200 shadow-2xl rounded-2xl overflow-hidden font-sans space-y-0 text-left text-[#111827]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Search Header Input */}
-        <div className="relative border-b border-[#29364d] p-3 flex items-center gap-3">
-          <Search className="w-4 h-4 text-[#ff9900]" />
+        <div className="relative border-b border-gray-100 p-4 flex items-center gap-3">
+          <Search className="w-4 h-4 text-[#0090AD]" />
           <input
             type="text"
             autoFocus
-            placeholder="Type to search events, leads, products, pages... (ESC to close)"
+            placeholder="Search events, attendee leads, products, or settings... (ESC to close)"
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full bg-transparent text-white text-xs font-mono placeholder-[#7d8f9e] outline-none"
+            className="w-full bg-transparent text-[#111827] text-xs font-sans placeholder-gray-400 outline-none"
           />
           <button
             onClick={() => setCommandPaletteOpen(false)}
-            className="p-1 text-[#7d8f9e] hover:text-white"
+            className="p-1 text-gray-400 hover:text-gray-700"
           >
             <X className="w-4 h-4" />
           </button>
         </div>
 
-        {/* Search Results Matrix */}
-        <div className="max-h-96 overflow-y-auto p-2 space-y-4 text-xs font-mono">
+        {/* Results Container */}
+        <div className="max-h-96 overflow-y-auto p-3 space-y-4 text-xs">
+          
           {/* Quick Pages */}
           <div className="space-y-1">
-            <span className="px-2 text-[10px] text-[#7d8f9e] uppercase">Quick Navigation</span>
-            <div className="grid grid-cols-2 gap-1">
+            <span className="text-[10px] uppercase font-bold text-gray-400 px-3 tracking-wider">
+              Navigation
+            </span>
+            <div className="grid grid-cols-2 gap-1.5">
               <button
                 onClick={() => handleNavigate("/dashboard")}
-                className="p-2 text-left hover:bg-[#232f3e] text-white rounded-xs flex items-center justify-between"
+                className="flex items-center gap-2 p-2.5 rounded-xl hover:bg-gray-50 text-left text-gray-700 font-medium"
               >
-                <span className="flex items-center gap-2">
-                  <Search className="w-3.5 h-3.5 text-[#ff9900]" /> Console Overview
-                </span>
-                <ArrowRight className="w-3 h-3 text-[#7d8f9e]" />
+                <span className="text-[#0090AD]">📊</span> Dashboard Overview
               </button>
-
               <button
                 onClick={() => handleNavigate("/dashboard/events")}
-                className="p-2 text-left hover:bg-[#232f3e] text-white rounded-xs flex items-center justify-between"
+                className="flex items-center gap-2 p-2.5 rounded-xl hover:bg-gray-50 text-left text-gray-700 font-medium"
               >
-                <span className="flex items-center gap-2">
-                  <CalendarDays className="w-3.5 h-3.5 text-[#0a84ff]" /> Events Discovery
-                </span>
-                <ArrowRight className="w-3 h-3 text-[#7d8f9e]" />
+                <CalendarDays className="w-3.5 h-3.5 text-[#0090AD]" /> Events & Attendance
               </button>
-
               <button
                 onClick={() => handleNavigate("/dashboard/leads")}
-                className="p-2 text-left hover:bg-[#232f3e] text-white rounded-xs flex items-center justify-between"
+                className="flex items-center gap-2 p-2.5 rounded-xl hover:bg-gray-50 text-left text-gray-700 font-medium"
               >
-                <span className="flex items-center gap-2">
-                  <Users className="w-3.5 h-3.5 text-[#30d158]" /> Leads Command Center
-                </span>
-                <ArrowRight className="w-3 h-3 text-[#7d8f9e]" />
+                <Users className="w-3.5 h-3.5 text-[#0090AD]" /> Attendee Leads CRM
               </button>
-
               <button
-                onClick={() => handleNavigate("/demo")}
-                className="p-2 text-left hover:bg-[#232f3e] text-[#ff9900] rounded-xs flex items-center justify-between"
+                onClick={() => handleNavigate("/dashboard/products")}
+                className="flex items-center gap-2 p-2.5 rounded-xl hover:bg-gray-50 text-left text-gray-700 font-medium"
               >
-                <span className="flex items-center gap-2">
-                  <ExternalLink className="w-3.5 h-3.5" /> Public Demo Booking
-                </span>
-                <ArrowRight className="w-3 h-3 text-[#7d8f9e]" />
+                <Layers className="w-3.5 h-3.5 text-[#0090AD]" /> Product Demos
               </button>
             </div>
           </div>
 
-          {/* Events Results */}
+          {/* Filtered Events */}
           {filteredEvents.length > 0 && (
-            <div className="space-y-1 pt-2 border-t border-[#29364d]">
-              <span className="px-2 text-[10px] text-[#0a84ff] uppercase">Matching Events ({filteredEvents.length})</span>
-              {filteredEvents.slice(0, 3).map((evt) => (
-                <div
+            <div className="space-y-1">
+              <span className="text-[10px] uppercase font-bold text-gray-400 px-3 tracking-wider">
+                Matching Events ({filteredEvents.length})
+              </span>
+              {filteredEvents.slice(0, 4).map((evt) => (
+                <button
                   key={evt.id}
-                  onClick={() => handleNavigate(`/dashboard/events?id=${evt.id}`)}
-                  className="p-2 hover:bg-[#232f3e] text-white rounded-xs cursor-pointer flex items-center justify-between"
+                  onClick={() => handleNavigate("/dashboard/events")}
+                  className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-50 text-left text-[#111827]"
                 >
-                  <div className="truncate">
-                    <span className="font-bold text-white">{evt.title}</span>
-                    <span className="text-[#7d8f9e] text-[10px] ml-2">({evt.location})</span>
+                  <div className="flex items-center gap-2 truncate">
+                    <CalendarDays className="w-3.5 h-3.5 text-[#0090AD] shrink-0" />
+                    <span className="font-semibold truncate">{evt.title}</span>
+                    <span className="text-[10px] text-gray-500 font-mono">({evt.city})</span>
                   </div>
-                  <span className="text-[10px] text-[#0a84ff]">{evt.date}</span>
-                </div>
+                  <ArrowRight className="w-3.5 h-3.5 text-gray-400" />
+                </button>
               ))}
             </div>
           )}
 
-          {/* Leads Results */}
+          {/* Filtered Leads */}
           {filteredLeads.length > 0 && (
-            <div className="space-y-1 pt-2 border-t border-[#29364d]">
-              <span className="px-2 text-[10px] text-[#30d158] uppercase">Matching Leads ({filteredLeads.length})</span>
-              {filteredLeads.slice(0, 3).map((l) => (
-                <div
+            <div className="space-y-1">
+              <span className="text-[10px] uppercase font-bold text-gray-400 px-3 tracking-wider">
+                Matching Leads ({filteredLeads.length})
+              </span>
+              {filteredLeads.slice(0, 4).map((l) => (
+                <button
                   key={l.id}
-                  onClick={() => handleNavigate(`/dashboard/leads`)}
-                  className="p-2 hover:bg-[#232f3e] text-white rounded-xs cursor-pointer flex items-center justify-between"
+                  onClick={() => handleNavigate("/dashboard/leads")}
+                  className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-50 text-left text-[#111827]"
                 >
-                  <div className="truncate">
-                    <span className="font-bold text-white">{l.visitorName}</span>
-                    <span className="text-[#7d8f9e] text-[10px] ml-2">from {l.company}</span>
+                  <div className="flex items-center gap-2 truncate">
+                    <Users className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                    <span className="font-semibold">{l.visitorName}</span>
+                    <span className="text-[10px] text-gray-500">({l.company})</span>
                   </div>
-                  <span className="text-[10px] text-[#30d158]">{l.productInterested}</span>
-                </div>
+                  <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-gray-100 text-gray-700">
+                    {l.status}
+                  </span>
+                </button>
               ))}
             </div>
           )}
-        </div>
 
-        {/* Command Footer */}
-        <div className="p-2 bg-[#0f141d] border-t border-[#29364d] text-[10px] font-mono text-[#7d8f9e] flex items-center justify-between">
-          <span>Use ⌘K or ESC anytime to toggle command search</span>
-          <span>FifthLab Console Search</span>
+          {/* Filtered Products */}
+          {filteredProducts.length > 0 && (
+            <div className="space-y-1">
+              <span className="text-[10px] uppercase font-bold text-gray-400 px-3 tracking-wider">
+                Matching Products ({filteredProducts.length})
+              </span>
+              {filteredProducts.slice(0, 4).map((p) => (
+                <button
+                  key={p.id}
+                  onClick={() => handleNavigate("/dashboard/products")}
+                  className="w-full flex items-center justify-between p-2.5 rounded-xl hover:bg-gray-50 text-left text-[#111827]"
+                >
+                  <div className="flex items-center gap-2 truncate">
+                    <Layers className="w-3.5 h-3.5 text-[#0090AD] shrink-0" />
+                    <span className="font-semibold truncate">{p.name}</span>
+                    <span className="text-[10px] text-gray-500">({p.tagline})</span>
+                  </div>
+                  <ArrowRight className="w-3.5 h-3.5 text-gray-400" />
+                </button>
+              ))}
+            </div>
+          )}
+
         </div>
       </div>
     </div>

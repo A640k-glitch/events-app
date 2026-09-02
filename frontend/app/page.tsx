@@ -2,421 +2,419 @@
 
 import { useState } from "react";
 import Link from "next/link";
+import Image from "next/image";
 import { 
   ArrowRight, 
-  Calendar, 
-  Sparkles, 
-  CheckCircle2, 
-  CreditCard, 
   Check, 
-  Lock,
-  ChevronDown,
-  Layers,
-  Users,
-  ShieldCheck,
-  Star,
-  Download,
-  RefreshCw,
-  Clock,
-  Ticket,
-  ArrowUpRight
+  ChevronDown 
 } from "lucide-react";
-import EventsCarousel from "@/components/home/EventsCarousel";
-import TestimonialsSection from "@/components/home/TestimonialsSection";
-import TerminalLoader from "@/components/ui/great-ui-terminal-loader";
+import { useApp } from "@/context/AppContext";
+import RegisterPassModal from "@/components/modals/RegisterPassModal";
+import PitchProposalModal from "@/components/modals/PitchProposalModal";
 import { cn } from "@/lib/utils";
+import HeroSpotlightCarousel from "@/components/home/HeroSpotlightCarousel";
+import LiveEventsCarousel from "@/components/home/LiveEventsCarousel";
+import ScrollLogoBackground from "@/components/home/ScrollLogoBackground";
 
 export default function Home() {
-  const [billingPeriod, setBillingPeriod] = useState<"monthly" | "yearly">("monthly");
+  const { events } = useApp();
   const [openFaq, setOpenFaq] = useState<number | null>(0);
-  const [activeTab, setActiveTab] = useState<"details" | "info">("details");
+
+  // Modals state
+  const [isPassModalOpen, setIsPassModalOpen] = useState(false);
+  const [passModalTier, setPassModalTier] = useState<"FREE_VISITOR" | "PRO_ORGANIZER" | "ENTERPRISE_PARTNER">("FREE_VISITOR");
+  const [selectedEventId, setSelectedEventId] = useState<string | undefined>(undefined);
+  const [isPitchModalOpen, setIsPitchModalOpen] = useState(false);
 
   const faqs = [
     {
-      q: "What does 'Enterprise Access' include?",
-      a: "Enterprise access grants your team full privileges to create events, manage product owner calendars, capture unlimited visitor leads, and export real-time CSV reports.",
+      q: "How does the West Africa Time (WAT) normalization work?",
+      a: "All summit agendas, keynote schedules, and 1-on-1 executive demo slots are automatically normalized to WAT (UTC+1), ensuring seamless coordination across Lagos, Abuja, and regional teams.",
     },
     {
-      q: "What are the differences between the passes?",
-      a: "Free passes allow basic event browsing and briefing requests. Pro & Team passes grant full event creation tools, custom QR badges, unlimited lead capture, and automated calendar routing.",
+      q: "Can we track visitor lead routing to specific FifthLab products?",
+      a: "Yes. Inbound booth scans and executive demo bookings are directly mapped to product owners for Bulkwave, Finedge, Smerp, and UCP with live CRM exports.",
     },
     {
-      q: "How can I upgrade my organization's subscription?",
-      a: "You can upgrade your subscription tier at any time directly in your settings tab or by contacting priority support for instant account adjustment.",
+      q: "Is door pass QR code scanning secure and offline-ready?",
+      a: "Door check-in verifications operate with cryptographic QR passcodes, sub-second latency (0.8s avg scan time), and real-time door sync with the operations console.",
     },
     {
-      q: "Is attendee data securely isolated?",
-      a: "Yes. All captured leads, visitor credentials, and staff attendance manifests are encrypted in real time.",
+      q: "Is attendee lead data compliant with enterprise data policies?",
+      a: "Yes. All captured leads, visitor contact records, and staff attendance manifests are securely encrypted and comply fully with Nigeria Data Protection Regulation (NDPR) standards.",
     },
   ];
 
-  return (
-    <div className="min-h-screen bg-[#08090b] text-[#f5f5f7] flex flex-col justify-between selection:bg-blue-600 selection:text-white font-sans overflow-x-hidden">
-      
-      {/* 1. Hero Section */}
-      <section 
-        className="relative pt-20 pb-28 px-4 text-center border-b border-white/10 bg-cover bg-center bg-no-repeat overflow-hidden"
-        style={{ 
-          backgroundImage: "radial-gradient(circle at center, rgba(8, 9, 11, 0.5) 0%, rgba(8, 9, 11, 0.95) 90%), url('/hero-page.png')" 
-        }}
-      >
-        <div className="max-w-4xl mx-auto space-y-6 relative z-10">
-          
+  const handleOpenPassModal = (tier: "FREE_VISITOR" | "PRO_ORGANIZER" | "ENTERPRISE_PARTNER", eventId?: string) => {
+    setPassModalTier(tier);
+    setSelectedEventId(eventId);
+    setIsPassModalOpen(true);
+  };
 
-          {/* Product Title */}
-          <h1 className="text-4xl sm:text-6xl font-normal tracking-tight text-white leading-tight font-heading">
-            FifthEvents Platform
+  return (
+    <div className="min-h-screen bg-white text-[#111827] flex flex-col justify-between selection:bg-[#00B4D8] selection:text-white font-sans relative">
+      {/* Scroll-Driven Dynamic Logo Background Watermark */}
+      <ScrollLogoBackground />
+      
+      {/* 1. Hero Section with Spotlight Carousel & Natural Lighting Imagery */}
+      <section className="relative pt-28 sm:pt-36 pb-12 px-4 sm:px-6 lg:px-8 text-center bg-transparent overflow-hidden">
+        
+        {/* Subtle grid pattern background */}
+        <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:24px_24px] opacity-40 -z-10 pointer-events-none" />
+
+        <div className="max-w-4xl mx-auto space-y-6 relative z-10 pb-8">
+          <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full border border-slate-200 bg-white/90 backdrop-blur-xs text-slate-700 text-xs font-semibold shadow-2xs">
+            <span className="w-2 h-2 rounded-full bg-[#0090AD] animate-pulse" />
+            <span>The FifthLab & CWG PLC Event Operations Suite</span>
+          </div>
+
+          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.12]">
+            Building the Future of <br className="hidden sm:inline" />
+            Integrated Event & Lead Operations.
           </h1>
 
-          <p className="text-base sm:text-xl text-white/70 max-w-2xl mx-auto font-light leading-relaxed">
-            Next-generation enterprise event management and lead acquisition platform. Streamlined ticketing, real-time analytics, and instant attendee check-in.
+          <p className="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
+            Empowering FifthLab & CWG product growth with real-time door badge verification, staff attendance rosters, and high-yield attendee lead acquisition.
           </p>
 
-          {/* Rating Stars & Reviews */}
-          <div className="flex items-center justify-center gap-2 text-xs text-white/60 font-light">
-            <div className="flex items-center text-amber-400">
-              {[...Array(5)].map((_, i) => (
-                <Star key={i} className="w-4 h-4 fill-current" />
-              ))}
-            </div>
-            <span>•</span>
-            <span className="text-white">4.90 / 5</span>
-            <span>(378 Certified Event Reviews)</span>
-          </div>
-
-          {/* Action Buttons */}
-          <div className="flex flex-wrap items-center justify-center gap-3 pt-4 font-medium text-sm">
-            <Link
-              href="/demo"
-              className="px-6 py-3 bg-white text-black hover:bg-white/90 transition-all shadow-xl flex items-center gap-2"
-            >
-              <span>Schedule Executive Demo</span>
-              <ArrowUpRight className="w-4 h-4" />
-            </Link>
-
-            <Link
-              href="/dashboard"
-              className="px-6 py-3 border border-white/20 bg-white/5 hover:bg-white/10 text-white transition-all flex items-center gap-2"
-            >
-              <span>Organizer Command Hub</span>
-            </Link>
-
-            <Link
-              href="/#pricing"
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white transition-all shadow-lg flex items-center gap-2"
-            >
-              <Ticket className="w-4 h-4" />
-              <span>Get All Access Pass</span>
-            </Link>
-          </div>
-
-          {/* Feature List (No Pill / Badge Box Wrappers) */}
-          <div className="pt-8 flex flex-wrap items-center justify-center gap-6 text-xs text-white/70 font-light">
-            <span className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-cyan-400" /> Real-time Telemetry
-            </span>
-            <span>•</span>
-            <span className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-blue-400" /> Encrypted Lead Pipeline
-            </span>
-            <span>•</span>
-            <span className="flex items-center gap-2">
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" /> Automated Calendar Routing
-            </span>
-          </div>
-
-        </div>
-      </section>
-
-      {/* Texcellence 2026 Flagship Spotlight Section (Open Editorial Layout) */}
-      <section className="py-12 px-4 max-w-[1400px] mx-auto w-full border-b border-white/10">
-        <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between gap-8">
-          <div className="space-y-3 max-w-2xl text-left">
-            <p className="text-xs text-emerald-400 font-semibold tracking-wider uppercase">
-              FLAGSHIP EVENT • AUG 14, 2026 • LAGOS, NIGERIA
-            </p>
-            <h2 className="text-3xl sm:text-4xl font-normal text-white font-heading">
-              Texcellence 2026 Technology Conference
-            </h2>
-            <p className="text-sm text-white/70 leading-relaxed font-light">
-              Co-hosted by <strong className="text-white font-medium">CWG PLC</strong> & <strong className="text-white font-medium">FifthLab Nigeria</strong> at Landmark Centre, Victoria Island. Uniting 8,500+ bank executives, enterprise architects, and technology pioneers across West Africa.
-            </p>
-            <div className="flex flex-wrap items-center gap-6 text-xs text-white/60 pt-2 font-light">
-              <span className="flex items-center gap-2"><Clock className="w-3.5 h-3.5 text-blue-400" /> 09:00 AM WAT (West Africa Time)</span>
-              <span className="flex items-center gap-2"><Users className="w-3.5 h-3.5 text-emerald-400" /> Keynote Speakers & Executive Briefings</span>
-            </div>
-          </div>
-
-          <div className="flex flex-col sm:flex-row gap-3 w-full lg:w-auto shrink-0 font-medium text-xs">
-            <Link
-              href="/demo"
-              className="px-6 py-3 bg-blue-600 hover:bg-blue-500 text-white transition-all flex items-center justify-center gap-2"
-            >
-              <span>Register / Book Briefing</span>
-              <ArrowUpRight className="w-4 h-4" />
-            </Link>
-
-            <Link
-              href="/dashboard/events"
-              className="px-6 py-3 border border-white/20 bg-white/5 hover:bg-white/10 text-white transition-all flex items-center justify-center gap-2"
-            >
-              <span>View Staff Manifest</span>
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* 2. Events Carousel & Discovery Section */}
-      <section id="events" className="py-12 px-4 max-w-[1400px] mx-auto w-full">
-        <div className="text-center mb-10 space-y-2">
-          <p className="text-xs text-blue-400 uppercase tracking-widest font-semibold">Live Events Directory</p>
-          <h2 className="text-2xl sm:text-4xl font-normal text-white font-heading">Explore Upcoming Conferences & Summits</h2>
-        </div>
-        <EventsCarousel />
-      </section>
-
-      {/* 3. Product Description & Specifications Section (Clean Cream Contrast Layout) */}
-      <section className="py-20 px-4 bg-[#faf8f5] text-[#090a0f] relative overflow-hidden bg-geometric-lines border-y border-black/10">
-        <div className="max-w-[1400px] mx-auto grid grid-cols-1 lg:grid-cols-12 gap-10 items-start relative z-10">
-          
-          {/* Description Column */}
-          <div className="lg:col-span-8 space-y-6 text-left">
-            <p className="text-xs font-semibold text-blue-700 uppercase tracking-widest">NIGERIAN ENTERPRISE PLATFORM</p>
-
-            <h3 className="text-3xl sm:text-4xl font-normal text-[#090a0f] tracking-tight font-heading">
-              Enterprise Event & Lead Management System
-            </h3>
-
-            <p className="text-sm sm:text-base text-[#334155] leading-relaxed font-light">
-              FifthEvents equips your organization with powerful event tools—like custom ticket passes, instant lead capture forms, responsive live dashboards, and automated attendee check-in across CWG PLC, Texcellence, and FifthLab Nigeria ecosystems.
-            </p>
-
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 pt-4 border-t border-black/10">
-              <div className="space-y-2">
-                <h4 className="text-sm font-medium text-[#090a0f] flex items-center gap-2">
-                  <CheckCircle2 className="w-4 h-4 text-blue-600" /> Streamlined Attendee Manifests
-                </h4>
-                <p className="text-xs text-[#475569] leading-relaxed font-light">
-                  Track team conference attendance, RSVP statuses, and staff deployments in real time.
-                </p>
-              </div>
-
-              <div className="space-y-2">
-                <h4 className="text-sm font-medium text-[#090a0f] flex items-center gap-2">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" /> Lead Capture & Analytics
-                </h4>
-                <p className="text-xs text-[#475569] leading-relaxed font-light">
-                  Instantly capture visitor demo registrations and track pipeline conversions automatically.
-                </p>
-              </div>
-            </div>
-          </div>
-
-          {/* Details & Info Tabs Side Box */}
-          <div className="lg:col-span-4 rounded-2xl border border-black/10 bg-[#111318] text-white p-6 space-y-5 shadow-2xl">
-            
-            {/* Tabs */}
-            <div className="flex border-b border-white/10 pb-3 gap-2">
-              <button
-                onClick={() => setActiveTab("details")}
-                className={cn(
-                  "flex-1 py-1.5 text-xs font-bold rounded-lg transition-colors cursor-pointer",
-                  activeTab === "details" ? "bg-white/10 text-white" : "text-white/50 hover:text-white"
-                )}
-              >
-                Platform Stats
-              </button>
-              <button
-                onClick={() => setActiveTab("info")}
-                className={cn(
-                  "flex-1 py-1.5 text-xs font-bold rounded-lg transition-colors cursor-pointer",
-                  activeTab === "info" ? "bg-white/10 text-white" : "text-white/50 hover:text-white"
-                )}
-              >
-                Features
-              </button>
-            </div>
-
-            {/* Tab Content */}
-            {activeTab === "details" ? (
-              <div className="space-y-3 text-xs">
-                <div className="flex justify-between py-2 border-b border-white/5 text-white/70">
-                  <span className="flex items-center gap-1.5"><Download className="w-3.5 h-3.5 text-blue-400" /> Active Registrations</span>
-                  <span className="font-bold text-white font-mono">113,736</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-white/5 text-white/70">
-                  <span className="flex items-center gap-1.5"><RefreshCw className="w-3.5 h-3.5 text-indigo-400" /> System Release</span>
-                  <span className="font-bold text-white font-mono">2.1.0</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-white/5 text-white/70">
-                  <span className="flex items-center gap-1.5"><Clock className="w-3.5 h-3.5 text-emerald-400" /> Timezone Standard</span>
-                  <span className="font-bold text-emerald-400 font-mono">WAT (UTC+1)</span>
-                </div>
-              </div>
-            ) : (
-              <div className="space-y-3 text-xs">
-                <div className="flex justify-between py-2 border-b border-white/5 text-white/70">
-                  <span>Interactive Modules</span>
-                  <span className="font-bold text-white">5 Active Tabs</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-white/5 text-white/70">
-                  <span>Corporate Partners</span>
-                  <span className="font-bold text-white">CWG PLC & FifthLab</span>
-                </div>
-                <div className="flex justify-between py-2 border-b border-white/5 text-white/70">
-                  <span>Mobile Layout</span>
-                  <span className="font-bold text-emerald-400">100% Responsive (320px+)</span>
-                </div>
-              </div>
-            )}
-
-          </div>
-
-        </div>
-      </section>
-
-      {/* 4. Pricing Section (All Access Pass) */}
-      <section id="pricing" className="py-20 px-4 border-t border-white/10 bg-black/40">
-        <div className="max-w-[1400px] mx-auto text-center space-y-8">
-          
-          <div>
-            <span className="text-xs font-mono text-blue-400 uppercase tracking-widest font-semibold">Flexible Event Passes</span>
-            <h2 className="text-3xl sm:text-5xl font-extrabold text-white mt-1">Unlock FifthEvents Passes</h2>
-            <p className="text-sm text-white/60 mt-2 max-w-xl mx-auto">
-              Simple, transparent event access tiers for solo attendees, growth startups, and enterprise teams.
-            </p>
-          </div>
-
-          {/* Billing Period Toggle */}
-          <div className="flex items-center justify-center gap-3">
-            <span className={cn("text-xs font-semibold", billingPeriod === "monthly" ? "text-white" : "text-white/50")}>Monthly</span>
+          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
             <button
-              onClick={() => setBillingPeriod(billingPeriod === "monthly" ? "yearly" : "monthly")}
-              className="w-12 h-6 rounded-full bg-blue-600 p-1 flex items-center transition-all cursor-pointer"
+              onClick={() => handleOpenPassModal("FREE_VISITOR")}
+              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-[#0090AD] hover:bg-[#007A94] text-white font-semibold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
             >
-              <div className={cn("w-4 h-4 rounded-full bg-white transition-transform", billingPeriod === "yearly" && "translate-x-6")} />
+              <span>Explore Summits</span>
+              <ArrowRight className="w-4 h-4" />
             </button>
-            <span className={cn("text-xs font-semibold flex items-center gap-1.5", billingPeriod === "yearly" ? "text-white" : "text-white/50")}>
-              Yearly <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded-full border border-emerald-500/30">Save 20%</span>
+
+            <Link
+              href="/demo"
+              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-slate-900 hover:bg-black text-white font-semibold text-xs sm:text-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
+            >
+              Book A Demo →
+            </Link>
+          </div>
+        </div>
+
+        {/* Dynamic Spotlight Carousel with Natural Lighting Graphics */}
+        <div className="pt-2 relative z-10">
+          <HeroSpotlightCarousel />
+        </div>
+
+      </section>
+
+      {/* 2. Customer-Facing Dynamic Live Events Carousel */}
+      <section className="py-12 bg-slate-50/40 backdrop-blur-2xs border-t border-slate-200/60 relative z-10">
+        <LiveEventsCarousel 
+          events={events} 
+          onClaimPass={handleOpenPassModal} 
+        />
+      </section>
+
+      {/* 3. Core Capabilities Row with Visual Natural-Lighting Cards */}
+      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-transparent border-t border-slate-100/80 relative z-10">
+        <div className="max-w-6xl mx-auto space-y-10">
+          
+          <div className="text-center space-y-2">
+            <span className="text-xs font-bold text-[#0090AD] uppercase tracking-widest font-mono">
+              ENGINEERED FOR THE FIFTHLAB ECOSYSTEM
             </span>
+            <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+              Enterprise Event Infrastructure Built for Scale
+            </h2>
           </div>
 
-          {/* Pricing Cards Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 max-w-5xl mx-auto text-left">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
-            {/* Starter Pass */}
-            <div className="rounded-2xl border border-white/10 bg-black/60 p-6 space-y-6 flex flex-col justify-between hover:border-white/20 transition-all">
+            {/* Card 1: Keynote Discovery */}
+            <div className="rounded-3xl bg-gradient-to-b from-slate-50 to-white p-7 border border-slate-200/90 shadow-xs hover:shadow-md transition-all text-left flex flex-col justify-between space-y-6">
               <div className="space-y-4">
-                <div>
-                  <h3 className="text-lg font-bold text-white">Free Visitor Pass</h3>
-                  <p className="text-xs text-white/50 mt-1">For single attendees exploring public events</p>
+                <div className="relative h-40 w-full rounded-2xl overflow-hidden bg-slate-100">
+                  <Image
+                    src="/images/keynote_lagos.jpg"
+                    alt="Event Discovery"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <span className="absolute bottom-3 left-3 text-white text-xs font-bold font-mono bg-black/40 px-2.5 py-1 rounded-full backdrop-blur-md">
+                    WAT Synchronized
+                  </span>
                 </div>
-                <div className="text-3xl font-extrabold text-white font-mono">
-                  ₦0 <span className="text-xs font-normal text-white/50">/ forever</span>
-                </div>
-                <ul className="space-y-2 text-xs text-white/70 pt-4 border-t border-white/10">
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Browse All Nigerian Tech & Industrial Events</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Schedule Executive Briefings with FifthLab & CWG Leads</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Download .ICS Calendar Invites</li>
-                </ul>
+
+                <h3 className="text-lg font-bold text-slate-900">
+                  Summit Broadcast & Discovery
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Real-time keynote agendas, speaker indexing, and automatic timezone normalization across Lagos, Abuja, Accra, and Nairobi.
+                </p>
               </div>
-              <Link href="/demo" className="w-full py-2.5 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 text-white font-bold text-xs text-center transition-all">
-                Get Free Pass
-              </Link>
+
+              <div>
+                <Link
+                  href="/events"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0090AD] hover:underline"
+                >
+                  <span>Explore schedule</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
             </div>
 
-            {/* Pro Pass (Highlighted) */}
-            <div className="rounded-2xl border-2 border-blue-500 bg-blue-950/20 p-6 space-y-6 flex flex-col justify-between relative shadow-2xl">
-              <span className="absolute -top-3 right-6 px-3 py-0.5 rounded-full bg-blue-600 text-white text-[10px] font-bold uppercase tracking-wider font-mono">
-                Most Popular
-              </span>
+            {/* Card 2: Exhibition Lead Capture */}
+            <div className="rounded-3xl bg-gradient-to-b from-slate-50 to-white p-7 border border-slate-200/90 shadow-xs hover:shadow-md transition-all text-left flex flex-col justify-between space-y-6">
               <div className="space-y-4">
-                <div>
-                  <h3 className="text-lg font-bold text-white">Organizer Pro Pass</h3>
-                  <p className="text-xs text-white/60 mt-1">For Nigerian growth teams hosting regular events</p>
+                <div className="relative h-40 w-full rounded-2xl overflow-hidden bg-slate-100">
+                  <Image
+                    src="/images/exhibition_hall.jpg"
+                    alt="Exhibition Hall"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <span className="absolute bottom-3 left-3 text-white text-xs font-bold font-mono bg-black/40 px-2.5 py-1 rounded-full backdrop-blur-md">
+                    Booth CRM Sync
+                  </span>
                 </div>
-                <div className="text-3xl font-extrabold text-white font-mono">
-                  {billingPeriod === "monthly" ? "₦15,000" : "₦12,000"} <span className="text-xs font-normal text-white/50">/ month</span>
-                </div>
-                <ul className="space-y-2 text-xs text-white/80 pt-4 border-t border-white/10">
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-blue-400" /> Publish Unlimited Events across Nigeria</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-blue-400" /> Automated Lead Capture Table</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-blue-400" /> Export CSV Lead Data</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-blue-400" /> Staff Attendance Manifest Sync</li>
-                </ul>
+
+                <h3 className="text-lg font-bold text-slate-900">
+                  Lead Capture & Product Routing
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Instant acquisition of delegate inquiries with automatic routing to designated product engineering specialists for Bulkwave, Finedge, and SMERP.
+                </p>
               </div>
-              <Link href="/dashboard" className="w-full py-3 rounded-full bg-blue-600 hover:bg-blue-500 text-white font-bold text-xs text-center transition-all shadow-lg">
-                Start Pro Access
-              </Link>
+
+              <div>
+                <Link
+                  href="/demo"
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0090AD] hover:underline"
+                >
+                  <span>Request lead demo</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </Link>
+              </div>
             </div>
 
-            {/* Enterprise Pass */}
-            <div className="rounded-2xl border border-white/10 bg-black/60 p-6 space-y-6 flex flex-col justify-between hover:border-white/20 transition-all">
+            {/* Card 3: Door Check-In Scanner */}
+            <div className="rounded-3xl bg-gradient-to-b from-slate-50 to-white p-7 border border-slate-200/90 shadow-xs hover:shadow-md transition-all text-left flex flex-col justify-between space-y-6">
               <div className="space-y-4">
-                <div>
-                  <h3 className="text-lg font-bold text-white">CWG & FifthLab Corporate</h3>
-                  <p className="text-xs text-white/50 mt-1">For enterprise scale & dedicated SLA across West Africa</p>
+                <div className="relative h-40 w-full rounded-2xl overflow-hidden bg-slate-100">
+                  <Image
+                    src="/images/qr_registration.jpg"
+                    alt="QR Verification"
+                    fill
+                    sizes="(max-width: 768px) 100vw, 33vw"
+                    className="object-cover"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                  <span className="absolute bottom-3 left-3 text-white text-xs font-bold font-mono bg-black/40 px-2.5 py-1 rounded-full backdrop-blur-md">
+                    0.8s Door Scan
+                  </span>
                 </div>
-                <div className="text-3xl font-extrabold text-white font-mono">
-                  {billingPeriod === "monthly" ? "₦45,000" : "₦36,000"} <span className="text-xs font-normal text-white/50">/ month</span>
-                </div>
-                <ul className="space-y-2 text-xs text-white/70 pt-4 border-t border-white/10">
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Everything in Pro Pass</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Unlimited Product Owner Profiles</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Custom WAT Timezone Rules</li>
-                  <li className="flex items-center gap-2"><Check className="w-3.5 h-3.5 text-emerald-400" /> Dedicated Account Manager & SLA</li>
-                </ul>
+
+                <h3 className="text-lg font-bold text-slate-900">
+                  Digital Pass & QR Verification
+                </h3>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  Rapid door check-ins with cryptographic QR passcodes, live staff rosters, and NDPR-compliant data encryption.
+                </p>
               </div>
-              <Link href="/dashboard/settings" className="w-full py-2.5 rounded-full border border-white/20 bg-white/5 hover:bg-white/10 text-white font-bold text-xs text-center transition-all">
-                Contact Sales
-              </Link>
+
+              <div>
+                <button
+                  onClick={() => handleOpenPassModal("FREE_VISITOR")}
+                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0090AD] hover:underline cursor-pointer"
+                >
+                  <span>Claim digital pass</span>
+                  <ArrowRight className="w-3.5 h-3.5" />
+                </button>
+              </div>
             </div>
 
           </div>
-
         </div>
       </section>
 
-      {/* 5. Testimonials Section */}
-      <TestimonialsSection />
-
-      {/* 6. FAQ Accordion Section with Dark Geometric Lines */}
-      <section className="py-20 px-4 border-t border-white/10 bg-[#07080c] relative overflow-hidden bg-dark-geometric-lines">
-        {/* Floating Geometric Vector Lines Graphic Overlay */}
-        <div className="absolute inset-0 pointer-events-none opacity-20">
-          <svg className="w-full h-full" viewBox="0 0 1000 600" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <line x1="0" y1="50" x2="1000" y2="550" stroke="#2563eb" strokeWidth="0.75" strokeDasharray="6 6" />
-            <line x1="0" y1="550" x2="1000" y2="50" stroke="#fff" strokeWidth="0.5" opacity="0.2" />
-            <circle cx="500" cy="300" r="220" stroke="#2563eb" strokeWidth="0.75" strokeDasharray="4 4" opacity="0.3" />
-          </svg>
-        </div>
-
-        <div className="max-w-3xl mx-auto w-full relative z-10 space-y-8">
+      {/* 4. Pricing & Pass Tiers */}
+      <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50/40 backdrop-blur-2xs border-t border-slate-200/60 relative z-10">
+        <div className="max-w-6xl mx-auto space-y-10">
+          
           <div className="text-center space-y-2">
-            <h2 className="text-2xl sm:text-4xl font-normal text-white font-heading">Frequently Asked Questions</h2>
-            <p className="text-xs sm:text-sm text-white/60 font-light">Everything you need to know about FifthEvents passes and lead acquisition.</p>
+            <span className="text-xs font-bold text-[#0090AD] uppercase tracking-widest font-mono">
+              ACCESS PASS TIERS
+            </span>
+            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+              Simple, transparent event credentials
+            </h2>
+            <p className="text-xs sm:text-sm text-slate-600 max-w-xl mx-auto">
+              Choose your pass tier for keynote admission, booth lead capture, or organizer co-hosting.
+            </p>
           </div>
 
-          <div className="space-y-3 font-light">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 text-left">
+            
+            {/* Free Visitor Pass */}
+            <div className="rounded-3xl bg-white/95 backdrop-blur-xs border border-slate-200 p-8 space-y-6 shadow-xs flex flex-col justify-between">
+              <div className="space-y-4">
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">
+                  DELEGATE
+                </span>
+                <div className="text-3xl font-extrabold text-slate-900">
+                  Free
+                </div>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  For individual attendees, tech operators, and industry delegates attending open summit sessions.
+                </p>
+                <ul className="space-y-2.5 text-xs text-slate-700 pt-2 border-t border-slate-100 font-medium">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#0090AD]" /> Keynote and exhibition hall access
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#0090AD]" /> Instant digital QR door pass
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#0090AD]" /> 1-on-1 executive demo booking
+                  </li>
+                </ul>
+              </div>
+
+              <button
+                onClick={() => handleOpenPassModal("FREE_VISITOR")}
+                className="w-full py-3 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-900 font-bold text-xs transition-colors cursor-pointer"
+              >
+                Claim Free Pass
+              </button>
+            </div>
+
+            {/* Pro Organizer Pass */}
+            <div className="rounded-3xl bg-white/95 backdrop-blur-xs border-2 border-[#0090AD] p-8 space-y-6 shadow-lg relative flex flex-col justify-between">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-[#0090AD] text-white text-[10px] font-bold font-mono uppercase tracking-wider">
+                FEATURED
+              </div>
+
+              <div className="space-y-4">
+                <span className="text-xs font-bold text-[#0090AD] uppercase tracking-wider font-mono">
+                  ORGANIZER
+                </span>
+                <div className="text-3xl font-extrabold text-slate-900">
+                  Pro Summit
+                </div>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  For external conference organizers pitching co-hosted summits and verified passes.
+                </p>
+                <ul className="space-y-2.5 text-xs text-slate-700 pt-2 border-t border-slate-100 font-medium">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#0090AD]" /> Dedicated organizer proposal review
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#0090AD]" /> Custom digital badge branding
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#0090AD]" /> Live attendee roster export
+                  </li>
+                </ul>
+              </div>
+
+              <button
+                onClick={() => setIsPitchModalOpen(true)}
+                className="w-full py-3 rounded-xl bg-[#0090AD] hover:bg-[#007A94] text-white font-bold text-xs shadow-xs transition-colors cursor-pointer"
+              >
+                Submit Summit Proposal
+              </button>
+            </div>
+
+            {/* Enterprise Partner Pass */}
+            <div className="rounded-3xl bg-white/95 backdrop-blur-xs border border-slate-200 p-8 space-y-6 shadow-xs flex flex-col justify-between">
+              <div className="space-y-4">
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">
+                  ENTERPRISE
+                </span>
+                <div className="text-3xl font-extrabold text-slate-900">
+                  Custom
+                </div>
+                <p className="text-xs text-slate-600 leading-relaxed">
+                  For institutions requiring tailored lead routing, API access, and private VIP roundtables.
+                </p>
+                <ul className="space-y-2.5 text-xs text-slate-700 pt-2 border-t border-slate-100 font-medium">
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#0090AD]" /> Unlimited booth lead scanners
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#0090AD]" /> Custom CRM integration & webhooks
+                  </li>
+                  <li className="flex items-center gap-2">
+                    <Check className="w-4 h-4 text-[#0090AD]" /> Dedicated operations manager
+                  </li>
+                </ul>
+              </div>
+
+              <Link
+                href="/demo"
+                className="w-full py-3 rounded-xl bg-slate-900 hover:bg-black text-white font-bold text-xs text-center transition-colors block"
+              >
+                Contact Enterprise Sales
+              </Link>
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Frequently Asked Questions */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-transparent border-t border-slate-200/60 relative z-10">
+        <div className="max-w-4xl mx-auto space-y-8 text-left">
+          
+          <div className="space-y-2">
+            <span className="text-xs font-bold text-[#0090AD] uppercase tracking-widest font-mono">
+              FREQUENTLY ASKED QUESTIONS
+            </span>
+            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
+              Everything you need to know about FifthEvents
+            </h2>
+          </div>
+
+          <div className="space-y-3">
             {faqs.map((faq, idx) => (
-              <div key={idx} className="border border-white/10 bg-black/70 backdrop-blur-md overflow-hidden">
+              <div
+                key={idx}
+                className="rounded-2xl border border-slate-200 bg-slate-50/60 overflow-hidden transition-colors"
+              >
                 <button
                   onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                  className="w-full p-4 text-left flex items-center justify-between text-xs sm:text-sm font-medium text-white cursor-pointer"
+                  className="w-full p-5 flex items-center justify-between gap-4 text-left font-bold text-sm text-slate-900 hover:text-[#0090AD] transition-colors cursor-pointer"
                 >
                   <span>{faq.q}</span>
-                  <ChevronDown className={cn("w-4 h-4 text-white/50 transition-transform", openFaq === idx && "rotate-180")} />
+                  <ChevronDown className={cn(
+                    "w-4 h-4 shrink-0 transition-transform duration-200 text-slate-400",
+                    openFaq === idx ? "rotate-180 text-[#0090AD]" : ""
+                  )} />
                 </button>
                 {openFaq === idx && (
-                  <div className="px-4 pb-4 text-xs sm:text-sm text-white/70 border-t border-white/5 pt-3 leading-relaxed font-light">
+                  <div className="px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
                     {faq.a}
                   </div>
                 )}
               </div>
             ))}
           </div>
+
         </div>
       </section>
+
+      {/* Modals */}
+      <RegisterPassModal
+        isOpen={isPassModalOpen}
+        onClose={() => setIsPassModalOpen(false)}
+        defaultTier={passModalTier}
+        eventId={selectedEventId}
+      />
+
+      <PitchProposalModal
+        isOpen={isPitchModalOpen}
+        onClose={() => setIsPitchModalOpen(false)}
+      />
 
     </div>
   );

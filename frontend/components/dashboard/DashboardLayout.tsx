@@ -3,6 +3,7 @@
 import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Sidebar from "./Sidebar";
+import Topbar from "./Topbar";
 import CommandPalette from "./CommandPalette";
 import { useApp } from "@/context/AppContext";
 
@@ -13,10 +14,9 @@ interface DashboardLayoutProps {
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const router = useRouter();
   const { user } = useApp();
-  const [sidebarOpen, setSidebarOpen] = useState(false);
+  const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   useEffect(() => {
-    // If user explicitly logged out, redirect to /login
     if (user === null) {
       router.push("/login");
     }
@@ -24,19 +24,23 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
 
   if (!user) {
     return (
-      <div className="min-h-[80vh] flex flex-col items-center justify-center p-6 text-center font-sans space-y-4">
-        <div className="w-10 h-10 rounded-full border-2 border-blue-500 border-t-transparent animate-spin mx-auto" />
-        <p className="text-xs text-white/60">Redirecting to login portal...</p>
+      <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6 text-center space-y-4">
+        <div className="w-8 h-8 rounded-full border-2 border-[#0090AD] border-t-transparent animate-spin mx-auto" />
+        <p className="text-xs text-slate-500 font-sans font-medium">Loading operations center...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-[88vh] bg-[#08090b] text-[#f5f5f7] flex flex-col font-sans">
-      <div className="flex-1 flex flex-col lg:flex-row min-w-0 max-w-[1400px] w-full mx-auto px-2 sm:px-4 py-4 gap-4">
-        <Sidebar isOpen={sidebarOpen} onClose={() => setSidebarOpen(false)} />
+    <div className="min-h-screen bg-[#F8FAFC] text-slate-900 flex flex-col lg:flex-row font-sans selection:bg-[#0090AD]/20 selection:text-[#0090AD]">
+      {/* Left Navigation Sidebar */}
+      <Sidebar isOpen={mobileSidebarOpen} onClose={() => setMobileSidebarOpen(false)} />
+
+      {/* Main Content Area */}
+      <div className="flex-1 flex flex-col min-w-0 min-h-screen bg-[#F8FAFC]">
+        <Topbar onMenuToggle={() => setMobileSidebarOpen(true)} />
         
-        <main className="flex-1 min-w-0">
+        <main className="flex-1 p-4 sm:p-6 lg:p-8 max-w-7xl w-full mx-auto">
           {children}
         </main>
       </div>

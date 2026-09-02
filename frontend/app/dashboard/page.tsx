@@ -1,252 +1,421 @@
 "use client";
 
+import { useState } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { useApp } from "@/context/AppContext";
-import { MOCK_KPI } from "@/lib/mock-data";
-import { CalendarDays, Users, TrendingUp, Layers, ArrowUpRight, CheckCircle2, Ticket, DollarSign } from "lucide-react";
+import { motion, Variants } from "framer-motion";
+import { 
+  Inbox, 
+  Plus, 
+  ArrowRight, 
+  UserPlus, 
+  ChevronRight,
+  Users,
+  Sparkles,
+  ShieldCheck,
+  CalendarDays,
+  TrendingUp,
+  CheckCircle2
+} from "lucide-react";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
+import AddLeadModal from "@/components/modals/AddLeadModal";
+import AddEventModal from "@/components/modals/AddEventModal";
 
 export default function DashboardOverviewPage() {
-  const { events, leads } = useApp();
+  const { events, leads, pitches, approvePitch, declinePitch } = useApp();
+  const [isAddLeadOpen, setIsAddLeadOpen] = useState(false);
+  const [isAddEventOpen, setIsAddEventOpen] = useState(false);
+
+  const pendingPitches = pitches.filter((p) => p.status === "SUBMITTED");
+  const recentLeads = leads.slice(0, 6);
+  const upcomingEvents = events.slice(0, 4);
+
+  const containerVariants: Variants = {
+    hidden: { opacity: 0 },
+    show: {
+      opacity: 1,
+      transition: {
+        staggerChildren: 0.05,
+      },
+    },
+  };
+
+  const itemVariants: Variants = {
+    hidden: { opacity: 0, y: 10 },
+    show: { opacity: 1, y: 0 },
+  };
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 font-sans">
+      <motion.div
+        variants={containerVariants}
+        initial="hidden"
+        animate="show"
+        className="space-y-6 font-sans text-left text-slate-900"
+      >
         
-        {/* Header Title Bar */}
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-white/10">
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-xl sm:text-2xl font-extrabold tracking-tight text-white">
-                Command Center Overview
+        {/* 1. Header Area with Structured Layout & High-Contrast Styling */}
+        <motion.div 
+          variants={itemVariants} 
+          className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4"
+        >
+          <div className="space-y-1">
+            <div className="flex items-center gap-2.5">
+              <h1 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-slate-900">
+                Dashboard Overview
               </h1>
-              <span className="text-[10px] font-mono px-2.5 py-0.5 bg-blue-500/20 text-blue-400 border border-blue-500/30 rounded-full font-bold">
-                REAL-TIME TELEMETRY
+              <span className="px-2.5 py-0.5 rounded-full bg-[#0090AD] text-white text-[10px] font-bold font-mono tracking-wider shadow-xs">
+                LIVE
               </span>
             </div>
-            <p className="text-xs text-white/60 mt-1">
-              FifthLab Nexus operations matrix • Internal Event Discovery & Lead Acquisition
+            <p className="text-xs sm:text-sm text-slate-600 font-medium max-w-2xl">
+              Get an overview of your events, team attendance rosters, inbound attendee leads, and demo routing.
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2.5 shrink-0">
+            <button
+              onClick={() => setIsAddEventOpen(true)}
+              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-800 transition-all cursor-pointer shadow-2xs hover:border-slate-300"
+            >
+              <Plus className="w-3.5 h-3.5 text-[#0090AD]" />
+              <span>Create Event</span>
+            </button>
+
+            <button
+              onClick={() => setIsAddLeadOpen(true)}
+              className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-gradient-to-r from-[#0090AD] to-[#229EA6] hover:from-[#007A94] hover:to-[#1E8B92] text-white text-xs font-bold shadow-md shadow-[#0090AD]/20 transition-all cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
+            >
+              <UserPlus className="w-3.5 h-3.5" />
+              <span>Capture Lead</span>
+            </button>
+          </div>
+        </motion.div>
+
+        {/* 2. Dual Hero Action Cards with Cohesive FifthEvents Palette */}
+        <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+          
+          {/* Left Hero Card: YOUR TEAM */}
+          <div className="lg:col-span-8 rounded-2xl border border-[#20B2AA]/30 bg-gradient-to-br from-[#F2FAFB] via-white to-[#F6FCFD] p-6 sm:p-7 flex flex-col justify-between space-y-5 relative overflow-hidden shadow-2xs">
+            <div className="space-y-3">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#00829B] font-mono flex items-center gap-1.5">
+                  <Users className="w-3.5 h-3.5" /> YOUR TEAM OPERATIONS
+                </span>
+                <Link
+                  href="/dashboard/team"
+                  className="text-xs font-bold text-[#0090AD] hover:text-[#007A94] flex items-center gap-1 group"
+                >
+                  <span>View Team Directory</span>
+                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+              </div>
+
+              <h2 className="text-lg font-bold text-slate-900 tracking-tight">
+                Assign product engineering specialists to tech summits
+              </h2>
+
+              <p className="text-xs sm:text-sm text-slate-600 max-w-xl leading-relaxed">
+                Assign team members to FifthEvents to take advantage of faster door verification and automated lead acquisition for your whole team.
+              </p>
+            </div>
+
+            <div className="pt-2 flex items-center gap-3">
+              <Link
+                href="/dashboard/team"
+                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#0090AD] to-[#229EA6] hover:from-[#007A94] hover:to-[#1E8B92] text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
+              >
+                <span>Invite your team</span>
+                <ArrowRight className="w-3.5 h-3.5" />
+              </Link>
+            </div>
+          </div>
+
+          {/* Right Hero Card: HELP CENTER */}
+          <div className="lg:col-span-4 rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-7 flex flex-col justify-between space-y-4 relative overflow-hidden shadow-2xs">
+            <div className="space-y-2.5">
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 font-mono block">
+                HELP CENTER
+              </span>
+
+              <h3 className="text-base font-bold text-slate-900 leading-snug">
+                Get answers to your questions
+              </h3>
+
+              <p className="text-xs text-slate-600 leading-relaxed">
+                Find information about admin-specific operations such as managing attendee passes, WAT timezone sync, and product CRM routing.
+              </p>
+            </div>
+
+            <div className="pt-2">
+              <Link
+                href="/dashboard/events"
+                className="text-xs font-bold text-[#0090AD] hover:text-[#007A94] flex items-center gap-1 group"
+              >
+                <span>FifthEvents for admins</span>
+                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            </div>
+          </div>
+
+        </motion.div>
+
+        {/* 3. Pending Proposal Alert Banner (if any) */}
+        {pendingPitches.length > 0 && (
+          <motion.div
+            variants={itemVariants}
+            className="p-4 rounded-2xl border border-amber-300 bg-amber-50/90 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-2xs"
+          >
+            <div className="space-y-1 text-left">
+              <span className="text-xs font-bold text-amber-900 uppercase tracking-wider flex items-center gap-1.5 font-mono">
+                <Inbox className="w-4 h-4 text-amber-700" /> Pending Organizer Proposal ({pendingPitches.length})
+              </span>
+              <p className="text-xs text-amber-950 font-medium">
+                {pendingPitches[0].organizerName} from <strong>{pendingPitches[0].organization}</strong> submitted a proposal for &quot;{pendingPitches[0].eventTitle}&quot; in {pendingPitches[0].proposedCity}.
+              </p>
+            </div>
+
+            <div className="flex items-center gap-2 shrink-0">
+              <button
+                onClick={() => approvePitch(pendingPitches[0].id, true, "Approved via Admin Center")}
+                className="px-4 py-1.5 rounded-xl bg-[#0090AD] text-white text-xs font-bold hover:bg-[#007A94] transition-colors cursor-pointer shadow-xs"
+              >
+                Approve
+              </button>
+              <button
+                onClick={() => declinePitch(pendingPitches[0].id, "Declined")}
+                className="px-3.5 py-1.5 rounded-xl border border-amber-300 bg-white text-xs font-semibold text-amber-900 hover:bg-amber-100 transition-colors cursor-pointer"
+              >
+                Decline
+              </button>
+            </div>
+          </motion.div>
+        )}
+
+        {/* 4. Activity Metrics Row with Clean Contrast & Consistent Accents */}
+        <motion.div variants={itemVariants} className="space-y-3">
+          
+          <div className="flex items-center justify-between">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-700 font-mono">
+              ACTIVITY LAST 30 DAYS
+            </span>
             <Link
               href="/dashboard/events"
-              className="px-4 py-2 border border-white/20 bg-white/5 hover:bg-white/10 text-xs font-medium text-white transition-all flex items-center gap-1.5"
+              className="text-xs font-bold text-[#0090AD] hover:text-[#007A94] flex items-center gap-1"
             >
-              <CalendarDays className="w-3.5 h-3.5" />
-              <span>Events Catalog</span>
-            </Link>
-
-            <Link
-              href="/dashboard/leads"
-              className="px-4 py-2 bg-blue-600 hover:bg-blue-500 text-xs font-medium text-white transition-all flex items-center gap-1.5"
-            >
-              <Users className="w-3.5 h-3.5" />
-              <span>View Leads</span>
+              View Analytics <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
-        </div>
 
-        {/* Warm Cream Contrast Summary Banner with Geometric Lines & Backdrop Blur */}
-        <div className="border border-black/15 bg-[#faf8f5]/90 backdrop-blur-xl text-[#090a0f] p-6 relative overflow-hidden bg-geometric-lines shadow-lg flex flex-col md:flex-row items-center justify-between gap-4 text-left">
-          <div className="space-y-1">
-            <p className="text-xs text-blue-700 font-semibold tracking-wider uppercase">
-              FIFTHLAB NIGERIA & CWG PLC ECOSYSTEM
-            </p>
-            <h2 className="text-xl font-normal text-[#090a0f] tracking-tight font-heading">
-              West Africa Tech Event Operations Matrix
-            </h2>
-            <p className="text-xs text-[#334155] font-light">
-              Real-time attendance manifests for Texcellence 2026, FifthLab Fintech Africa, and CWG PLC summits.
-            </p>
-          </div>
-
-          <div className="flex items-center gap-4 shrink-0 text-xs font-light">
-            <span className="text-[#334155]">Standard: <strong className="text-[#090a0f] font-medium">WAT (UTC+1)</strong></span>
-            <span>•</span>
-            <span className="text-[#334155]">Currency: <strong className="text-[#090a0f] font-medium">NGN (₦)</strong></span>
-          </div>
-        </div>
-
-        {/* Clean Monochrome Architectural KPI Cards Grid (No Color Accents) */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-          
-          <div className="arch-card p-5 space-y-2 relative overflow-hidden group">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-white/60 uppercase tracking-wider font-mono">
-                Upcoming Events
-              </span>
-              <div className="w-8 h-8 rounded-lg bg-white/10 text-white flex items-center justify-center border border-white/15">
-                <CalendarDays className="w-4 h-4" />
+          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            
+            {/* Metric 1: Created Events */}
+            <div className="p-6 rounded-2xl border border-slate-200/90 bg-white space-y-2 shadow-2xs hover:border-slate-300 transition-colors">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-600">Created events</span>
+                <span className="px-2 py-0.5 rounded-md bg-[#E8F8FA] text-[#00829B] font-mono text-[10px] font-bold">
+                  WAT SYNC
+                </span>
               </div>
-            </div>
-            <div className="flex items-baseline justify-between pt-1">
-              <span className="text-3xl font-extrabold text-white font-heading">
+              <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight font-mono">
                 {events.length}
-              </span>
-              <span className="text-xs font-bold text-white/80 flex items-center gap-0.5 font-mono">
-                +3 this month <ArrowUpRight className="w-3.5 h-3.5" />
-              </span>
-            </div>
-            <p className="text-xs text-white/50">Internal attendance tracking live</p>
-          </div>
-
-          <div className="arch-card p-5 space-y-2 relative overflow-hidden group">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-white/60 uppercase tracking-wider font-mono">
-                Demo Requests
-              </span>
-              <div className="w-8 h-8 rounded-lg bg-white/10 text-white flex items-center justify-center border border-white/15">
-                <Users className="w-4 h-4" />
+              </div>
+              <div className="text-xs text-slate-500 font-medium">
+                Active summits & conferences
+              </div>
+              <div className="pt-2 flex items-center gap-1 text-[11px] text-[#00829B] font-bold">
+                <TrendingUp className="w-3.5 h-3.5" />
+                <span>+12% this month</span>
               </div>
             </div>
-            <div className="flex items-baseline justify-between pt-1">
-              <span className="text-3xl font-extrabold text-white font-heading">
+
+            {/* Metric 2: Inbound Leads */}
+            <div className="p-6 rounded-2xl border border-slate-200/90 bg-white space-y-2 shadow-2xs hover:border-slate-300 transition-colors">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-600">Inbound attendee leads</span>
+                <span className="px-2 py-0.5 rounded-md bg-emerald-50 text-emerald-700 font-mono text-[10px] font-bold">
+                  HIGH YIELD
+                </span>
+              </div>
+              <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight font-mono">
                 {leads.length}
-              </span>
-              <span className="text-xs font-bold text-white/80 flex items-center gap-0.5 font-mono">
-                +14.8% vs prev <ArrowUpRight className="w-3.5 h-3.5" />
-              </span>
-            </div>
-            <p className="text-xs text-white/50">Zero manual staff entry required</p>
-          </div>
-
-          <div className="arch-card p-5 space-y-2 relative overflow-hidden group">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-white/60 uppercase tracking-wider font-mono">
-                Pipeline Value
-              </span>
-              <div className="w-8 h-8 rounded-lg bg-white/10 text-white flex items-center justify-center border border-white/15">
-                <DollarSign className="w-4 h-4" />
+              </div>
+              <div className="text-xs text-slate-500 font-medium">
+                Delegates & demo inquiries
+              </div>
+              <div className="pt-2 flex items-center gap-1 text-emerald-700 font-bold text-[11px]">
+                <TrendingUp className="w-3.5 h-3.5" />
+                <span>+18.4% conversion</span>
               </div>
             </div>
-            <div className="flex items-baseline justify-between pt-1">
-              <span className="text-2xl font-extrabold text-white font-heading">
-                ₦28.5M
-              </span>
-              <span className="text-xs font-bold text-white/80 flex items-center gap-0.5 font-mono">
-                5 Enterprise Deals
-              </span>
-            </div>
-            <p className="text-xs text-white/50">FifthLab & CWG PLC products</p>
-          </div>
 
-          <div className="arch-card p-5 space-y-2 relative overflow-hidden group">
-            <div className="flex items-center justify-between">
-              <span className="text-xs font-bold text-white/60 uppercase tracking-wider font-mono">
-                Active Staff
-              </span>
-              <div className="w-8 h-8 rounded-lg bg-white/10 text-white flex items-center justify-center border border-white/15">
-                <CheckCircle2 className="w-4 h-4" />
+            {/* Metric 3: Door Check-ins */}
+            <div className="p-6 rounded-2xl border border-slate-200/90 bg-white space-y-2 shadow-2xs hover:border-slate-300 transition-colors">
+              <div className="flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-600">Verified pass rate</span>
+                <span className="px-2 py-0.5 rounded-md bg-purple-50 text-purple-700 font-mono text-[10px] font-bold">
+                  0.8s DOOR AVG
+                </span>
+              </div>
+              <div className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight font-mono">
+                98.4%
+              </div>
+              <div className="text-xs text-slate-500 font-medium">
+                Verified digital badge check-in rate
+              </div>
+              <div className="pt-2 flex items-center gap-1 text-[#0090AD] font-bold text-[11px]">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>0.8s avg door scan</span>
               </div>
             </div>
-            <div className="flex items-baseline justify-between pt-1">
-              <span className="text-3xl font-extrabold text-white font-heading">
-                18
-              </span>
-              <span className="text-xs font-bold text-white/80 flex items-center gap-0.5 font-mono">
-                100% Confirmed
-              </span>
-            </div>
-            <p className="text-xs text-white/50">Deployment manifest active</p>
-          </div>
-        </div>
 
-        {/* Main Content Grid: Industry Events + Recent Demo Bookings */}
-        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          </div>
+
+        </motion.div>
+
+        {/* 5. Data Pipelines: High-Contrast CRM Table + Upcoming Summits */}
+        <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           
-          {/* Left Column: Upcoming Industry Events */}
-          <div className="lg:col-span-7 space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <CalendarDays className="w-4 h-4 text-blue-400" />
-                <span>Upcoming Industry Events (Internal)</span>
-              </h3>
-              <Link href="/dashboard/events" className="text-xs text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1">
-                View All <ArrowUpRight className="w-3.5 h-3.5" />
+          {/* Left: Leads CRM Table (8 Cols) */}
+          <div className="lg:col-span-8 rounded-2xl border border-slate-200/90 bg-white p-6 space-y-4 shadow-2xs text-left">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div>
+                <h2 className="text-base font-bold text-slate-900">
+                  Recent Inbound Leads
+                </h2>
+                <p className="text-xs text-slate-500 font-medium">
+                  Latest summit visitors and demo inquiries routed to product owners.
+                </p>
+              </div>
+
+              <Link
+                href="/dashboard/leads"
+                className="text-xs font-bold text-[#0090AD] hover:text-[#007A94] flex items-center gap-1 group"
+              >
+                <span>View all ({leads.length})</span>
+                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+              </Link>
+            </div>
+
+            <div className="overflow-x-auto">
+              <table className="w-full text-left text-xs border-collapse">
+                <thead>
+                  <tr className="border-b border-slate-200 bg-slate-50/80 text-slate-700 uppercase tracking-wider text-[10px] font-bold">
+                    <th className="py-3 px-3.5">Visitor & Contact</th>
+                    <th className="py-3 px-3.5">Company</th>
+                    <th className="py-3 px-3.5">Product</th>
+                    <th className="py-3 px-3.5">Status</th>
+                    <th className="py-3 px-3.5">Specialist</th>
+                  </tr>
+                </thead>
+                <tbody className="divide-y divide-slate-100">
+                  {recentLeads.map((lead) => (
+                    <tr key={lead.id} className="hover:bg-slate-50/90 transition-colors">
+                      {/* Visitor */}
+                      <td className="py-3.5 px-3.5">
+                        <div className="font-bold text-slate-900 truncate max-w-[140px]">
+                          {lead.visitorName}
+                        </div>
+                        <div className="text-[11px] text-slate-500 truncate max-w-[140px]">
+                          {lead.email}
+                        </div>
+                      </td>
+
+                      {/* Company */}
+                      <td className="py-3.5 px-3.5 font-semibold text-slate-700 truncate max-w-[120px]">
+                        {lead.company || "Enterprise Corp"}
+                      </td>
+
+                      {/* Product */}
+                      <td className="py-3.5 px-3.5">
+                        <span className="px-2.5 py-1 rounded-md bg-slate-100 text-slate-900 text-[11px] font-mono font-semibold border border-slate-200/80">
+                          {lead.productInterested || "Bulkwave"}
+                        </span>
+                      </td>
+
+                      {/* Status */}
+                      <td className="py-3.5 px-3.5">
+                        <span className={cn(
+                          "inline-block text-[10px] font-bold px-2.5 py-1 rounded-full border",
+                          lead.status === "Unread" && "bg-slate-100 text-slate-700 border-slate-200",
+                          lead.status === "Qualified" && "bg-[#E8F8FA] text-[#00829B] border-[#20B2AA]/30",
+                          lead.status === "Converted" && "bg-emerald-50 text-emerald-800 border-emerald-200",
+                          lead.status === "Followed Up" && "bg-amber-50 text-amber-800 border-amber-200",
+                          lead.status === "Closed" && "bg-slate-100 text-slate-500 border-slate-200"
+                        )}>
+                          {lead.status}
+                        </span>
+                      </td>
+
+                      {/* Owner */}
+                      <td className="py-3.5 px-3.5 text-[11px] text-slate-600 font-medium truncate max-w-[100px]">
+                        {lead.assignedProductOwner || "Product Specialist"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          {/* Right: Upcoming Summits (4 Cols) */}
+          <div className="lg:col-span-4 rounded-2xl border border-slate-200/90 bg-white p-6 space-y-4 shadow-2xs text-left">
+            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+              <div>
+                <h2 className="text-base font-bold text-slate-900">
+                  Upcoming Summits
+                </h2>
+                <p className="text-xs text-slate-500 font-medium">Active schedules & venues</p>
+              </div>
+
+              <Link
+                href="/dashboard/events"
+                className="text-xs font-bold text-[#0090AD] hover:text-[#007A94] flex items-center gap-1 group"
+              >
+                <span>All events</span>
+                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
               </Link>
             </div>
 
             <div className="space-y-3">
-              {events.slice(0, 3).map((evt) => (
+              {upcomingEvents.map((evt) => (
                 <div
                   key={evt.id}
-                  className="rounded-2xl border border-white/10 bg-black/60 backdrop-blur-xl p-4 space-y-3 hover:border-white/20 transition-all"
+                  className="p-4 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-slate-100/80 transition-colors space-y-2"
                 >
-                  <div className="flex items-start justify-between">
-                    <div>
-                      <span className="text-[10px] font-mono text-white/50 uppercase tracking-wider">
-                        {evt.category} • {evt.location}
-                      </span>
-                      <h4 className="text-sm font-bold text-white mt-0.5">{evt.title}</h4>
-                      <p className="text-xs text-white/60 line-clamp-2 mt-1">{evt.description}</p>
-                    </div>
-                    <span className="text-xs font-mono font-bold text-blue-400 bg-blue-500/10 px-2.5 py-1 rounded-full border border-blue-500/30 shrink-0">
-                      {evt.date}
+                  <div className="flex items-start justify-between gap-2">
+                    <span className="text-xs font-bold text-slate-900 line-clamp-1">
+                      {evt.title}
+                    </span>
+                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-700 font-semibold shrink-0">
+                      {evt.category}
                     </span>
                   </div>
 
-                  <div className="flex items-center justify-between pt-2 border-t border-white/5 text-xs text-white/60">
-                    <span className="flex items-center gap-1.5">
-                      <Users className="w-3.5 h-3.5 text-blue-400" />
-                      <span>FifthLab Confirmed: <strong className="text-white">{evt.confirmedStaffCount} staff</strong></span>
-                    </span>
-                    <span className="flex items-center gap-1 text-emerald-400 font-semibold">
-                      <CheckCircle2 className="w-3.5 h-3.5" /> Tracking Active
-                    </span>
+                  <div className="flex items-center justify-between text-[11px] text-slate-600 font-medium">
+                    <span>{evt.city} • {evt.date}</span>
+                    <span className="text-[#00829B] font-bold font-mono">{evt.expectedAttendance} RSVPs</span>
                   </div>
                 </div>
               ))}
             </div>
           </div>
 
-          {/* Right Column: Recent Public Demo Bookings */}
-          <div className="lg:col-span-5 space-y-4">
-            <div className="flex items-center justify-between">
-              <h3 className="text-base font-bold text-white flex items-center gap-2">
-                <Users className="w-4 h-4 text-purple-400" />
-                <span>Recent Demo Bookings (Leads)</span>
-              </h3>
-              <Link href="/dashboard/leads" className="text-xs text-blue-400 hover:text-blue-300 font-semibold flex items-center gap-1">
-                Command Center <ArrowUpRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
+        </motion.div>
 
-            <div className="space-y-3">
-              {leads.slice(0, 4).map((lead) => (
-                <div
-                  key={lead.id}
-                  className="rounded-2xl border border-white/10 bg-black/60 backdrop-blur-xl p-3.5 flex items-center justify-between gap-3 hover:border-white/20 transition-all"
-                >
-                  <div className="min-w-0">
-                    <div className="flex items-center gap-2">
-                      <h4 className="text-xs font-bold text-white truncate">{lead.visitorName}</h4>
-                      <span className="text-[10px] text-white/50 truncate">({lead.company})</span>
-                    </div>
-                    <p className="text-[11px] text-white/60 truncate mt-0.5">
-                      Product: <span className="text-blue-400">{lead.productInterested}</span>
-                    </p>
-                  </div>
+        {/* Modals */}
+        <AddLeadModal
+          isOpen={isAddLeadOpen}
+          onClose={() => setIsAddLeadOpen(false)}
+        />
 
-                  <span className={cn(
-                    "text-[10px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full border shrink-0",
-                    lead.status === "Unread" && "bg-blue-500/20 text-blue-400 border-blue-500/30",
-                    lead.status === "Followed Up" && "bg-emerald-500/20 text-emerald-400 border-emerald-500/30",
-                    lead.status === "Qualified" && "bg-amber-500/20 text-amber-400 border-amber-500/30",
-                    lead.status === "Converted" && "bg-purple-500/20 text-purple-400 border-purple-500/30"
-                  )}>
-                    {lead.status}
-                  </span>
-                </div>
-              ))}
-            </div>
-          </div>
+        <AddEventModal
+          isOpen={isAddEventOpen}
+          onClose={() => setIsAddEventOpen(false)}
+        />
 
-        </div>
-
-      </div>
+      </motion.div>
     </DashboardLayout>
   );
 }

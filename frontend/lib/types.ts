@@ -25,11 +25,14 @@ export interface FifthLabEvent {
   description: string;
   strategicNotes: string;
   boothNumber?: string;
+  imageUrl?: string;
   expectedAttendance: number;
   confirmedStaffCount: number;
   isFifthLabAttending: boolean;
   attendanceManifest: AttendanceRecord[];
 }
+
+export type Event = FifthLabEvent;
 
 export type LeadStatus = "Unread" | "Followed Up" | "Qualified" | "Converted" | "Closed";
 

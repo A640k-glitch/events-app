@@ -1,162 +1,127 @@
 @import "tailwindcss";
 
-:root {
-  --background: #08090b;
-  --foreground: #f8fafc;
-  --surface: #11141d;
-  --surface-hover: #161a26;
-  --surface-elevated: #1a1e2c;
-  --border: rgba(255, 255, 255, 0.08);
-  --border-active: #0a84ff;
-  --accent-blue: #0a84ff;
-  --accent-blue-hover: #0070e0;
-  --text-muted: #94a3b8;
-  --text-dim: #64748b;
+@theme {
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  --font-mono: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+  
+  --color-brand-cyan: #30B5C1;
+  --color-brand-cyan-hover: #25A7B7;
+  --color-brand-teal: #229EA6;
+  --color-brand-navy: #111C4E;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --color-surface: var(--surface);
-  --color-surface-hover: var(--surface-hover);
-  --color-surface-elevated: var(--surface-elevated);
-  --color-border: var(--border);
-  --color-border-active: var(--border-active);
-  --color-accent-blue: var(--accent-blue);
-  --color-text-muted: var(--text-muted);
-  --color-text-dim: var(--text-dim);
-  --font-sans: var(--font-sans), Arial, Helvetica, sans-serif;
-  --font-heading: var(--font-sans), Arial, Helvetica, sans-serif;
-  --font-mono: var(--font-mono), monospace;
+:root {
+  --font-sans: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  --font-mono: source-code-pro, Menlo, Monaco, Consolas, 'Courier New', monospace;
+
+  /* Core Neutral Palette */
+  --color-bg-light: #FFFFFF;
+  --color-bg-subtle: #F8F9FA;
+  --color-bg-card-light: #FFFFFF;
+  --color-border-light: #EBECEF;
+  
+  /* Dark Surface Palette */
+  --color-bg-dark: #0A0D14;
+  --color-bg-dark-surface: #11141E;
+  --color-bg-dark-charcoal: #1A1D23;
+  --color-border-dark: rgba(255, 255, 255, 0.08);
+  
+  /* Brand Accent Colors (Aligned with Finedge & FifthLab Palette) */
+  --color-brand-cyan: #30B5C1;
+  --color-brand-cyan-hover: #25A7B7;
+  --color-brand-teal: #229EA6;
+  --color-brand-navy: #111C4E;
+  
+  /* Pastel Accents */
+  --color-pastel-lavender: #F4EEFB;
+  --color-pastel-pink: #FDF2F4;
+  --color-pastel-blue: #EEF8FF;
+  
+  /* Typography Tokens */
+  --color-text-primary-light: #111827;
+  --color-text-secondary-light: #64748B;
+  --color-text-muted-light: #7C7C7C;
+  
+  --color-text-primary-dark: #F5F5F7;
+  --color-text-secondary-dark: #A3A3B2;
+  --color-text-muted-dark: #64748B;
 }
 
 * {
   box-sizing: border-box;
 }
 
-html,
 body {
-  background-color: #08090b;
-  color: #f8fafc;
-  font-family: Arial, Helvetica, var(--font-sans), sans-serif;
-  font-weight: 300;
-  min-height: 100vh;
   margin: 0;
-  padding: 0;
-  overflow-x: hidden;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
 
-h1, h2, h3, h4, h5, h6, .font-heading {
-  font-family: Arial, Helvetica, var(--font-sans), sans-serif;
-  font-weight: 400;
-  letter-spacing: -0.01em;
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
 }
 
-/* Cream/White High Contrast Section Background */
-.bg-cream-contrast {
-  background-color: #faf8f5;
-  color: #090a0f;
-}
-
-/* Sharp Rectangular Tag Badges (No Generic Rounded Pills) */
-.arch-tag {
-  font-size: 11px;
-  font-weight: 500;
-  padding: 3px 8px;
-  border-radius: 4px;
-  border: 1px solid rgba(255, 255, 255, 0.15);
-  background: rgba(255, 255, 255, 0.05);
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  white-space: nowrap;
-}
-
-.arch-tag-light {
-  font-size: 11px;
-  font-weight: 500;
-  padding: 3px 8px;
-  border-radius: 4px;
-  border: 1px solid rgba(0, 0, 0, 0.15);
-  background: rgba(0, 0, 0, 0.04);
-  color: #090a0f;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  white-space: nowrap;
-}
-
-/* Multi-Layered Abstract Geometric Vector Grid Lines */
-.bg-geometric-lines {
+/* Subtle background grid pattern at 3% opacity */
+.bg-subtle-grid {
   background-image: 
-    radial-gradient(circle at 50% 0%, rgba(37, 99, 235, 0.06) 0%, transparent 60%),
-    linear-gradient(135deg, rgba(37, 99, 235, 0.06) 25%, transparent 25%),
-    linear-gradient(225deg, rgba(37, 99, 235, 0.06) 25%, transparent 25%),
-    linear-gradient(45deg, rgba(0, 0, 0, 0.03) 25%, transparent 25%),
-    linear-gradient(315deg, rgba(0, 0, 0, 0.03) 25%, transparent 25%),
-    linear-gradient(to right, rgba(0, 0, 0, 0.05) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 0, 0, 0.05) 1px, transparent 1px);
-  background-position: 0 0, 0 0, 0 0, 24px 24px, 24px 24px, 0 0, 0 0;
-  background-size: 100% 100%, 48px 48px, 48px 48px, 48px 48px, 48px 48px, 48px 48px, 48px 48px;
+    linear-gradient(to right, rgba(0, 0, 0, 0.035) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(0, 0, 0, 0.035) 1px, transparent 1px);
+  background-size: 32px 32px;
 }
 
-/* Dark Mode Multi-Layered Abstract Geometric Lines */
-.bg-dark-geometric-lines {
+.bg-subtle-dark-grid {
   background-image: 
-    radial-gradient(circle at 50% 0%, rgba(59, 130, 246, 0.12) 0%, transparent 70%),
-    linear-gradient(135deg, rgba(59, 130, 246, 0.06) 25%, transparent 25%),
-    linear-gradient(225deg, rgba(59, 130, 246, 0.06) 25%, transparent 25%),
-    linear-gradient(to right, rgba(255, 255, 255, 0.04) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
-  background-size: 100% 100%, 64px 64px, 64px 64px, 32px 32px, 32px 32px;
+    linear-gradient(to right, rgba(255, 255, 255, 0.03) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.03) 1px, transparent 1px);
+  background-size: 28px 28px;
 }
 
-/* Clean Monochrome Architectural Cards (No Color Accents) */
-.arch-card {
-  background: rgba(17, 20, 29, 0.9);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  border-radius: 8px;
-  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.4);
-  transition: all 0.2s ease;
+/* Charcoal and hairline utilities */
+.charcoal-card {
+  background-color: #1A1D23;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 16px;
 }
 
-.arch-card:hover {
-  border-color: rgba(255, 255, 255, 0.3);
-  transform: translateY(-2px);
+.hairline-card-dark {
+  background-color: #11141E;
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  border-radius: 12px;
 }
 
-/* Status Badges - STRICTLY NO LINE BREAKS / WRAPPING */
-.status-badge {
-  white-space: nowrap !important;
-  display: inline-flex !important;
-  align-items: center !important;
-  justify-content: center !important;
-  min-width: max-content !important;
-  padding: 3px 8px !important;
-  font-size: 10px !important;
-  font-weight: 500 !important;
-  border-radius: 4px !important;
+.hairline-card-light {
+  background-color: #FFFFFF;
+  border: 1px solid #EBECEF;
+  border-radius: 16px;
 }
 
-/* Custom Scrollbar */
+/* Subtle Scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 5px;
+  height: 5px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #08090b;
+  background: transparent;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1e293b;
-  border-radius: 4px;
+  background: rgba(150, 150, 150, 0.2);
+  border-radius: 9999px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #334155;
+  background: rgba(150, 150, 150, 0.4);
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
 }

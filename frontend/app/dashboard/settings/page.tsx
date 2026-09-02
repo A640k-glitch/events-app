@@ -1,37 +1,57 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import { Shield, Calendar, Save, Check } from "lucide-react";
+import { Shield, Calendar, Save, CheckCircle2, Clock } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 
 export default function SettingsPage() {
-  const { user } = useApp();
+  const { user, updateUserProfile } = useApp();
+  const [displayName, setDisplayName] = useState(user?.name || "");
+  const [timezone, setTimezone] = useState("WAT");
   const [saved, setSaved] = useState(false);
+  const [isSaving, setIsSaving] = useState(false);
 
-  const handleSave = (e: React.FormEvent) => {
+  useEffect(() => {
+    if (user?.name) {
+      setDisplayName(user.name);
+    }
+  }, [user?.name]);
+
+  const handleSave = async (e: React.FormEvent) => {
     e.preventDefault();
-    setSaved(true);
-    setTimeout(() => setSaved(false), 3000);
+    try {
+      setIsSaving(true);
+      await updateUserProfile({
+        name: displayName.trim(),
+        timezone,
+      });
+      setSaved(true);
+      setTimeout(() => setSaved(false), 3000);
+    } catch (err) {
+      console.error("Failed to save settings:", err);
+    } finally {
+      setIsSaving(false);
+    }
   };
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 max-w-4xl font-sans text-left">
+      <div className="space-y-6 max-w-4xl font-sans text-left text-slate-900">
         
-        {/* Header Title Bar */}
-        <div className="flex items-center justify-between pb-4 border-b border-white/10">
+        {/* Header Bar Card */}
+        <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <div className="flex items-center gap-3">
-              <h1 className="text-xl sm:text-2xl font-normal tracking-tight text-white font-heading">
-                System Settings
+            <div className="flex items-center gap-2.5">
+              <h1 className="text-2xl font-extrabold tracking-tight text-slate-900">
+                Organization & Preferences
               </h1>
-              <span className="text-[10px] text-blue-400 font-semibold tracking-wider uppercase">
-                FIFTHLAB NIGERIA & CWG PLC
+              <span className="text-[11px] text-[#0090AD] font-bold px-2.5 py-0.5 rounded-full bg-[#E8F8FA] border border-[#20B2AA]/20 font-mono">
+                FifthLab Ecosystem
               </span>
             </div>
-            <p className="text-xs text-white/60 mt-1 font-light">
-              Organization preferences, West Africa Time (WAT) calendar sync, and corporate access controls.
+            <p className="text-xs text-slate-500 font-medium mt-1">
+              Corporate identity preferences, West Africa Time (WAT) normalization, and system access parameters.
             </p>
           </div>
         </div>
@@ -39,91 +59,91 @@ export default function SettingsPage() {
         <form onSubmit={handleSave} className="space-y-6">
           
           {/* Section 1: User Profile Settings */}
-          <div className="border border-white/10 bg-black/60 backdrop-blur-xl p-6 space-y-4 shadow-xl">
-            <h2 className="text-sm font-medium text-white tracking-tight flex items-center gap-2 font-heading">
-              <Shield className="w-4 h-4 text-blue-400" /> Profile & Access Identity
+          <div className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-7 space-y-5 shadow-2xs">
+            <h2 className="text-sm font-bold text-[#111827] tracking-tight flex items-center gap-2">
+              <Shield className="w-4 h-4 text-[#0090AD]" /> Corporate Profile & Identity
             </h2>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs font-light">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
               <div className="space-y-1.5">
-                <label className="text-white/70 font-medium">Display Name</label>
+                <label className="text-gray-700 font-semibold">Display Name</label>
                 <input
                   type="text"
-                  defaultValue={user ? user.name : "Olumide Adebayo"}
-                  className="w-full bg-white/5 border border-white/10 focus:border-blue-500 text-white p-2.5 outline-none font-medium"
+                  required
+                  value={displayName}
+                  onChange={(e) => setDisplayName(e.target.value)}
+                  placeholder="Your Corporate Name"
+                  className="w-full bg-white border border-gray-200 rounded-xl px-3.5 py-2 text-[#111827] focus:outline-none focus:border-[#0090AD]"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-white/70 font-medium">Work Email</label>
+                <label className="text-gray-700 font-semibold">Work Email</label>
                 <input
                   type="email"
-                  defaultValue={user ? user.email : "olumide.adebayo@fifthlab.ng"}
-                  className="w-full bg-white/5 border border-white/10 focus:border-blue-500 text-white p-2.5 outline-none font-medium"
+                  readOnly
+                  value={user?.email || ""}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2 text-gray-500 cursor-not-allowed font-medium"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-white/70 font-medium">System Role</label>
+                <label className="text-gray-700 font-semibold">System Role</label>
                 <input
                   type="text"
                   readOnly
-                  value={user ? user.role : "VP of Product • FifthLab Nigeria"}
-                  className="w-full bg-white/5 border border-white/10 text-emerald-400 p-2.5 font-medium outline-none cursor-not-allowed"
+                  value={user?.role || "STAFF"}
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2 text-[#0090AD] font-mono font-semibold cursor-not-allowed"
                 />
               </div>
 
               <div className="space-y-1.5">
-                <label className="text-white/70 font-medium">Default Timezone</label>
-                <select className="w-full bg-black/80 border border-white/10 focus:border-blue-500 text-white p-2.5 outline-none font-medium">
-                  <option>WAT (UTC+1) - West Africa Time (Lagos, Abuja)</option>
-                  <option>GMT (UTC+0) - Greenwich Mean Time (Accra, London)</option>
-                  <option>CAT (UTC+2) - Central Africa Time</option>
+                <label className="text-gray-700 font-semibold">Timezone Normalization</label>
+                <select
+                  value={timezone}
+                  onChange={(e) => setTimezone(e.target.value)}
+                  className="w-full bg-white border border-gray-200 rounded-xl px-3.5 py-2 text-[#111827] focus:outline-none focus:border-[#0090AD]"
+                >
+                  <option value="WAT">West Africa Time (WAT) — Lagos / Abuja (UTC+1)</option>
+                  <option value="GMT">Greenwich Mean Time (GMT) — Accra (UTC+0)</option>
+                  <option value="EAT">East Africa Time (EAT) — Nairobi / Kigali (UTC+3)</option>
                 </select>
               </div>
             </div>
           </div>
 
-          {/* Section 2: Calendar Integration Settings */}
-          <div className="border border-white/10 bg-black/60 backdrop-blur-xl p-6 space-y-4 shadow-xl">
-            <h2 className="text-sm font-medium text-white tracking-tight flex items-center gap-2 font-heading">
-              <Calendar className="w-4 h-4 text-emerald-400" /> Calendar & Corporate Sync
+          {/* Section 2: Security & Session Status */}
+          <div className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-7 space-y-4 shadow-2xs">
+            <h2 className="text-sm font-bold text-[#111827] tracking-tight flex items-center gap-2">
+              <Clock className="w-4 h-4 text-[#0090AD]" /> Security & Access Audit
             </h2>
 
-            <div className="space-y-3 text-xs font-light">
-              <div className="p-3.5 bg-white/5 border border-white/5 flex items-center justify-between">
-                <div>
-                  <h3 className="text-white font-medium">FifthLab & CWG Enterprise Calendar</h3>
-                  <p className="text-white/50">Auto-pull product owner availability & emit direct invitations</p>
-                </div>
-                <span className="text-[10px] text-emerald-400 font-semibold tracking-wider uppercase">
-                  CONNECTED
-                </span>
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs bg-gray-50 p-4 rounded-xl border border-gray-200">
+              <div className="space-y-0.5">
+                <div className="font-bold text-[#111827]">Two-Factor OTP Authentication</div>
+                <div className="text-gray-500">Corporate single-use passcodes delivered to verified inboxes.</div>
               </div>
-
-              <div className="p-3.5 bg-white/5 border border-white/5 flex items-center justify-between">
-                <div>
-                  <h3 className="text-white font-medium">Microsoft 365 / Outlook Sync</h3>
-                  <p className="text-white/50">Corporate Exchange calendar sync for West Africa team leads</p>
-                </div>
-                <span className="text-[10px] text-emerald-400 font-semibold tracking-wider uppercase">
-                  CONNECTED
-                </span>
-              </div>
+              <span className="px-2.5 py-1 rounded-full bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold text-[11px] self-start sm:self-auto">
+                Enforced & Active
+              </span>
             </div>
           </div>
 
-          {/* Save Button */}
-          <div className="flex items-center justify-between pt-2">
-            <span className="text-xs text-white/50 font-light">
-              FifthLab Nigeria & CWG PLC Engine v2.1
-            </span>
+          {/* Submit */}
+          <div className="flex items-center justify-end gap-3 pt-2">
+            {saved && (
+              <span className="text-xs font-semibold text-emerald-600 flex items-center gap-1.5">
+                <CheckCircle2 className="w-4 h-4" /> Preferences saved successfully
+              </span>
+            )}
+
             <button
               type="submit"
-              className="px-6 py-2.5 bg-blue-600 hover:bg-blue-500 text-white text-xs font-medium transition-all shadow-lg flex items-center gap-2 cursor-pointer"
+              disabled={isSaving}
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#0090AD] hover:bg-[#007A94] text-white text-xs font-semibold rounded-xl shadow-xs transition-all cursor-pointer"
             >
-              {saved ? <Check className="w-4 h-4 text-emerald-400" /> : <Save className="w-4 h-4" />}
-              <span>{saved ? "Settings Saved" : "Save Changes"}</span>
+              <Save className="w-3.5 h-3.5" />
+              <span>{isSaving ? "Saving..." : "Save Preferences"}</span>
             </button>
           </div>
 

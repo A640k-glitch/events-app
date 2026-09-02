@@ -1,54 +1,61 @@
 import { Request, Response, NextFunction } from "express";
+import { UserRole } from "@prisma/client";
+import { verifyAuthToken, AuthUserPayload } from "../services/jwt.service.js";
 
 export interface AuthenticatedRequest extends Request {
-  user?: {
-    id: string;
-    email: string;
-    name: string;
-    role: string;
-  };
+  user?: AuthUserPayload;
 }
 
-export function requireAuth(req: AuthenticatedRequest, res: Response, next: NextFunction) {
-  // Allow development mock auth bypass when configured
-  if (process.env.ENABLE_DEV_AUTH_BYPASS === "true") {
-    const devRole = (req.headers["x-dev-role"] as string) || "ADMIN";
-    req.user = {
-      id: "usr_abraham",
-      email: "abraham.akinwole@thefifthlab.com",
-      name: "Abraham Akinwole",
-      role: devRole,
-    };
-    return next();
-  }
-
+/**
+ * Enforces verified JWT Bearer token authentication.
+ * Restricted strictly to verified corporate @thefifthlab.com domains.
+ */
+export function requireAuth(req: AuthenticatedRequest, res: Response, next: NextFunction): void {
   const authHeader = req.headers.authorization;
+
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
-    return res.status(401).json({
+    res.status(401).json({
       success: false,
-      error: "Authentication required. Please provide a valid Bearer token.",
+      error: "Authentication required. Please provide a valid corporate Bearer token.",
     });
+    return;
   }
 
-  // Verify @thefifthlab.com restriction
-  const userEmail = req.headers["x-user-email"] as string;
-  if (userEmail && !userEmail.endsWith("@thefifthlab.com")) {
-    return res.status(403).json({
+  const token = authHeader.slice(7).trim();
+
+  try {
+    const decodedUser = verifyAuthToken(token);
+
+    if (!decodedUser.email.toLowerCase().endsWith("@thefifthlab.com")) {
+      res.status(403).json({
+        success: false,
+        error: "Forbidden: Only authorized @thefifthlab.com corporate accounts are permitted.",
+      });
+      return;
+    }
+
+    req.user = decodedUser;
+    next();
+  } catch (err: unknown) {
+    const message = err instanceof Error ? err.message : "Invalid or expired token";
+    res.status(401).json({
       success: false,
-      error: "Access denied. Only @thefifthlab.com corporate accounts are permitted.",
+      error: `Unauthorized: ${message}`,
     });
   }
-
-  next();
 }
 
-export function requireRole(allowedRoles: string[]) {
-  return (req: AuthenticatedRequest, res: Response, next: NextFunction) => {
+/**
+ * Role-Based Access Control (RBAC)
+ */
+export function requireRole(allowedRoles: UserRole[]) {
+  return (req: AuthenticatedRequest, res: Response, next: NextFunction): void => {
     if (!req.user || !allowedRoles.includes(req.user.role)) {
-      return res.status(403).json({
+      res.status(403).json({
         success: false,
-        error: `Forbidden: Requires one of following roles [${allowedRoles.join(", ")}]`,
+        error: `Forbidden: Requires one of the following roles [${allowedRoles.join(", ")}]`,
       });
+      return;
     }
     next();
   };

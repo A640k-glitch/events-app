@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { 
   LayoutDashboard, 
@@ -9,14 +8,14 @@ import {
   Users, 
   Layers, 
   Settings, 
-  ExternalLink,
-  ChevronRight,
   LogOut,
-  Sparkles,
-  Ticket
+  UserCheck,
+  ChevronLeft,
+  User as UserIcon
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { useApp } from "@/context/AppContext";
+import FifthEventsLogo, { FifthEventsEmblem } from "@/components/brand/FifthEventsLogo";
 
 interface SidebarProps {
   isOpen?: boolean;
@@ -25,14 +24,63 @@ interface SidebarProps {
 
 export default function Sidebar({ isOpen, onClose }: SidebarProps) {
   const pathname = usePathname();
-  const { user, logout } = useApp();
+  const { user, logout, stats } = useApp();
 
-  const navItems = [
-    { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
-    { name: "Events Manifest", href: "/dashboard/events", icon: CalendarDays },
-    { name: "Captured Leads", href: "/dashboard/leads", icon: Users },
-    { name: "Products Console", href: "/dashboard/products", icon: Layers },
-    { name: "System Settings", href: "/dashboard/settings", icon: Settings },
+  const navSections = [
+    {
+      title: "ADMIN CENTER",
+      items: [
+        { 
+          name: "Dashboard", 
+          href: "/dashboard", 
+          icon: LayoutDashboard,
+          badge: "LIVE",
+          badgeColor: "bg-[#20B2AA]/20 text-[#2DD4BF] border border-[#20B2AA]/30"
+        },
+      ]
+    },
+    {
+      title: "OPERATIONS",
+      items: [
+        { 
+          name: "Events & Summits", 
+          href: "/dashboard/events", 
+          icon: CalendarDays,
+          badge: stats.upcomingEventsCount > 0 ? `${stats.upcomingEventsCount}` : null,
+          badgeColor: "bg-slate-800 text-slate-300 border border-slate-700"
+        },
+        { 
+          name: "Attendee Leads", 
+          href: "/dashboard/leads", 
+          icon: Users,
+          badge: stats.unreadLeadsCount > 0 ? `${stats.unreadLeadsCount} new` : null,
+          badgeColor: "bg-[#20B2AA]/20 text-[#2DD4BF] border border-[#20B2AA]/30"
+        },
+        { 
+          name: "Product Demos", 
+          href: "/dashboard/products", 
+          icon: Layers,
+          badge: null
+        },
+      ]
+    },
+    {
+      title: "ORGANIZATION",
+      items: [
+        { 
+          name: "Team Directory", 
+          href: "/dashboard/team", 
+          icon: UserCheck,
+          badge: null
+        },
+        { 
+          name: "Preferences & WAT", 
+          href: "/dashboard/settings", 
+          icon: Settings,
+          badge: null
+        },
+      ]
+    }
   ];
 
   return (
@@ -40,124 +88,137 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       {/* Mobile Backdrop */}
       {isOpen && (
         <div 
-          className="fixed inset-0 bg-black/80 backdrop-blur-sm z-40 lg:hidden"
+          className="fixed inset-0 bg-black/60 backdrop-blur-xs z-40 lg:hidden"
           onClick={onClose}
         />
       )}
 
+      {/* FifthEvents Compact Midnight Left Navigation Sidebar */}
       <aside
         className={cn(
-          "w-full lg:w-64 rounded-2xl border border-white/10 bg-black/80 backdrop-blur-xl p-4 flex flex-col justify-between shadow-2xl transition-all font-sans shrink-0",
-          isOpen ? "fixed inset-y-4 left-4 z-50 w-72" : "hidden lg:flex"
+          "w-60 bg-gradient-to-b from-[#0F172A] via-[#0D1527] to-[#0A1020] border-r border-slate-800/80 p-3.5 flex flex-col justify-between shrink-0 font-sans z-40 transition-all text-left relative overflow-hidden",
+          isOpen
+            ? "fixed inset-y-0 left-0 shadow-2xl flex"
+            : "hidden lg:flex lg:sticky lg:top-0 lg:h-screen"
         )}
       >
-        <div className="space-y-6">
-          {/* Header */}
-          <div className="flex items-center justify-between pb-3 border-b border-white/10">
-            <div className="flex items-center gap-2.5">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-tr from-blue-600 via-indigo-500 to-cyan-400 p-0.5 flex items-center justify-center shadow-lg shrink-0">
-                <div className="w-full h-full bg-black rounded-full overflow-hidden flex items-center justify-center">
-                  <Image
-                    src="/plogo.jpg"
-                    alt="FifthLab Logo"
-                    width={32}
-                    height={32}
-                    className="w-full h-full object-cover rounded-full"
-                  />
+        {/* Vibrant Colored Logo SVG Watermark in Background */}
+        <div className="absolute -bottom-8 -left-8 pointer-events-none -z-0 opacity-[0.14] select-none rotate-[-8deg] filter drop-shadow-[0_10px_20px_rgba(0,144,173,0.3)]">
+          <FifthEventsEmblem size={240} monochrome={false} />
+        </div>
+        
+        {/* Subtle Ambient Top Glow */}
+        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-40 h-20 bg-[#0090AD]/15 blur-2xl pointer-events-none -z-0" />
+
+        {/* Top & Navigation Content with Tight Spacing */}
+        <div className="space-y-4 relative z-10">
+          
+          {/* 1. Back to Home Link */}
+          <Link
+            href="/"
+            className="inline-flex items-center gap-1 text-[11px] font-semibold text-slate-400 hover:text-[#2DD4BF] transition-colors group"
+          >
+            <ChevronLeft className="w-3.5 h-3.5 group-hover:-translate-x-0.5 transition-transform" />
+            <span>Back to home</span>
+          </Link>
+
+          {/* 2. Admin Center Header & FifthEvents Logo */}
+          <div className="space-y-1 pt-0.5 pb-0.5">
+            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest font-mono block">
+              ADMIN CONSOLE
+            </span>
+            <div className="pt-0.5">
+              <FifthEventsLogo size={22} theme="dark" showSubtitle={true} />
+            </div>
+          </div>
+
+          {/* 3. Navigation Groups (Tight, Compact Spacing) */}
+          <nav className="space-y-3.5 pt-0.5">
+            {navSections.map((section) => (
+              <div key={section.title} className="space-y-1">
+                <span className="text-[9.5px] font-bold text-slate-500 uppercase tracking-wider px-2.5 font-mono block">
+                  {section.title}
+                </span>
+
+                <div className="space-y-0.5">
+                  {section.items.map((item) => {
+                    const isActive = pathname === item.href;
+                    const Icon = item.icon;
+
+                    return (
+                      <Link
+                        key={item.name}
+                        href={item.href}
+                        onClick={onClose}
+                        className={cn(
+                          "w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-[11.5px] font-medium transition-all group",
+                          isActive
+                            ? "bg-gradient-to-r from-[#0090AD] to-[#229EA6] text-white font-bold shadow-md shadow-[#0090AD]/25"
+                            : "text-slate-400 hover:text-white hover:bg-white/[0.07]"
+                        )}
+                      >
+                        <div className="flex items-center gap-2.5 min-w-0">
+                          <Icon className={cn(
+                            "w-3.5 h-3.5 shrink-0 transition-colors",
+                            isActive ? "text-white" : "text-slate-400 group-hover:text-white"
+                          )} />
+                          <span className="truncate">{item.name}</span>
+                        </div>
+
+                        {item.badge && (
+                          <span className={cn(
+                            "text-[9px] px-1.5 py-0.5 rounded-md font-mono shrink-0 leading-none",
+                            isActive
+                              ? "bg-white/20 text-white font-bold"
+                              : item.badgeColor || "bg-slate-800 text-slate-300"
+                          )}>
+                            {item.badge}
+                          </span>
+                        )}
+                      </Link>
+                    );
+                  })}
                 </div>
               </div>
-              <div className="flex flex-col">
-                <span className="text-sm font-bold text-white tracking-tight">
-                  Console Hub
-                </span>
-                <span className="text-[10px] text-white/50 font-mono">
-                  FifthLab Nexus v2.1
-                </span>
-              </div>
-            </div>
-            <span className="px-2 py-0.5 text-[10px] font-mono font-bold bg-blue-500/20 text-blue-400 rounded-full border border-blue-500/30">
-              Live
-            </span>
-          </div>
-
-          {/* Navigation Pills */}
-          <div className="space-y-1.5">
-            <div className="text-[10px] font-mono text-white/40 uppercase tracking-wider px-3 pb-1">
-              Modules & Tabs
-            </div>
-
-            {navItems.map((item) => {
-              const Icon = item.icon;
-              const isActive = pathname === item.href || (item.href !== "/dashboard" && pathname.startsWith(item.href));
-
-              return (
-                <Link
-                  key={item.href}
-                  href={item.href}
-                  onClick={onClose}
-                  className={cn(
-                    "flex items-center justify-between px-3.5 py-2.5 text-xs font-semibold rounded-full transition-all group cursor-pointer",
-                    isActive
-                      ? "bg-blue-600 text-white shadow-lg shadow-blue-600/30"
-                      : "text-white/70 hover:text-white hover:bg-white/10"
-                  )}
-                >
-                  <div className="flex items-center gap-3">
-                    <Icon className={cn("w-4 h-4 transition-colors", isActive ? "text-white" : "text-white/50 group-hover:text-blue-400")} />
-                    <span>{item.name}</span>
-                  </div>
-                  {isActive && <ChevronRight className="w-3.5 h-3.5 text-white" />}
-                </Link>
-              );
-            })}
-          </div>
-
-          {/* Public Gateway Section */}
-          <div className="space-y-1.5 pt-2 border-t border-white/10">
-            <div className="text-[10px] font-mono text-white/40 uppercase tracking-wider px-3 pb-1">
-              Visitor Gateway
-            </div>
-            <Link
-              href="/demo"
-              className="flex items-center justify-between px-3.5 py-2.5 text-xs font-semibold text-white/80 hover:text-white hover:bg-white/10 rounded-full transition-all group"
-            >
-              <div className="flex items-center gap-3">
-                <ExternalLink className="w-4 h-4 text-emerald-400 group-hover:scale-110 transition-transform" />
-                <span>Executive Demo</span>
-              </div>
-              <span className="text-[10px] font-bold text-emerald-400 bg-emerald-500/20 px-2 py-0.5 rounded-full border border-emerald-500/30">
-                Interactive
-              </span>
-            </Link>
-          </div>
+            ))}
+          </nav>
         </div>
 
-        {/* User Account Info */}
-        <div className="pt-4 border-t border-white/10">
-          <div className="p-3 rounded-xl border border-white/10 bg-white/5 flex items-center justify-between">
-            <div className="flex items-center gap-2.5 min-w-0">
-              <div className="w-8 h-8 rounded-full bg-blue-600/30 border border-blue-500/50 flex items-center justify-center text-white font-bold text-xs">
-                {user ? user.name.charAt(0) : "A"}
+        {/* 4. Bottom Controls (Tightened Spacing) */}
+        <div className="pt-3 border-t border-slate-800/90 space-y-1.5 relative z-10">
+          
+          {/* Sign Out Button */}
+          <button
+            onClick={logout}
+            className="w-full flex items-center gap-2.5 px-2.5 py-1.5 rounded-lg text-[11.5px] font-semibold text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors cursor-pointer group"
+          >
+            <LogOut className="w-3.5 h-3.5 text-rose-400 group-hover:scale-110 transition-transform shrink-0" />
+            <span>Log Out</span>
+          </button>
+
+          {/* Account Details Box */}
+          <Link
+            href="/dashboard/settings"
+            onClick={onClose}
+            className="w-full flex items-center justify-between p-2 rounded-xl bg-slate-900/80 hover:bg-slate-800/90 border border-slate-800 transition-all text-left group"
+          >
+            <div className="flex items-center gap-2 min-w-0">
+              <div className="w-7 h-7 rounded-full bg-gradient-to-br from-[#0090AD] to-[#229EA6] text-white font-bold text-xs flex items-center justify-center shrink-0 border border-[#2DD4BF]/30 shadow-xs">
+                {user?.name ? user.name.charAt(0).toUpperCase() : "A"}
               </div>
-              <div className="flex flex-col min-w-0 text-xs">
-                <span className="font-semibold text-white truncate">
-                  {user ? user.name : "Alex Rivera"}
+              <div className="flex flex-col min-w-0 leading-tight">
+                <span className="text-[11px] font-semibold text-white group-hover:text-[#2DD4BF] transition-colors truncate">
+                  {user?.name || "Corporate Admin"}
                 </span>
-                <span className="text-[10px] text-white/50 truncate">
-                  {user ? user.role : "Staff Architect"}
+                <span className="text-[9.5px] text-slate-400 truncate font-mono">
+                  {user?.role || "Staff Lead"}
                 </span>
               </div>
             </div>
-            {user && (
-              <button 
-                onClick={logout}
-                className="text-white/50 hover:text-rose-400 p-1 transition-colors cursor-pointer"
-                title="Sign Out"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
-            )}
-          </div>
+
+            <UserIcon className="w-3 h-3 text-slate-500 group-hover:text-slate-300 shrink-0" />
+          </Link>
+
         </div>
       </aside>
     </>

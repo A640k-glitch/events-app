@@ -1,0 +1,17 @@
+<svg viewBox="0 0 160 140" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Monochrome All-White Vector -->
+  <path
+    d="M72 16C50 16 38 28 32 46L14 94C11.5 101 16 108 23 108C29 108 34 104 36.5 98L48 64C51 55 58 48 68 48H122C131 48 138 41 138 32C138 23 131 16 122 16H72Z"
+    fill="currentColor"
+  />
+  <path
+    d="M24 64L18 80C16 85 20 90 26 90H108C118 90 126 82 126 72C126 62 118 54 108 54H42L44 64H24Z"
+    fill="currentColor"
+    opacity="0.75"
+  />
+  <path
+    d="M78 54C68 54 60 62 58 72L52 90C50 100 58 108 68 108H112C121 108 128 101 128 92C128 83 121 76 112 76H86L88 68C89 64 93 61 97 61H108C114 61 118 57 118 51C118 45 114 41 108 41H94C86 41 81 47 79 52L78 54Z"
+    fill="currentColor"
+    opacity="0.5"
+  />
+</svg>
