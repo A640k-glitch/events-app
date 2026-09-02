@@ -5,15 +5,11 @@ import Link from "next/link";
 import { 
   ArrowUpRight, 
   CheckCircle2, 
-  ShieldCheck, 
-  MapPin, 
   Mail, 
-  Phone, 
-  Globe,
-  Share2
+  Phone
 } from "lucide-react";
 import { api } from "@/lib/api-client";
-import FifthEventsLogo, { FifthEventsEmblem } from "@/components/brand/FifthEventsLogo";
+import FifthEventsLogo from "@/components/brand/FifthEventsLogo";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
@@ -48,7 +44,7 @@ export default function Footer() {
         {/* 4-Column Layout */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10">
           
-          {/* Column 1: Logo, Address, Socials */}
+          {/* Column 1: Logo & Brief Description */}
           <div className="space-y-4">
             <Link href="/" className="inline-block">
               <FifthEventsLogo theme="dark" size={32} />
@@ -57,39 +53,6 @@ export default function Footer() {
             <p className="text-xs text-[#A3A3B2]/80 leading-relaxed">
               Enterprise event operations, digital pass management, and attendee lead intelligence for The FifthLab and CWG PLC ecosystems.
             </p>
-
-            <div className="space-y-1.5 pt-2 text-xs text-[#A3A3B2]/70">
-              <div className="flex items-center gap-2">
-                <MapPin className="w-3.5 h-3.5 text-[#00B4D8] shrink-0" />
-                <span>CWG Complex, Lekki Phase 1, Lagos, Nigeria</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
-                <span>NDPR & ISO 27001 Certified Infrastructure</span>
-              </div>
-            </div>
-
-            {/* Social Icons */}
-            <div className="flex items-center gap-3 pt-3">
-              <a
-                href="https://thefifthlab.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Website"
-                className="w-7 h-7 rounded-full bg-white/[0.06] hover:bg-[#00B4D8]/20 hover:text-[#00B4D8] text-white/70 flex items-center justify-center transition-colors"
-              >
-                <Globe className="w-3.5 h-3.5" />
-              </a>
-              <a
-                href="https://cwg-plc.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Share"
-                className="w-7 h-7 rounded-full bg-white/[0.06] hover:bg-[#00B4D8]/20 hover:text-[#00B4D8] text-white/70 flex items-center justify-center transition-colors"
-              >
-                <Share2 className="w-3.5 h-3.5" />
-              </a>
-            </div>
           </div>
 
           {/* Column 2: Product Links */}
