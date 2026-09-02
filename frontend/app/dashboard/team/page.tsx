@@ -5,6 +5,7 @@ import DashboardLayout from "@/components/dashboard/DashboardLayout";
 import { Search, RefreshCw } from "lucide-react";
 import { api } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
+import LogoChargingLoader from "@/components/brand/LogoChargingLoader";
 
 interface CorporateUser {
   id: string;
@@ -155,7 +156,13 @@ export default function TeamPage() {
                 </tr>
               </thead>
               <tbody className="divide-y divide-gray-100">
-                {filteredUsers.length > 0 ? (
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={6} className="py-12 text-center text-gray-400">
+                      <LogoChargingLoader size={44} message="Syncing corporate roster..." />
+                    </td>
+                  </tr>
+                ) : filteredUsers.length > 0 ? (
                   filteredUsers.map((u) => (
                     <tr key={u.id} className="hover:bg-gray-50/80 transition-colors">
                       <td className="py-3.5 px-4">

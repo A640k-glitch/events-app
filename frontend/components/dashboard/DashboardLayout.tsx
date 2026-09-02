@@ -7,6 +7,8 @@ import Topbar from "./Topbar";
 import CommandPalette from "./CommandPalette";
 import { useApp } from "@/context/AppContext";
 
+import LogoChargingLoader from "@/components/brand/LogoChargingLoader";
+
 interface DashboardLayoutProps {
   children: React.ReactNode;
 }
@@ -23,12 +25,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   }, [user, router]);
 
   if (!user) {
-    return (
-      <div className="min-h-screen bg-[#F8FAFC] flex flex-col items-center justify-center p-6 text-center space-y-4">
-        <div className="w-8 h-8 rounded-full border-2 border-[#0090AD] border-t-transparent animate-spin mx-auto" />
-        <p className="text-xs text-slate-500 font-sans font-medium">Loading operations center...</p>
-      </div>
-    );
+    return <LogoChargingLoader fullScreen={true} message="Loading operations center..." />;
   }
 
   return (

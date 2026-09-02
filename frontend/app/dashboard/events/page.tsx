@@ -15,6 +15,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { api } from "@/lib/api-client";
+import LogoChargingLoader from "@/components/brand/LogoChargingLoader";
 
 export default function EventsPage() {
   const { events, deleteEvent, pitches, approvePitch, declinePitch } = useApp();
@@ -373,10 +374,7 @@ export default function EventsPage() {
                   {isLoadingAttendees ? (
                     <tr>
                       <td colSpan={6} className="py-8 text-center text-gray-400">
-                        <div className="flex items-center justify-center gap-2 text-xs text-[#0090AD]">
-                          <Loader2 className="w-4 h-4 animate-spin" />
-                          <span>Loading delegate passes...</span>
-                        </div>
+                        <LogoChargingLoader size={40} message="Loading delegate passes..." />
                       </td>
                     </tr>
                   ) : attendeeRoster.length > 0 ? (
