@@ -15,6 +15,7 @@ import { cn } from "@/lib/utils";
 import HeroSpotlightCarousel from "@/components/home/HeroSpotlightCarousel";
 import LiveEventsCarousel from "@/components/home/LiveEventsCarousel";
 import ScrollLogoBackground from "@/components/home/ScrollLogoBackground";
+import FingerprintPattern from "@/components/brand/FingerprintPattern";
 
 export default function Home() {
   const { events } = useApp();
@@ -105,15 +106,31 @@ export default function Home() {
         />
       </section>
 
-      {/* 3. Core Capabilities Row with Visual Natural-Lighting Cards */}
-      <section className="py-16 px-4 sm:px-6 lg:px-8 bg-transparent border-t border-slate-100/80 relative z-10">
-        <div className="max-w-6xl mx-auto space-y-10">
+      {/* 3. Core Capabilities Row with Frosted Black Background & Faint Fingerprint Designs */}
+      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-black/85 backdrop-blur-2xl border-y border-white/10 relative overflow-hidden text-white z-10">
+        
+        {/* Faint Fingerprint Vector Designs in Background */}
+        <FingerprintPattern 
+          size={520} 
+          opacity={0.06} 
+          className="absolute -left-28 -top-24 text-[#30B5C1] -rotate-12 pointer-events-none" 
+        />
+        <FingerprintPattern 
+          size={560} 
+          opacity={0.07} 
+          className="absolute -right-32 -bottom-28 text-white rotate-12 pointer-events-none" 
+        />
+
+        {/* Ambient Subtle Cyan/Teal Glow behind section */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[320px] bg-[#0090AD]/10 rounded-full blur-3xl pointer-events-none -z-0" />
+
+        <div className="max-w-6xl mx-auto space-y-10 relative z-10">
           
           <div className="text-center space-y-2">
-            <span className="text-xs font-bold text-[#0090AD] uppercase tracking-widest font-mono">
+            <span className="text-xs font-bold text-[#30B5C1] uppercase tracking-widest font-mono">
               ENGINEERED FOR THE FIFTHLAB ECOSYSTEM
             </span>
-            <h2 className="text-2xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-semibold text-white tracking-tight">
               Enterprise Event Infrastructure Built for Scale
             </h2>
           </div>
@@ -121,26 +138,23 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
             {/* Card 1: Keynote Discovery */}
-            <div className="rounded-3xl bg-gradient-to-b from-slate-50 to-white p-7 border border-slate-200/90 shadow-xs hover:shadow-md transition-all text-left flex flex-col justify-between space-y-6">
+            <div className="rounded-3xl bg-white/[0.04] hover:bg-white/[0.07] p-7 border border-white/[0.08] hover:border-[#30B5C1]/40 backdrop-blur-md shadow-2xl transition-all duration-300 text-left flex flex-col justify-between space-y-6 group">
               <div className="space-y-4">
-                <div className="relative h-40 w-full rounded-2xl overflow-hidden bg-slate-100">
+                <div className="relative h-40 w-full rounded-2xl overflow-hidden bg-slate-900 border border-white/10">
                   <Image
                     src="/images/auth/real_lagos_keynote.jpg"
                     alt="Event Discovery"
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <span className="absolute bottom-3 left-3 text-white text-xs font-bold font-mono bg-black/40 px-2.5 py-1 rounded-full backdrop-blur-md">
-                    WAT Synchronized
-                  </span>
                 </div>
 
-                <h3 className="text-lg font-bold text-slate-900">
+                <h3 className="text-lg font-semibold text-white group-hover:text-[#30B5C1] transition-colors">
                   Summit Broadcast & Discovery
                 </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-xs text-slate-300 leading-relaxed">
                   Real-time keynote agendas, speaker indexing, and automatic timezone normalization across Lagos, Abuja, Accra, and Nairobi.
                 </p>
               </div>
@@ -148,7 +162,7 @@ export default function Home() {
               <div>
                 <Link
                   href="/events"
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0090AD] hover:underline"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#30B5C1] hover:text-[#52D1DC] hover:underline"
                 >
                   <span>Explore schedule</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -157,26 +171,23 @@ export default function Home() {
             </div>
 
             {/* Card 2: Exhibition Lead Capture */}
-            <div className="rounded-3xl bg-gradient-to-b from-slate-50 to-white p-7 border border-slate-200/90 shadow-xs hover:shadow-md transition-all text-left flex flex-col justify-between space-y-6">
+            <div className="rounded-3xl bg-white/[0.04] hover:bg-white/[0.07] p-7 border border-white/[0.08] hover:border-[#30B5C1]/40 backdrop-blur-md shadow-2xl transition-all duration-300 text-left flex flex-col justify-between space-y-6 group">
               <div className="space-y-4">
-                <div className="relative h-40 w-full rounded-2xl overflow-hidden bg-slate-100">
+                <div className="relative h-40 w-full rounded-2xl overflow-hidden bg-slate-900 border border-white/10">
                   <Image
                     src="/images/auth/developer.jpg"
                     alt="Exhibition Hall"
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <span className="absolute bottom-3 left-3 text-white text-xs font-bold font-mono bg-black/40 px-2.5 py-1 rounded-full backdrop-blur-md">
-                    Booth CRM Sync
-                  </span>
                 </div>
 
-                <h3 className="text-lg font-bold text-slate-900">
+                <h3 className="text-lg font-semibold text-white group-hover:text-[#30B5C1] transition-colors">
                   Lead Capture & Product Routing
                 </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-xs text-slate-300 leading-relaxed">
                   Instant acquisition of delegate inquiries with automatic routing to designated product engineering specialists for Bulkwave, Finedge, and SMERP.
                 </p>
               </div>
@@ -184,7 +195,7 @@ export default function Home() {
               <div>
                 <Link
                   href="/demo"
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0090AD] hover:underline"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#30B5C1] hover:text-[#52D1DC] hover:underline"
                 >
                   <span>Request lead demo</span>
                   <ArrowRight className="w-3.5 h-3.5" />
@@ -193,26 +204,23 @@ export default function Home() {
             </div>
 
             {/* Card 3: Door Check-In Scanner */}
-            <div className="rounded-3xl bg-gradient-to-b from-slate-50 to-white p-7 border border-slate-200/90 shadow-xs hover:shadow-md transition-all text-left flex flex-col justify-between space-y-6">
+            <div className="rounded-3xl bg-white/[0.04] hover:bg-white/[0.07] p-7 border border-white/[0.08] hover:border-[#30B5C1]/40 backdrop-blur-md shadow-2xl transition-all duration-300 text-left flex flex-col justify-between space-y-6 group">
               <div className="space-y-4">
-                <div className="relative h-40 w-full rounded-2xl overflow-hidden bg-slate-100">
+                <div className="relative h-40 w-full rounded-2xl overflow-hidden bg-slate-900 border border-white/10">
                   <Image
                     src="/images/qr_registration.jpg"
                     alt="QR Verification"
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
-                    className="object-cover"
+                    className="object-cover group-hover:scale-105 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                  <span className="absolute bottom-3 left-3 text-white text-xs font-bold font-mono bg-black/40 px-2.5 py-1 rounded-full backdrop-blur-md">
-                    0.8s Door Scan
-                  </span>
                 </div>
 
-                <h3 className="text-lg font-bold text-slate-900">
+                <h3 className="text-lg font-semibold text-white group-hover:text-[#30B5C1] transition-colors">
                   Digital Pass & QR Verification
                 </h3>
-                <p className="text-xs text-slate-600 leading-relaxed">
+                <p className="text-xs text-slate-300 leading-relaxed">
                   Rapid door check-ins with cryptographic QR passcodes, live staff rosters, and NDPR-compliant data encryption.
                 </p>
               </div>
@@ -220,7 +228,7 @@ export default function Home() {
               <div>
                 <button
                   onClick={() => handleOpenPassModal("FREE_VISITOR")}
-                  className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0090AD] hover:underline cursor-pointer"
+                  className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#30B5C1] hover:text-[#52D1DC] hover:underline cursor-pointer"
                 >
                   <span>Claim digital pass</span>
                   <ArrowRight className="w-3.5 h-3.5" />
