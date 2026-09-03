@@ -9,7 +9,7 @@ interface FingerprintPatternProps {
 export default function FingerprintPattern({
   className = "",
   size = 420,
-  opacity = 0.08,
+  opacity = 0.15,
 }: FingerprintPatternProps) {
   return (
     <svg

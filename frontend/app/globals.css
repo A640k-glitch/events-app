@@ -152,3 +152,30 @@ code {
   -ms-overflow-style: none;
   scrollbar-width: none;
 }
+
+/* Frosted Black Capabilities Section */
+.frosted-black-section {
+  background-color: rgba(10, 13, 20, 0.88) !important;
+  backdrop-filter: blur(24px) saturate(180%) !important;
+  -webkit-backdrop-filter: blur(24px) saturate(180%) !important;
+  border-top: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  color: #FFFFFF !important;
+}
+
+.frosted-capability-card {
+  background-color: rgba(255, 255, 255, 0.04) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(255, 255, 255, 0.1) !important;
+  border-radius: 24px !important;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1) !important;
+}
+
+.frosted-capability-card:hover {
+  background-color: rgba(255, 255, 255, 0.08) !important;
+  border-color: rgba(48, 181, 193, 0.5) !important;
+  transform: translateY(-2px);
+  box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5) !important;
+}
+

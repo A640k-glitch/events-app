@@ -107,22 +107,31 @@ export default function Home() {
       </section>
 
       {/* 3. Core Capabilities Row with Frosted Black Background & Faint Fingerprint Designs */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-black/85 backdrop-blur-2xl border-y border-white/10 relative overflow-hidden text-white z-10">
+      <section 
+        className="py-20 px-4 sm:px-6 lg:px-8 frosted-black-section relative overflow-hidden text-white z-10"
+        style={{
+          backgroundColor: "rgba(10, 13, 20, 0.90)",
+          backdropFilter: "blur(24px)",
+          WebkitBackdropFilter: "blur(24px)",
+          borderTop: "1px solid rgba(255, 255, 255, 0.1)",
+          borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+        }}
+      >
         
         {/* Faint Fingerprint Vector Designs in Background */}
         <FingerprintPattern 
           size={520} 
-          opacity={0.06} 
+          opacity={0.16} 
           className="absolute -left-28 -top-24 text-[#30B5C1] -rotate-12 pointer-events-none" 
         />
         <FingerprintPattern 
           size={560} 
-          opacity={0.07} 
+          opacity={0.14} 
           className="absolute -right-32 -bottom-28 text-white rotate-12 pointer-events-none" 
         />
 
         {/* Ambient Subtle Cyan/Teal Glow behind section */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[320px] bg-[#0090AD]/10 rounded-full blur-3xl pointer-events-none -z-0" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[320px] bg-[#0090AD]/15 rounded-full blur-3xl pointer-events-none -z-0" />
 
         <div className="max-w-6xl mx-auto space-y-10 relative z-10">
           
@@ -138,7 +147,15 @@ export default function Home() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             
             {/* Card 1: Keynote Discovery */}
-            <div className="rounded-3xl bg-white/[0.04] hover:bg-white/[0.07] p-7 border border-white/[0.08] hover:border-[#30B5C1]/40 backdrop-blur-md shadow-2xl transition-all duration-300 text-left flex flex-col justify-between space-y-6 group">
+            <div 
+              className="frosted-capability-card p-7 text-left flex flex-col justify-between space-y-6 group"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, 0.04)",
+                backdropFilter: "blur(16px)",
+                WebkitBackdropFilter: "blur(16px)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+              }}
+            >
               <div className="space-y-4">
                 <div className="relative h-40 w-full rounded-2xl overflow-hidden bg-slate-900 border border-white/10">
                   <Image
@@ -171,7 +188,15 @@ export default function Home() {
             </div>
 
             {/* Card 2: Exhibition Lead Capture */}
-            <div className="rounded-3xl bg-white/[0.04] hover:bg-white/[0.07] p-7 border border-white/[0.08] hover:border-[#30B5C1]/40 backdrop-blur-md shadow-2xl transition-all duration-300 text-left flex flex-col justify-between space-y-6 group">
+            <div 
+              className="frosted-capability-card p-7 text-left flex flex-col justify-between space-y-6 group"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, 0.04)",
+                backdropFilter: "blur(16px)",
+                WebkitBackdropFilter: "blur(16px)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+              }}
+            >
               <div className="space-y-4">
                 <div className="relative h-40 w-full rounded-2xl overflow-hidden bg-slate-900 border border-white/10">
                   <Image
@@ -204,7 +229,15 @@ export default function Home() {
             </div>
 
             {/* Card 3: Door Check-In Scanner */}
-            <div className="rounded-3xl bg-white/[0.04] hover:bg-white/[0.07] p-7 border border-white/[0.08] hover:border-[#30B5C1]/40 backdrop-blur-md shadow-2xl transition-all duration-300 text-left flex flex-col justify-between space-y-6 group">
+            <div 
+              className="frosted-capability-card p-7 text-left flex flex-col justify-between space-y-6 group"
+              style={{
+                backgroundColor: "rgba(255, 255, 255, 0.04)",
+                backdropFilter: "blur(16px)",
+                WebkitBackdropFilter: "blur(16px)",
+                border: "1px solid rgba(255, 255, 255, 0.1)",
+              }}
+            >
               <div className="space-y-4">
                 <div className="relative h-40 w-full rounded-2xl overflow-hidden bg-slate-900 border border-white/10">
                   <Image
