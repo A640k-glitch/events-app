@@ -87,7 +87,7 @@ export default function TeamPage() {
         {/* Header Bar Card */}
         <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+            <h1 className="text-2xl font-medium tracking-tight text-slate-900">
               Team & Staff Directory
             </h1>
             <p className="text-xs text-slate-500 font-medium mt-1">
@@ -160,7 +160,7 @@ export default function TeamPage() {
                 ) : filteredUsers.length > 0 ? (
                   filteredUsers.map((u) => (
                     <tr key={u.id} className="hover:bg-gray-50/80 transition-colors">
-                      <td className="py-3.5 px-4">
+                      <td className="py-2.5 px-3.5">
                         <div className="flex items-center gap-2.5">
                           <div className="w-8 h-8 rounded-full bg-[#E8F8FA] border border-[#20B2AA]/20 text-[#0090AD] font-bold text-xs flex items-center justify-center">
                             {u.name.charAt(0).toUpperCase()}
@@ -172,11 +172,11 @@ export default function TeamPage() {
                         </div>
                       </td>
 
-                      <td className="py-3.5 px-4 text-gray-600 font-medium">
+                      <td className="py-2.5 px-3.5 text-gray-600 font-medium">
                         {u.email}
                       </td>
 
-                      <td className="py-3.5 px-4">
+                      <td className="py-2.5 px-3.5">
                         <span className={cn(
                           "px-2.5 py-0.5 rounded-full text-[10px] font-semibold",
                           u.role === "ADMIN" && "bg-purple-50 text-purple-700 border border-purple-200",
@@ -187,15 +187,15 @@ export default function TeamPage() {
                         </span>
                       </td>
 
-                      <td className="py-3.5 px-4 font-mono font-semibold text-[#111827]">
+                      <td className="py-2.5 px-3.5 font-mono font-semibold text-[#111827]">
                         {u._count?.assignedLeads || 0} Leads
                       </td>
 
-                      <td className="py-3.5 px-4 font-mono text-gray-600">
+                      <td className="py-2.5 px-3.5 font-mono text-gray-600">
                         {u._count?.rsvps || 0} Summits
                       </td>
 
-                      <td className="py-3.5 px-4 text-right">
+                      <td className="py-2.5 px-3.5 text-right">
                         <select
                           value={u.role}
                           disabled={updatingUserId === u.id}

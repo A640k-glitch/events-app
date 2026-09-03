@@ -84,10 +84,10 @@ export default function DemoBookingPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#FBFBFC] text-[#111827] flex flex-col justify-between font-sans text-left">
+    <div className="min-h-screen bg-transparent text-[#111827] flex flex-col justify-between font-sans text-left">
       
       {/* Top Header */}
-      <section className="pt-24 pb-8 px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-200">
+      <section className="pt-24 pb-8 px-4 sm:px-6 lg:px-8 bg-white/80 backdrop-blur-sm border-b border-gray-200/80">
         <div className="max-w-4xl mx-auto space-y-2">
           <div className="flex items-center gap-2 text-xs text-[#6B7280]">
             <Link href="/" className="hover:text-[#111827] flex items-center gap-1">
@@ -97,7 +97,7 @@ export default function DemoBookingPage() {
             <span className="text-[#111827] font-medium">Schedule Briefing</span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-semibold text-[#111827] tracking-tight">
+          <h1 className="text-2xl sm:text-3xl font-medium text-[#111827] tracking-tight">
             Schedule an Executive Product Briefing
           </h1>
           <p className="text-xs sm:text-sm text-[#6B7280]">
@@ -153,22 +153,37 @@ export default function DemoBookingPage() {
                 </div>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3">
-                  {products.map((prod) => (
-                    <button
-                      key={prod.id}
-                      type="button"
-                      onClick={() => setSelectedProduct(prod.name)}
-                      className={cn(
-                        "p-4 rounded-lg border text-left transition-all cursor-pointer",
-                        selectedProduct === prod.name
-                          ? "border-[#00B4D8] bg-[#F4FCFE] text-[#0090AD] shadow-xs"
-                          : "border-gray-200 bg-white hover:border-gray-300 text-gray-700"
-                      )}
-                    >
-                      <div className="font-semibold text-xs text-[#111827]">{prod.name}</div>
-                      <div className="text-[11px] text-gray-500 line-clamp-1 mt-0.5">{prod.tagline}</div>
-                    </button>
-                  ))}
+                  {products.map((prod, idx) => {
+                    const isSelected = selectedProduct === prod.name;
+                    const palettes = [
+                      { bg: "#F3F4FD", border: "#E0E4FB", activeBorder: "#4F46E5" }, // Bulkwave Periwinkle
+                      { bg: "#EAF7F7", border: "#CEEFEF", activeBorder: "#0090AD" }, // Finedge Mint
+                      { bg: "#FAF2F7", border: "#F6DFEC", activeBorder: "#EAB308" }, // Smerp Blush
+                      { bg: "#F0F6FF", border: "#D8E6FA", activeBorder: "#2563EB" }, // Kuleanpay Ice-Blue
+                    ];
+                    const pTheme = palettes[idx % palettes.length];
+
+                    return (
+                      <button
+                        key={prod.id}
+                        type="button"
+                        onClick={() => setSelectedProduct(prod.name)}
+                        style={{
+                          backgroundColor: pTheme.bg,
+                          borderColor: isSelected ? pTheme.activeBorder : pTheme.border,
+                        }}
+                        className={cn(
+                          "p-4 rounded-xl border-2 text-left transition-all cursor-pointer",
+                          isSelected
+                            ? "shadow-sm scale-[1.02]"
+                            : "hover:border-slate-300 opacity-90 hover:opacity-100"
+                        )}
+                      >
+                        <div className="font-bold text-xs text-slate-900">{prod.name}</div>
+                        <div className="text-[11px] text-slate-600 line-clamp-1 mt-0.5">{prod.tagline}</div>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
 

@@ -102,7 +102,7 @@ export default function PitchProposalModal({ isOpen, onClose }: PitchProposalMod
             </div>
 
             <div className="space-y-2">
-              <h2 className="text-2xl font-normal text-white font-heading">
+              <h2 className="text-2xl font-semibold text-white tracking-tight">
                 Proposal Submitted to FifthLab!
               </h2>
               <p className="text-xs text-white/70 max-w-sm mx-auto font-light leading-relaxed">
@@ -130,7 +130,7 @@ export default function PitchProposalModal({ isOpen, onClose }: PitchProposalMod
               <span className="text-[10px] font-semibold text-cyan-400 uppercase tracking-widest flex items-center gap-1.5">
                 <Sparkles className="w-3.5 h-3.5" /> Pro Organizer Proposal Portal
               </span>
-              <h2 className="text-2xl font-normal text-white font-heading">
+              <h2 className="text-2xl font-semibold text-white tracking-tight">
                 Pitch an Event to The FifthLab
               </h2>
               <p className="text-xs text-white/60 font-light">

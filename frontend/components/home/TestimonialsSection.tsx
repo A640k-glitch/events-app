@@ -34,7 +34,7 @@ export default function TestimonialsSection() {
           <span className="text-xs font-mono text-[#30d158] bg-[#30d158]/10 px-3.5 py-1 rounded-full border border-[#30d158]/30 uppercase tracking-wider">
             Trusted by Industry Leaders
           </span>
-          <h2 className="text-3xl sm:text-5xl font-extrabold text-white tracking-tight">
+          <h2 className="text-2xl sm:text-3xl lg:text-4xl font-semibold text-white tracking-tight">
             Loved by Enterprise Engineering Teams
           </h2>
         </div>

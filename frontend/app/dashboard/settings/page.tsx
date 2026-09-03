@@ -36,7 +36,7 @@ export default function SettingsPage() {
         {/* Header Bar Card */}
         <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+            <h1 className="text-2xl font-medium tracking-tight text-slate-900">
               Organization & Preferences
             </h1>
             <p className="text-xs text-slate-500 font-medium mt-1">

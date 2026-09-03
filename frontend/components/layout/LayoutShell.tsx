@@ -4,11 +4,14 @@ import React from "react";
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
+import ScrollLogoBackground from "@/components/home/ScrollLogoBackground";
+import { cn } from "@/lib/utils";
 
 export default function LayoutShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isDashboard = pathname.startsWith("/dashboard");
   const isAuth = pathname.startsWith("/login") || pathname.startsWith("/register");
+  const isDarkHeroPage = pathname.startsWith("/events") || pathname.startsWith("/products");
 
   if (isAuth) {
     return (
@@ -27,12 +30,25 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
   }
 
   return (
-    <div className="min-h-[100dvh] flex flex-col bg-white text-[#0E0E0E] overscroll-none">
+    <div
+      className={cn(
+        "min-h-[100dvh] flex flex-col overscroll-none relative",
+        isDarkHeroPage ? "bg-[#06090e]" : "bg-white text-[#0E0E0E]"
+      )}
+    >
+      {/* Scroll-driven logo background — only on public pages with light hero banners */}
+      {!isDarkHeroPage && <ScrollLogoBackground />}
       <Navbar />
-      <main className="flex-1 pt-16 overscroll-none">
+      <main
+        className={cn(
+          "flex-1 overscroll-none relative z-10",
+          isDarkHeroPage ? "pt-0" : "pt-16"
+        )}
+      >
         {children}
       </main>
       <Footer />
     </div>
   );
 }
+

@@ -36,7 +36,7 @@ export default function ProductsPage() {
         {/* Header Title Bar Card */}
         <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+            <h1 className="text-2xl font-medium tracking-tight text-slate-900">
               Product Demos & Routing
             </h1>
             <p className="text-xs text-slate-500 font-medium mt-1">
@@ -65,24 +65,22 @@ export default function ProductsPage() {
             {products.map((prod) => (
               <div
                 key={prod.id}
-                className="rounded-2xl border border-gray-200 bg-white p-6 space-y-4 shadow-2xs hover:border-gray-300 transition-all text-left"
+                className="rounded-2xl border border-slate-200/90 bg-white p-5 space-y-3 shadow-2xs hover:border-slate-300 hover:shadow-xs transition-all text-left"
               >
                 <div className="flex items-start justify-between gap-3">
                   <div className="flex items-center gap-3">
-                    <div className="w-10 h-10 rounded-xl bg-[#E8F8FA] text-[#0090AD] flex items-center justify-center font-bold">
-                      <Layers className="w-5 h-5" />
-                    </div>
+                    <Layers className="w-6 h-6 text-[#0090AD] stroke-[1.75] shrink-0" />
                     <div>
-                      <h3 className="text-base font-bold text-[#111827]">{prod.name}</h3>
+                      <h3 className="text-base font-bold text-slate-900 leading-snug">{prod.name}</h3>
                       <span className="text-xs text-[#0090AD] font-semibold">{prod.tagline}</span>
                     </div>
                   </div>
                 </div>
 
-                <p className="text-xs text-[#4B5563] leading-relaxed">{prod.description}</p>
+                <p className="text-xs text-slate-600 leading-relaxed">{prod.description}</p>
 
-                <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-xs text-[#6B7280]">
-                  <span>Assigned Owner: <strong className="text-[#111827] font-semibold">{prod.ownerName || "Product Specialist"}</strong></span>
+                <div className="pt-2.5 border-t border-slate-100 flex items-center justify-between text-xs text-slate-500">
+                  <span>Specialist: <strong className="text-slate-900 font-semibold">{prod.ownerName || "Product Specialist"}</strong></span>
                   <span className="text-[#0090AD] font-mono font-semibold">{prod.activeDemosThisMonth} Demos Scheduled</span>
                 </div>
               </div>

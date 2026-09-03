@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { 
-  LayoutDashboard, 
+  Compass, 
   CalendarDays, 
   Users, 
   Layers, 
@@ -37,9 +37,8 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
         { 
           name: "Dashboard", 
           href: "/dashboard", 
-          icon: LayoutDashboard,
-          badge: "LIVE",
-          badgeColor: "bg-[#20B2AA]/20 text-[#2DD4BF] border border-[#20B2AA]/30"
+          icon: Compass,
+          badge: null
         },
       ]
     },
@@ -78,7 +77,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
           badge: null
         },
         { 
-          name: "Preferences & WAT", 
+          name: "Preferences", 
           href: "/dashboard/settings", 
           icon: Settings,
           badge: null
@@ -126,14 +125,9 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
             <span>Back to home</span>
           </Link>
 
-          {/* 2. Admin Center Header & FifthEvents Logo */}
-          <div className="space-y-1 pt-0.5 pb-0.5">
-            <span className="text-[9px] font-bold text-slate-500 uppercase tracking-widest font-mono block">
-              ADMIN CONSOLE
-            </span>
-            <div className="pt-0.5">
-              <FifthEventsLogo size={22} theme="dark" showSubtitle={false} />
-            </div>
+          {/* 2. FifthEvents Logo */}
+          <div className="pt-1 pb-1">
+            <FifthEventsLogo size={22} theme="dark" showSubtitle={false} />
           </div>
 
           {/* 3. Navigation Groups (Tight, Compact Spacing) */}

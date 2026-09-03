@@ -1,7 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { Menu, Search, Clock, Sparkles } from "lucide-react";
+import { Menu, Search } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { useApp } from "@/context/AppContext";
 
@@ -12,25 +11,6 @@ interface TopbarProps {
 export default function Topbar({ onMenuToggle }: TopbarProps) {
   const pathname = usePathname();
   const { user, setCommandPaletteOpen } = useApp();
-  const [watTime, setWatTime] = useState("");
-
-  useEffect(() => {
-    const updateTime = () => {
-      const now = new Date();
-      setWatTime(
-        now.toLocaleTimeString("en-GB", {
-          timeZone: "Africa/Lagos",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: false,
-        })
-      );
-    };
-    updateTime();
-    const interval = setInterval(updateTime, 1000);
-    return () => clearInterval(interval);
-  }, []);
 
   const getBreadcrumb = () => {
     if (pathname === "/dashboard") return { section: "Admin center", label: "Dashboard Overview" };
@@ -38,7 +18,7 @@ export default function Topbar({ onMenuToggle }: TopbarProps) {
     if (pathname.startsWith("/dashboard/leads")) return { section: "Operations", label: "Attendee Leads" };
     if (pathname.startsWith("/dashboard/products")) return { section: "Operations", label: "Product Demos" };
     if (pathname.startsWith("/dashboard/team")) return { section: "Organization", label: "Team Directory" };
-    if (pathname.startsWith("/dashboard/settings")) return { section: "Organization", label: "Preferences & WAT" };
+    if (pathname.startsWith("/dashboard/settings")) return { section: "Organization", label: "Preferences" };
     return { section: "Admin center", label: "Overview" };
   };
 
@@ -66,17 +46,8 @@ export default function Topbar({ onMenuToggle }: TopbarProps) {
         </div>
       </div>
 
-      {/* 2. Right: WAT Time Clock, Command Search & User Avatar */}
+      {/* 2. Right: Command Search & User Avatar */}
       <div className="flex items-center gap-3 sm:gap-4">
-        
-        {/* WAT Time Pill with Live Indicator */}
-        <div className="hidden sm:flex items-center gap-2 px-3 py-1.5 rounded-full bg-slate-50 border border-slate-200/90 text-xs text-slate-700 font-mono shadow-2xs">
-          <div className="w-2 h-2 rounded-full bg-[#0090AD] animate-pulse" />
-          <Clock className="w-3.5 h-3.5 text-[#0090AD]" />
-          <span className="font-semibold">{watTime || "WAT 12:00:00"}</span>
-          <span className="text-[10px] text-slate-400 font-sans font-medium">WAT (UTC+1)</span>
-        </div>
-
         {/* Global Search / Command Shortcut */}
         <button
           onClick={() => setCommandPaletteOpen(true)}

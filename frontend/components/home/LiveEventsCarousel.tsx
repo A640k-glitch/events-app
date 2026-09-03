@@ -58,7 +58,7 @@ export default function LiveEventsCarousel({ events, onClaimPass }: LiveEventsCa
       <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 mb-6 px-4 sm:px-8 lg:px-12 w-full">
         <div className="space-y-1.5 text-left">
           <div className="text-xs font-mono font-bold text-[#0090AD] uppercase tracking-wider">
-            Live Summit Schedule • WAT (UTC+1)
+            Live Summit Schedule
           </div>
           <h2 className="text-2xl sm:text-3xl font-semibold tracking-tight text-slate-900">
             Featured Summits & Keynote Conferences

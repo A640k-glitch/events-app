@@ -102,7 +102,7 @@ const HERO_CARDS: HeroCardItem[] = [
     badgeColor: "text-cyan-800 border-cyan-200",
     iconBg: "bg-[#0284C7]",
     accentColor: "#0284C7",
-    statusText: "WAT Synchronized",
+    statusText: "Executive Briefing",
     statusType: "teal",
   },
   {
@@ -119,7 +119,7 @@ const HERO_CARDS: HeroCardItem[] = [
     badgeColor: "text-slate-800 border-slate-200",
     iconBg: "bg-[#334155]",
     accentColor: "#334155",
-    statusText: "Door Pass Active",
+    statusText: "Enterprise Session",
     statusType: "amber",
   },
   {
@@ -239,7 +239,7 @@ export default function HeroArchCarousel() {
 
               {/* Card Center: Big Metrics / Activity */}
               <div className="text-left space-y-0.5 py-1">
-                <div className="text-xl sm:text-2xl font-extrabold text-gray-950 tracking-tight font-mono">
+                <div className="text-xl sm:text-2xl font-semibold text-gray-950 tracking-tight font-mono">
                   {card.statNumber}
                 </div>
                 <div className="text-[10px] font-medium text-gray-600 truncate">

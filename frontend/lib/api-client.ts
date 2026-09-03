@@ -29,10 +29,19 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
   const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
   const targetUrl = `${API_BASE_URL}${cleanEndpoint}`;
 
-  const response = await fetch(targetUrl, {
+  let response = await fetch(targetUrl, {
     ...options,
     headers,
   });
+
+  // Handle transient serverless database cold-start with a fast single retry
+  if (!response.ok && (response.status === 500 || response.status === 503) && (!options.method || options.method === "GET")) {
+    await new Promise((resolve) => setTimeout(resolve, 800));
+    response = await fetch(targetUrl, {
+      ...options,
+      headers,
+    });
+  }
 
   if (!response.ok) {
     let errorMsg = `HTTP ${response.status}: ${response.statusText}`;

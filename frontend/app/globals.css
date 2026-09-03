@@ -179,3 +179,96 @@ code {
   box-shadow: 0 20px 40px -15px rgba(0, 0, 0, 0.5) !important;
 }
 
+/* ── Continuous Smooth Marquee Carousels ─────────────────────────────── */
+@keyframes marquee-left {
+  0% { transform: translate3d(0, 0, 0); }
+  100% { transform: translate3d(-50%, 0, 0); }
+}
+
+@keyframes marquee-right {
+  0% { transform: translate3d(-50%, 0, 0); }
+  100% { transform: translate3d(0, 0, 0); }
+}
+
+.animate-marquee-left {
+  display: flex;
+  flex-shrink: 0;
+  width: max-content;
+  animation: marquee-left 45s linear infinite;
+  will-change: transform;
+}
+
+.animate-marquee-right {
+  display: flex;
+  flex-shrink: 0;
+  width: max-content;
+  animation: marquee-right 50s linear infinite;
+  will-change: transform;
+}
+
+.pause-on-hover:hover .animate-marquee-left,
+.pause-on-hover:hover .animate-marquee-right {
+  animation-play-state: paused;
+}
+
+/* ── High-Performance GPU Product Card Styles ────────────────────────── */
+.product-card {
+  --card-accent: #0090AD;
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.25s ease,
+              box-shadow 0.25s ease;
+}
+
+.product-card:hover {
+  border-color: var(--card-accent) !important;
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+.product-card .product-title {
+  transition: color 0.2s ease;
+}
+
+.product-card:hover .product-title {
+  color: var(--card-accent) !important;
+}
+
+.product-card .product-arrow {
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.product-card:hover .product-arrow {
+  background-color: var(--card-accent) !important;
+  color: #ffffff !important;
+}
+
+/* ── Neutral Corporate Card Styles (CWG Product Cards) ───────────────── */
+.product-card-neutral {
+  transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1),
+              border-color 0.25s ease,
+              box-shadow 0.25s ease;
+}
+
+.product-card-neutral:hover {
+  border-color: #94a3b8 !important;
+  box-shadow: 0 16px 36px -8px rgba(0, 0, 0, 0.08), 0 2px 8px rgba(0, 0, 0, 0.04) !important;
+}
+
+.product-card-neutral .product-title {
+  transition: color 0.2s ease;
+}
+
+.product-card-neutral:hover .product-title {
+  color: #0f172a !important;
+}
+
+.product-card-neutral .product-arrow {
+  transition: background-color 0.2s ease, color 0.2s ease, transform 0.2s ease;
+}
+
+.product-card-neutral:hover .product-arrow {
+  background-color: #0f172a !important;
+  color: #ffffff !important;
+}
+
+
+

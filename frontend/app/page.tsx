@@ -6,16 +6,21 @@ import Image from "next/image";
 import { 
   ArrowRight, 
   Check, 
-  ChevronDown 
+  ChevronDown,
+  ShieldCheck,
+  QrCode,
+  Users,
+  Sparkles
 } from "lucide-react";
+import CwgLogo from "@/components/brand/CwgLogo";
 import { useApp } from "@/context/AppContext";
 import RegisterPassModal from "@/components/modals/RegisterPassModal";
 import PitchProposalModal from "@/components/modals/PitchProposalModal";
 import { cn } from "@/lib/utils";
 import HeroSpotlightCarousel from "@/components/home/HeroSpotlightCarousel";
 import LiveEventsCarousel from "@/components/home/LiveEventsCarousel";
-import ScrollLogoBackground from "@/components/home/ScrollLogoBackground";
 import FingerprintPattern from "@/components/brand/FingerprintPattern";
+import IPhoneMockup from "@/components/home/IPhoneMockup";
 
 export default function Home() {
   const { events } = useApp();
@@ -53,46 +58,59 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-white text-[#111827] flex flex-col justify-between selection:bg-[#00B4D8] selection:text-white font-sans relative">
-      {/* Scroll-Driven Dynamic Logo Background Watermark */}
-      <ScrollLogoBackground />
+    <div className="min-h-screen bg-transparent text-[#111827] flex flex-col justify-between selection:bg-[#00B4D8] selection:text-white font-sans">
       
-      {/* 1. Hero Section with Spotlight Carousel & Natural Lighting Imagery */}
-      <section className="relative pt-28 sm:pt-36 pb-12 px-4 sm:px-6 lg:px-8 text-center bg-transparent overflow-hidden">
-        
+      {/* 1. Hero Section — Two-column: Phone mockup left, text right */}
+      <section className="relative pt-20 sm:pt-28 pb-12 px-4 sm:px-6 lg:px-8 bg-transparent overflow-hidden">
+
         {/* Subtle grid pattern background */}
         <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:24px_24px] opacity-40 -z-10 pointer-events-none" />
 
-        <div className="max-w-4xl mx-auto space-y-6 relative z-10 pb-8">
-          <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold tracking-tight text-slate-900 leading-[1.12]">
-            Building the Future of <br className="hidden sm:inline" />
-            Integrated Event & Lead Operations.
-          </h1>
+        <div className="max-w-6xl mx-auto relative z-10">
+          <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16 pb-14">
 
-          <p className="text-sm sm:text-base text-slate-600 max-w-2xl mx-auto leading-relaxed">
-            Empowering FifthLab & CWG product growth with real-time door badge verification, staff attendance rosters, and high-yield attendee lead acquisition.
-          </p>
+            {/* Left — iPhone 16 Mockup (desktop only) */}
+            <div className="flex-shrink-0">
+              <IPhoneMockup />
+            </div>
 
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-3 pt-2">
-            <button
-              onClick={() => handleOpenPassModal("FREE_VISITOR")}
-              className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-[#0090AD] hover:bg-[#007A94] text-white font-semibold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
-            >
-              <span>Explore Summits</span>
-              <ArrowRight className="w-4 h-4" />
-            </button>
+            {/* Right — Hero Copy with Enhanced Mobile Readability & Contrast */}
+            <div className="flex-1 flex flex-col gap-6 text-center lg:text-left">
+              <h1
+                className="font-bold tracking-tight text-slate-950"
+                style={{ fontSize: "clamp(34px, 5vw, 60px)", fontWeight: 700, lineHeight: 1.14 }}
+              >
+                Building the Future of{" "}
+                <span className="text-[#00829B]">Integrated Event</span>{" "}
+                &amp; Lead Operations.
+              </h1>
 
-            <Link
-              href="/demo"
-              className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-slate-900 hover:bg-black text-white font-semibold text-xs sm:text-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
-            >
-              Book A Demo →
-            </Link>
+              <p className="text-sm sm:text-base text-slate-800 font-normal max-w-xl leading-relaxed mx-auto lg:mx-0">
+                Empowering <span className="tracking-tight text-slate-950 font-semibold"><strong className="font-bold">fifth</strong><span className="font-normal">lab</span></span> &amp; <strong className="text-slate-950 font-bold">CWG</strong> product growth with real-time door badge verification, staff attendance rosters, and high-yield attendee lead acquisition.
+              </p>
+
+              <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-3 pt-2">
+                <button
+                  onClick={() => handleOpenPassModal("FREE_VISITOR")}
+                  className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-[#0090AD] hover:bg-[#007A94] text-white font-semibold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+                >
+                  <span>Explore Summits</span>
+                  <ArrowRight className="w-4 h-4" />
+                </button>
+
+                <Link
+                  href="/demo"
+                  className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-slate-900 hover:bg-black text-white font-semibold text-xs sm:text-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
+                >
+                  Book A Demo →
+                </Link>
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Dynamic Spotlight Carousel with Natural Lighting Graphics */}
-        <div className="pt-2 relative z-10">
+        {/* Dynamic Spotlight Carousel with Screen-Edge Fixed Hand Anchor */}
+        <div className="w-full relative z-10 pt-2 overflow-hidden">
           <HeroSpotlightCarousel />
         </div>
 
@@ -106,38 +124,52 @@ export default function Home() {
         />
       </section>
 
-      {/* 3. Core Capabilities Row with Frosted Black Background & Faint Fingerprint Designs */}
+      {/* 3. Core Capabilities Row with Deep Biometric Dark Background & Dense Fingerprint Patterns */}
       <section 
-        className="py-20 px-4 sm:px-6 lg:px-8 frosted-black-section relative overflow-hidden text-white z-10"
+        className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden text-white z-10"
         style={{
-          backgroundColor: "rgba(10, 13, 20, 0.90)",
-          backdropFilter: "blur(24px)",
-          WebkitBackdropFilter: "blur(24px)",
-          borderTop: "1px solid rgba(255, 255, 255, 0.1)",
-          borderBottom: "1px solid rgba(255, 255, 255, 0.1)",
+          backgroundColor: "#06090e",
+          background: "linear-gradient(180deg, #090e17 0%, #06090e 50%, #030508 100%)",
+          borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+          borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
         }}
       >
         
-        {/* Faint Fingerprint Vector Designs in Background */}
+        {/* Multiple Dense Fingerprint Patterns Across Background */}
         <FingerprintPattern 
-          size={520} 
-          opacity={0.16} 
-          className="absolute -left-28 -top-24 text-[#30B5C1] -rotate-12 pointer-events-none" 
+          size={640} 
+          opacity={0.38} 
+          className="absolute -left-20 -top-28 text-[#26B5BA] -rotate-12 pointer-events-none" 
         />
         <FingerprintPattern 
-          size={560} 
-          opacity={0.14} 
-          className="absolute -right-32 -bottom-28 text-white rotate-12 pointer-events-none" 
+          size={480} 
+          opacity={0.18} 
+          className="absolute -left-24 -bottom-24 text-white rotate-45 pointer-events-none" 
+        />
+        <FingerprintPattern 
+          size={700} 
+          opacity={0.38} 
+          className="absolute -right-20 -top-32 text-[#26B5BA] rotate-12 pointer-events-none" 
+        />
+        <FingerprintPattern 
+          size={540} 
+          opacity={0.25} 
+          className="absolute -right-24 -bottom-28 text-[#30B5C1] -rotate-12 pointer-events-none" 
+        />
+        <FingerprintPattern 
+          size={420} 
+          opacity={0.12} 
+          className="absolute left-1/2 -top-20 -translate-x-1/2 text-white rotate-6 pointer-events-none" 
         />
 
         {/* Ambient Subtle Cyan/Teal Glow behind section */}
-        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[320px] bg-[#0090AD]/15 rounded-full blur-3xl pointer-events-none -z-0" />
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[750px] h-[320px] bg-[#26B5BA]/12 rounded-full blur-3xl pointer-events-none -z-0" />
 
         <div className="max-w-6xl mx-auto space-y-10 relative z-10">
           
           <div className="text-center space-y-2">
-            <span className="text-xs font-bold text-[#30B5C1] uppercase tracking-widest font-mono">
-              ENGINEERED FOR THE FIFTHLAB ECOSYSTEM
+            <span className="text-xs uppercase tracking-widest font-mono text-[#30B5C1]">
+              ENGINEERED FOR THE <span className="font-bold">FIFTH</span><span className="font-light">LAB</span> ECOSYSTEM
             </span>
             <h2 className="text-2xl sm:text-4xl font-semibold text-white tracking-tight">
               Enterprise Event Infrastructure Built for Scale
@@ -273,7 +305,142 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 4. Pricing & Pass Tiers */}
+      {/* 4. About Section — The Infrastructure & People Behind Africa's Flagship Summits */}
+      <section 
+        id="about" 
+        className="py-24 px-4 sm:px-6 lg:px-8 bg-white relative overflow-hidden z-10 border-t border-slate-200/70 scroll-mt-24"
+      >
+        {/* Ambient Subtle Biometric Pattern Deco */}
+        <FingerprintPattern
+          size={560}
+          opacity={0.035}
+          className="absolute -right-28 -top-24 text-[#0090AD] rotate-12 pointer-events-none"
+        />
+        <FingerprintPattern
+          size={500}
+          opacity={0.025}
+          className="absolute -left-28 -bottom-24 text-slate-900 -rotate-12 pointer-events-none"
+        />
+
+        <div className="max-w-6xl mx-auto relative z-10">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+            
+            {/* Left Column: Clean Image in an elevated frame */}
+            <div className="lg:col-span-5 relative">
+              <div className="relative mx-auto max-w-md lg:max-w-none">
+                {/* Ambient glow ring behind card */}
+                <div className="absolute -inset-4 bg-gradient-to-tr from-[#0090AD]/20 via-[#26B5BA]/15 to-[#162054]/10 rounded-3xl blur-2xl opacity-70 pointer-events-none" />
+
+                {/* Main Photo Card without distracting pills */}
+                <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-200/80 bg-slate-900 group">
+                  <div className="aspect-[4/5] relative w-full">
+                    <Image
+                      src="/images/about/event-staff-vip.jpg"
+                      alt="FifthEvents VIP Event Coordinator"
+                      fill
+                      sizes="(max-width: 1024px) 100vw, 42vw"
+                      className="object-cover object-top transition-transform duration-700 group-hover:scale-105"
+                      priority
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Right Column: Narrative & Value Pillars */}
+            <div className="lg:col-span-7 space-y-6 text-left">
+              <div className="space-y-3">
+                <div className="text-xs font-bold tracking-widest uppercase text-[#0090AD] font-mono">
+                  ABOUT <span className="font-bold">FIFTH</span><span className="font-light">EVENTS</span>
+                </div>
+                <h2 className="text-3xl sm:text-4xl font-semibold text-slate-900 tracking-tight leading-tight">
+                  The Operating System for Enterprise Summits &amp; High-Impact Delegations.
+                </h2>
+                <p className="text-sm sm:text-base text-slate-600 leading-relaxed pt-1">
+                  Co-engineered by <span className="tracking-tight text-slate-900"><strong className="font-bold">fifth</strong><span className="font-light">lab</span></span> and <strong>CWG PLC</strong>, <span className="tracking-tight text-slate-900"><strong className="font-bold">fifth</strong><span className="font-light">Events</span></span> is built specifically to address the operational friction of large-scale corporate summits, financial technology gatherings, and industrial expos across Africa.
+                </p>
+              </div>
+
+              {/* 3 Value Pillars with thefifthlab.com Signature Pastel Card Palette */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
+                <div className="p-5 rounded-2xl bg-[#EAF7F7] border border-[#CEEFEF] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:border-[#0090AD]/40 transition-all space-y-2.5">
+                  <QrCode className="w-6 h-6 text-[#0090AD] stroke-[1.75]" />
+                  <h4 className="text-sm font-bold text-slate-950 tracking-tight">Instant Door Passes</h4>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Sub-second cryptographic QR verification with offline-first door caching.
+                  </p>
+                </div>
+
+                <div className="p-5 rounded-2xl bg-[#F0F6FF] border border-[#D8E6FA] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:border-[#2563EB]/40 transition-all space-y-2.5">
+                  <Users className="w-6 h-6 text-[#162054] stroke-[1.75]" />
+                  <h4 className="text-sm font-bold text-slate-950 tracking-tight">Staff Rostering</h4>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Automated staff assignment manifests and multi-day presence tracking.
+                  </p>
+                </div>
+
+                <div className="p-5 rounded-2xl bg-[#F3F4FD] border border-[#E0E4FB] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:border-[#4F46E5]/40 transition-all space-y-2.5">
+                  <Sparkles className="w-6 h-6 text-[#4F46E5] stroke-[1.75]" />
+                  <h4 className="text-sm font-bold text-slate-950 tracking-tight">B2B Lead CRM</h4>
+                  <p className="text-xs text-slate-600 leading-relaxed">
+                    Direct routing of delegate inquiries to product engineering specialists.
+                  </p>
+                </div>
+              </div>
+
+              {/* Ecosystem co-brand bar */}
+              <div className="pt-4 border-t border-slate-100 flex flex-wrap items-center justify-between gap-4">
+                <div className="flex items-center gap-4">
+                  <span className="text-xs text-slate-500 font-medium">Co-Engineered By:</span>
+                  <a
+                    href="https://thefifthlab.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="opacity-90 hover:opacity-100 hover:scale-105 transition-all"
+                    title="The FifthLab"
+                  >
+                    <img
+                      src="/brand/fifthlab-logo.png"
+                      alt="The FifthLab"
+                      className="h-6 w-auto object-contain"
+                    />
+                  </a>
+                  <span className="text-slate-300">•</span>
+                  <a
+                    href="https://cwg-plc.com"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="opacity-90 hover:opacity-100 hover:scale-105 transition-all"
+                    title="CWG PLC"
+                  >
+                    <CwgLogo color="#162054" height={28} className="h-7 w-auto" />
+                  </a>
+                </div>
+
+                <div className="flex items-center gap-3">
+                  <Link
+                    href="/events"
+                    className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-[#0090AD] hover:bg-[#007A94] text-white text-xs font-semibold shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
+                  >
+                    <span>Explore Summits</span>
+                    <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                  <Link
+                    href="/demo"
+                    className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full border border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-50 text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
+                  >
+                    Platform Demo
+                  </Link>
+                </div>
+              </div>
+
+            </div>
+
+          </div>
+        </div>
+      </section>
+
+      {/* 5. Pricing & Pass Tiers */}
       <section id="pricing" className="py-20 px-4 sm:px-6 lg:px-8 bg-slate-50/40 backdrop-blur-2xs border-t border-slate-200/60 relative z-10">
         <div className="max-w-6xl mx-auto space-y-10">
           
@@ -281,7 +448,7 @@ export default function Home() {
             <span className="text-xs font-bold text-[#0090AD] uppercase tracking-widest font-mono">
               ACCESS PASS TIERS
             </span>
-            <h2 className="text-3xl sm:text-4xl font-extrabold text-slate-900 tracking-tight">
+            <h2 className="text-3xl sm:text-4xl font-medium text-slate-900 tracking-tight">
               Simple, transparent event credentials
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 max-w-xl mx-auto">
@@ -297,7 +464,7 @@ export default function Home() {
                 <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">
                   DELEGATE
                 </span>
-                <div className="text-3xl font-extrabold text-slate-900">
+                <div className="text-3xl font-medium text-slate-900">
                   Free
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">
@@ -334,7 +501,7 @@ export default function Home() {
                 <span className="text-xs font-bold text-[#0090AD] uppercase tracking-wider font-mono">
                   ORGANIZER
                 </span>
-                <div className="text-3xl font-extrabold text-slate-900">
+                <div className="text-3xl font-medium text-slate-900">
                   Pro Summit
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">
@@ -367,7 +534,7 @@ export default function Home() {
                 <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">
                   ENTERPRISE
                 </span>
-                <div className="text-3xl font-extrabold text-slate-900">
+                <div className="text-3xl font-medium text-slate-900">
                   Custom
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">
@@ -406,8 +573,8 @@ export default function Home() {
             <span className="text-xs font-bold text-[#0090AD] uppercase tracking-widest font-mono">
               FREQUENTLY ASKED QUESTIONS
             </span>
-            <h2 className="text-2xl sm:text-3xl font-extrabold text-slate-900 tracking-tight">
-              Everything you need to know about FifthEvents
+            <h2 className="text-2xl sm:text-3xl font-medium text-slate-900 tracking-tight">
+              Everything you need to know about <span className="tracking-tight"><span className="font-bold">fifth</span><span className="font-light">Events</span></span>
             </h2>
           </div>
 

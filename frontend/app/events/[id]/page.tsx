@@ -89,11 +89,8 @@ export default function EventDetailPage() {
               <span className="text-[10px] font-mono font-semibold uppercase px-2.5 py-0.5 rounded bg-gray-100 text-gray-700">
                 {event.category}
               </span>
-              <span className="text-xs text-gray-500 font-mono">
-                WAT Sync Active
-              </span>
             </div>
-            <h1 className="text-2xl sm:text-4xl font-semibold text-[#111827] tracking-tight">
+            <h1 className="text-2xl sm:text-3xl font-medium text-[#111827] tracking-tight">
               {event.title}
             </h1>
           </div>

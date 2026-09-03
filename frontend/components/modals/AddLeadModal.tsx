@@ -57,7 +57,7 @@ export default function AddLeadModal({ isOpen, onClose }: AddLeadModalProps) {
       >
         <div className="flex items-center justify-between border-b border-gray-100 pb-3">
           <div>
-            <h2 className="text-base font-bold text-[#111827] tracking-tight flex items-center gap-2">
+            <h2 className="text-base font-semibold text-[#111827] tracking-tight flex items-center gap-2">
               <UserPlus className="w-4 h-4 text-[#0090AD]" /> Log Inbound Attendee Lead
             </h2>
             <p className="text-xs text-[#6B7280] mt-0.5">

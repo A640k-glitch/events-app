@@ -140,7 +140,7 @@ export default function EventsPage() {
         {/* Header Title Bar Card */}
         <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h1 className="text-2xl font-semibold tracking-tight text-slate-900">
+            <h1 className="text-2xl font-medium tracking-tight text-slate-900">
               Events & Attendance Operations
             </h1>
             <p className="text-xs text-slate-500 font-medium mt-1">
@@ -326,7 +326,6 @@ export default function EventsPage() {
                   <div className="space-y-3">
                     <div className="flex items-center justify-between text-xs font-bold text-[#111827]">
                       <span>Staff Manifest ({selectedEvent.attendanceManifest?.length || 0})</span>
-                      <span className="text-emerald-700 font-mono text-[10px]">WAT Sync</span>
                     </div>
 
                     <div className="divide-y divide-gray-100 max-h-56 overflow-y-auto pr-1">

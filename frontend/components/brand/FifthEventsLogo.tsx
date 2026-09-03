@@ -108,20 +108,20 @@ export default function FifthEventsLogo({
       <div className={cn("inline-flex flex-col items-center text-center gap-2 select-none", className)}>
         <FifthEventsEmblem size={typeof size === "number" ? size * 1.3 : size} monochrome={isMono} />
         <div className="flex flex-col items-center leading-none">
-          <span className="font-bold text-[19px] tracking-tight font-sans" style={titleStyle}>
-            <span className={isMono ? "text-current" : theme === "dark" ? "text-[#00B4D8]" : "text-[#0090AD]"}>
-              Fifth
+          <span className="text-[19px] tracking-tight font-sans" style={titleStyle}>
+            <span className={cn("font-bold", isMono ? "text-current" : theme === "dark" ? "text-[#00B4D8]" : "text-[#0090AD]")}>
+              fifth
             </span>
-            <span className={isMono ? "text-current" : theme === "dark" ? "text-white" : "text-[#1C1852]"}>
+            <span className={cn("font-light", isMono ? "text-current" : theme === "dark" ? "text-white" : "text-[#1C1852]")}>
               Events
             </span>
           </span>
           {showSubtitle && (
             <span 
-              className="text-[9px] uppercase font-mono tracking-widest text-[#8E8EA0] font-semibold mt-1"
+              className="text-[9px] uppercase font-mono tracking-widest text-[#8E8EA0] font-medium mt-1"
               style={subStyle}
             >
-              A FIFTHLAB PRODUCT
+              A <span className="font-bold">FIFTH</span><span className="font-normal">LAB</span> PRODUCT
             </span>
           )}
         </div>
@@ -135,23 +135,23 @@ export default function FifthEventsLogo({
       <FifthEventsEmblem size={size} monochrome={isMono} />
 
       <div className="flex flex-col text-left leading-none justify-center">
-        <span className="font-bold text-[19px] tracking-tight font-sans" style={titleStyle}>
-          <span className={isMono ? "text-current" : theme === "dark" ? "text-[#00B4D8]" : "text-[#0090AD]"}>
-            Fifth
+        <span className="text-[19px] tracking-tight font-sans" style={titleStyle}>
+          <span className={cn("font-bold", isMono ? "text-current" : theme === "dark" ? "text-[#00B4D8]" : "text-[#0090AD]")}>
+            fifth
           </span>
-          <span className={isMono ? "text-current" : theme === "dark" ? "text-white" : "text-[#1C1852]"}>
+          <span className={cn("font-light", isMono ? "text-current" : theme === "dark" ? "text-white" : "text-[#1C1852]")}>
             Events
           </span>
         </span>
         {showSubtitle && (
           <span
             className={cn(
-              "text-[9px] uppercase font-sans font-semibold tracking-wider mt-1",
+              "text-[9px] uppercase font-sans font-medium tracking-wider mt-1",
               theme === "dark" ? "text-[#A3A3B2]" : "text-[#7C7C7C]"
             )}
             style={subStyle}
           >
-            A FIFTHLAB PRODUCT
+            A <span className="font-bold">FIFTH</span><span className="font-normal">LAB</span> PRODUCT
           </span>
         )}
       </div>
