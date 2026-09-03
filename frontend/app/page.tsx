@@ -10,7 +10,8 @@ import {
   ShieldCheck,
   QrCode,
   Users,
-  Sparkles
+  Sparkles,
+  Calendar
 } from "lucide-react";
 import CwgLogo from "@/components/brand/CwgLogo";
 import { useApp } from "@/context/AppContext";
@@ -35,19 +36,19 @@ export default function Home() {
   const faqs = [
     {
       q: "How does the West Africa Time (WAT) normalization work?",
-      a: "All summit agendas, keynote schedules, and 1-on-1 executive demo slots are automatically normalized to WAT (UTC+1), ensuring seamless coordination across Lagos, Abuja, and regional teams.",
+      a: "Every schedule is shown in West Africa Time (WAT, UTC+1). Whether you are in Lagos, Abuja, Accra, or Nairobi, session times remain clear without timezone confusion.",
     },
     {
-      q: "Can we track visitor lead routing to specific FifthLab products?",
-      a: "Yes. Inbound booth scans and executive demo bookings are directly mapped to product owners for Bulkwave, Finedge, Smerp, and UCP with live CRM exports.",
+      q: "How do I book a product demo with FifthLab or CWG?",
+      a: "You can book a demo directly through any event page or the demo booking portal. Select the solution you want to explore—like Bulkwave, FinEdge, or SMERP—and pick a preferred date and time.",
     },
     {
-      q: "Is door pass QR code scanning secure and offline-ready?",
-      a: "Door check-in verifications operate with cryptographic QR passcodes, sub-second latency (0.8s avg scan time), and real-time door sync with the operations console.",
+      q: "How do digital event passes work?",
+      a: "Once you claim a pass, your digital ticket is ready with a unique QR code. Present it at the door on your phone for quick check-in.",
     },
     {
-      q: "Is attendee lead data compliant with enterprise data policies?",
-      a: "Yes. All captured leads, visitor contact records, and staff attendance manifests are securely encrypted and comply fully with Nigeria Data Protection Regulation (NDPR) standards.",
+      q: "Is attendee registration data kept private?",
+      a: "Yes. All registrations and contact details are encrypted and stored in full compliance with Nigeria Data Protection Regulation (NDPR) guidelines.",
     },
   ];
 
@@ -80,13 +81,13 @@ export default function Home() {
                 className="font-bold tracking-tight text-slate-950"
                 style={{ fontSize: "clamp(34px, 5vw, 60px)", fontWeight: 700, lineHeight: 1.14 }}
               >
-                Building the Future of{" "}
-                <span className="text-[#00829B]">Integrated Event</span>{" "}
-                &amp; Lead Operations.
+                The central hub for{" "}
+                <span className="text-[#00829B]">events shaping</span>{" "}
+                technology.
               </h1>
 
               <p className="text-sm sm:text-base text-slate-800 font-normal max-w-xl leading-relaxed mx-auto lg:mx-0">
-                Empowering <span className="tracking-tight text-slate-950 font-semibold"><strong className="font-bold">fifth</strong><span className="font-normal">lab</span></span> &amp; <strong className="text-slate-950 font-bold">CWG</strong> product growth with real-time door badge verification, staff attendance rosters, and high-yield attendee lead acquisition.
+                Track tech summits across Africa, get entry passes in seconds, and book live product demos from <span className="tracking-tight text-slate-950 font-semibold"><strong className="font-bold">fifth</strong><span className="font-normal">lab</span></span> and <strong className="text-slate-950 font-bold">CWG</strong>.
               </p>
 
               <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-3 pt-2">
@@ -94,7 +95,7 @@ export default function Home() {
                   onClick={() => handleOpenPassModal("FREE_VISITOR")}
                   className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-[#0090AD] hover:bg-[#007A94] text-white font-semibold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
                 >
-                  <span>Explore Summits</span>
+                  <span>Explore Events</span>
                   <ArrowRight className="w-4 h-4" />
                 </button>
 
@@ -102,7 +103,7 @@ export default function Home() {
                   href="/demo"
                   className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-slate-900 hover:bg-black text-white font-semibold text-xs sm:text-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
                 >
-                  Book A Demo →
+                  Book a Demo &rarr;
                 </Link>
               </div>
             </div>
@@ -169,10 +170,10 @@ export default function Home() {
           
           <div className="text-center space-y-2">
             <span className="text-xs uppercase tracking-widest font-mono text-[#30B5C1]">
-              ENGINEERED FOR THE <span className="font-bold">FIFTH</span><span className="font-light">LAB</span> ECOSYSTEM
+              BUILT FOR THE <span className="font-bold">FIFTH</span><span className="font-light">LAB</span> ECOSYSTEM
             </span>
             <h2 className="text-2xl sm:text-4xl font-semibold text-white tracking-tight">
-              Enterprise Event Infrastructure Built for Scale
+              Everything needed to run an event without the chaos.
             </h2>
           </div>
 
@@ -201,10 +202,10 @@ export default function Home() {
                 </div>
 
                 <h3 className="text-lg font-semibold text-white group-hover:text-[#30B5C1] transition-colors">
-                  Summit Broadcast & Discovery
+                  Schedules & Speaker Lineups
                 </h3>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  Real-time keynote agendas, speaker indexing, and automatic timezone normalization across Lagos, Abuja, Accra, and Nairobi.
+                  Keynote schedules and session times normalized to West Africa Time (WAT). No timezone math, no missed talks.
                 </p>
               </div>
 
@@ -219,7 +220,7 @@ export default function Home() {
               </div>
             </div>
 
-            {/* Card 2: Exhibition Lead Capture */}
+            {/* Card 2: Interactive Product Demos */}
             <div 
               className="frosted-capability-card p-7 text-left flex flex-col justify-between space-y-6 group"
               style={{
@@ -233,7 +234,7 @@ export default function Home() {
                 <div className="relative h-40 w-full rounded-2xl overflow-hidden bg-slate-900 border border-white/10">
                   <Image
                     src="/images/auth/developer.jpg"
-                    alt="Exhibition Hall"
+                    alt="Product Demos"
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -242,10 +243,10 @@ export default function Home() {
                 </div>
 
                 <h3 className="text-lg font-semibold text-white group-hover:text-[#30B5C1] transition-colors">
-                  Lead Capture & Product Routing
+                  Live Product Demos
                 </h3>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  Instant acquisition of delegate inquiries with automatic routing to designated product engineering specialists for Bulkwave, Finedge, and SMERP.
+                  Book 1-on-1 walkthroughs with product teams behind Bulkwave, Finedge, and SMERP right at the venue.
                 </p>
               </div>
 
@@ -254,7 +255,7 @@ export default function Home() {
                   href="/demo"
                   className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#30B5C1] hover:text-[#52D1DC] hover:underline"
                 >
-                  <span>Request lead demo</span>
+                  <span>Book a demo</span>
                   <ArrowRight className="w-3.5 h-3.5" />
                 </Link>
               </div>
@@ -274,7 +275,7 @@ export default function Home() {
                 <div className="relative h-40 w-full rounded-2xl overflow-hidden bg-slate-900 border border-white/10">
                   <Image
                     src="/images/qr_registration.jpg"
-                    alt="QR Verification"
+                    alt="QR Passes"
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -283,10 +284,10 @@ export default function Home() {
                 </div>
 
                 <h3 className="text-lg font-semibold text-white group-hover:text-[#30B5C1] transition-colors">
-                  Digital Pass & QR Verification
+                  Digital Entry Passes
                 </h3>
                 <p className="text-xs text-slate-300 leading-relaxed">
-                  Rapid door check-ins with cryptographic QR passcodes, live staff rosters, and NDPR-compliant data encryption.
+                  Scan your digital pass at the door in under a second for fast, hassle-free entry into the venue.
                 </p>
               </div>
 
@@ -354,10 +355,10 @@ export default function Home() {
                   ABOUT <span className="font-bold">FIFTH</span><span className="font-light">EVENTS</span>
                 </div>
                 <h2 className="text-3xl sm:text-4xl font-semibold text-slate-900 tracking-tight leading-tight">
-                  The Operating System for Enterprise Summits &amp; High-Impact Delegations.
+                  Built for the events that actually matter in African tech.
                 </h2>
                 <p className="text-sm sm:text-base text-slate-600 leading-relaxed pt-1">
-                  Co-engineered by <span className="tracking-tight text-slate-900"><strong className="font-bold">fifth</strong><span className="font-light">lab</span></span> and <strong>CWG PLC</strong>, <span className="tracking-tight text-slate-900"><strong className="font-bold">fifth</strong><span className="font-light">Events</span></span> is built specifically to address the operational friction of large-scale corporate summits, financial technology gatherings, and industrial expos across Africa.
+                  <span className="tracking-tight text-slate-900"><strong className="font-bold">fifth</strong><span className="font-light">lab</span></span> and <strong>CWG PLC</strong> run fintech conferences, banking expos, and developer summits across Nigeria and West Africa. We built <span className="tracking-tight text-slate-900"><strong className="font-bold">fifth</strong><span className="font-light">Events</span></span> so attendees can easily discover upcoming conferences, get tickets, and explore live solutions on site.
                 </p>
               </div>
 
@@ -365,25 +366,25 @@ export default function Home() {
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
                 <div className="p-5 rounded-2xl bg-[#EAF7F7] border border-[#CEEFEF] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:border-[#0090AD]/40 transition-all space-y-2.5">
                   <QrCode className="w-6 h-6 text-[#0090AD] stroke-[1.75]" />
-                  <h4 className="text-sm font-bold text-slate-950 tracking-tight">Instant Door Passes</h4>
+                  <h4 className="text-sm font-bold text-slate-950 tracking-tight">Digital Event Passes</h4>
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    Sub-second cryptographic QR verification with offline-first door caching.
+                    Save passes to your phone for instant check-in at the gate.
                   </p>
                 </div>
 
                 <div className="p-5 rounded-2xl bg-[#F0F6FF] border border-[#D8E6FA] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:border-[#2563EB]/40 transition-all space-y-2.5">
-                  <Users className="w-6 h-6 text-[#162054] stroke-[1.75]" />
-                  <h4 className="text-sm font-bold text-slate-950 tracking-tight">Staff Rostering</h4>
+                  <Calendar className="w-6 h-6 text-[#162054] stroke-[1.75]" />
+                  <h4 className="text-sm font-bold text-slate-950 tracking-tight">Verified Schedules</h4>
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    Automated staff assignment manifests and multi-day presence tracking.
+                    Keynote times, stage locations, and speaker lineups kept up to date in real time.
                   </p>
                 </div>
 
                 <div className="p-5 rounded-2xl bg-[#F3F4FD] border border-[#E0E4FB] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:border-[#4F46E5]/40 transition-all space-y-2.5">
                   <Sparkles className="w-6 h-6 text-[#4F46E5] stroke-[1.75]" />
-                  <h4 className="text-sm font-bold text-slate-950 tracking-tight">B2B Lead CRM</h4>
+                  <h4 className="text-sm font-bold text-slate-950 tracking-tight">Live Product Demos</h4>
                   <p className="text-xs text-slate-600 leading-relaxed">
-                    Direct routing of delegate inquiries to product engineering specialists.
+                    Meet the engineering teams and test live banking, payment, and ERP solutions firsthand.
                   </p>
                 </div>
               </div>
@@ -422,7 +423,7 @@ export default function Home() {
                     href="/events"
                     className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-[#0090AD] hover:bg-[#007A94] text-white text-xs font-semibold shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
                   >
-                    <span>Explore Summits</span>
+                    <span>Explore Events</span>
                     <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                   <Link
@@ -449,10 +450,10 @@ export default function Home() {
               ACCESS PASS TIERS
             </span>
             <h2 className="text-3xl sm:text-4xl font-medium text-slate-900 tracking-tight">
-              Simple, transparent event credentials
+              Event passes and organizer access
             </h2>
             <p className="text-xs sm:text-sm text-slate-600 max-w-xl mx-auto">
-              Choose your pass tier for keynote admission, booth lead capture, or organizer co-hosting.
+              Free entry for delegates, tools for conference organizers, and custom setups for exhibitors.
             </p>
           </div>
 
@@ -468,17 +469,17 @@ export default function Home() {
                   Free
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  For individual attendees, tech operators, and industry delegates attending open summit sessions.
+                  For attendees, developers, and industry visitors attending open summit sessions.
                 </p>
                 <ul className="space-y-2.5 text-xs text-slate-700 pt-2 border-t border-slate-100 font-medium">
                   <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#0090AD]" /> Keynote and exhibition hall access
+                    <Check className="w-4 h-4 text-[#0090AD]" /> Access to keynotes and exhibition hall
                   </li>
                   <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#0090AD]" /> Instant digital QR door pass
+                    <Check className="w-4 h-4 text-[#0090AD]" /> Digital QR door pass on your phone
                   </li>
                   <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#0090AD]" /> 1-on-1 executive demo booking
+                    <Check className="w-4 h-4 text-[#0090AD]" /> Book 1-on-1 demos with product teams
                   </li>
                 </ul>
               </div>
@@ -505,17 +506,17 @@ export default function Home() {
                   Pro Summit
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  For external conference organizers pitching co-hosted summits and verified passes.
+                  For partners and organizations co-hosting summits or conferences.
                 </p>
                 <ul className="space-y-2.5 text-xs text-slate-700 pt-2 border-t border-slate-100 font-medium">
                   <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#0090AD]" /> Dedicated organizer proposal review
+                    <Check className="w-4 h-4 text-[#0090AD]" /> Event listing on the public schedule
                   </li>
                   <li className="flex items-center gap-2">
                     <Check className="w-4 h-4 text-[#0090AD]" /> Custom digital badge branding
                   </li>
                   <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#0090AD]" /> Live attendee roster export
+                    <Check className="w-4 h-4 text-[#0090AD]" /> Export attendee roster to CSV
                   </li>
                 </ul>
               </div>
@@ -538,17 +539,17 @@ export default function Home() {
                   Custom
                 </div>
                 <p className="text-xs text-slate-600 leading-relaxed">
-                  For institutions requiring tailored lead routing, API access, and private VIP roundtables.
+                  For institutions and corporate delegations attending private briefings and VIP sessions.
                 </p>
                 <ul className="space-y-2.5 text-xs text-slate-700 pt-2 border-t border-slate-100 font-medium">
                   <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#0090AD]" /> Unlimited booth lead scanners
+                    <Check className="w-4 h-4 text-[#0090AD]" /> Reserved VIP seats and lounge access
                   </li>
                   <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#0090AD]" /> Custom CRM integration & webhooks
+                    <Check className="w-4 h-4 text-[#0090AD]" /> Dedicated 1-on-1 executive demo slots
                   </li>
                   <li className="flex items-center gap-2">
-                    <Check className="w-4 h-4 text-[#0090AD]" /> Dedicated operations manager
+                    <Check className="w-4 h-4 text-[#0090AD]" /> Access to private roundtables
                   </li>
                 </ul>
               </div>

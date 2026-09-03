@@ -78,10 +78,10 @@ export default function LeadsPage() {
         <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-medium tracking-tight text-slate-900">
-              Attendee Leads & CRM Pipeline
+              Attendee Leads
             </h1>
             <p className="text-xs text-slate-500 font-medium mt-1">
-              Delegates, enterprise buyers, and booth visitors routed to product engineering specialists.
+              Manage leads captured at summits and review which product specialists have followed up.
             </p>
           </div>
 
@@ -100,7 +100,7 @@ export default function LeadsPage() {
               className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-gradient-to-r from-[#0090AD] to-[#229EA6] hover:from-[#007A94] hover:to-[#1E8B92] text-white text-xs font-bold shadow-md shadow-[#0090AD]/20 transition-all cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>Log Inbound Lead</span>
+              <span>Add Lead</span>
             </button>
           </div>
         </div>

@@ -37,10 +37,10 @@ export default function ProductsPage() {
         <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-medium tracking-tight text-slate-900">
-              Product Demos & Routing
+              Products & Demos
             </h1>
             <p className="text-xs text-slate-500 font-medium mt-1">
-              FifthLab enterprise fintech products, assigned engineering owners, and 1-on-1 demo routing.
+              Manage products showcased at summits and assign team specialists to handle live demo requests.
             </p>
           </div>
 

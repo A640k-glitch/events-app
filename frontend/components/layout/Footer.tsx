@@ -59,7 +59,7 @@ export default function Footer() {
             </Link>
 
             <p className="text-xs text-[#A6A6B8] leading-relaxed max-w-sm sm:max-w-none">
-              Enterprise event operations, digital pass management, and attendee lead intelligence for <span className="text-white tracking-tight"><span className="font-bold">fifth</span><span className="font-light">lab</span></span> and CWG PLC ecosystems.
+              The central hub for technology events, digital tickets, and product demos across <span className="text-white tracking-tight"><span className="font-bold">fifth</span><span className="font-light">lab</span></span> and CWG PLC.
             </p>
           </div>
 

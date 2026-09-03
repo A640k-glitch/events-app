@@ -24,8 +24,8 @@ const FALLBACK_SLIDES = [
   {
     id: "keynote",
     title: "West Africa Digital Banking Summit 2026",
-    tagline: "Keynote Agenda & Speaker Indexing",
-    description: "Multi-track fintech keynote indexed with real-time door badge scanning and 1-on-1 executive demo routing across Lagos & Abuja.",
+    tagline: "Keynote & Stage Schedule",
+    description: "Two days of talks, panel sessions, and live banking demos at Eko Hotel in Lagos.",
     image: "/images/keynote_lagos.jpg",
     city: "Eko Convention Centre, Lagos",
     date: "Sept 15, 2026",
@@ -36,8 +36,8 @@ const FALLBACK_SLIDES = [
   {
     id: "exhibition",
     title: "Fintech Core & Enterprise VAS Exposition",
-    tagline: "Live Booth Acquisition & CRM Sync",
-    description: "Direct booth visitor lead capture with instant CRM routing to engineering specialists for Bulkwave, Finedge, and SMERP.",
+    tagline: "Exhibition Booths & Live Demos",
+    description: "Meet product teams from Bulkwave, Finedge, and SMERP. Test core banking and payment APIs on site.",
     image: "/images/exhibition_hall.jpg",
     city: "Landmark Event Centre, Lagos",
     date: "Sept 24, 2026",
@@ -48,8 +48,8 @@ const FALLBACK_SLIDES = [
   {
     id: "vip",
     title: "Founders & Banking Executive Roundtable",
-    tagline: "VIP Access & Cross-Border Briefings",
-    description: "Private executive lounges and strategic briefings with unified attendee credentials and encrypted NDPR compliance.",
+    tagline: "Private Briefing Session",
+    description: "Closed-door discussions on cross-border payments, compliance, and capital allocation across East and West Africa.",
     image: "/images/vip_lounge.jpg",
     city: "Villa Rosa Kempinski, Nairobi",
     date: "Oct 08, 2026",
@@ -60,8 +60,8 @@ const FALLBACK_SLIDES = [
   {
     id: "doorpass",
     title: "Africa Cloud Architecture & DevOps Conference",
-    tagline: "0.8s Cryptographic Door Verification",
-    description: "High-throughput cloud architecture, microservices scaling, and cryptographic QR access badge engineering.",
+    tagline: "Technical Workshops & Demos",
+    description: "Hands-on infrastructure sessions, database scaling patterns, and live architecture reviews.",
     image: "/images/qr_registration.jpg",
     city: "Transcorp Hilton, Abuja",
     date: "Oct 22, 2026",

@@ -37,10 +37,10 @@ export default function SettingsPage() {
         <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-medium tracking-tight text-slate-900">
-              Organization & Preferences
+              Preferences
             </h1>
             <p className="text-xs text-slate-500 font-medium mt-1">
-              Corporate identity preferences, West Africa Time (WAT) normalization, and system access parameters.
+              Manage your profile details, default timezone, and account settings.
             </p>
           </div>
         </div>
@@ -50,7 +50,7 @@ export default function SettingsPage() {
           {/* Section 1: User Profile Settings */}
           <div className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-7 space-y-5 shadow-2xs">
             <h2 className="text-sm font-bold text-[#111827] tracking-tight flex items-center gap-2">
-              <Shield className="w-4 h-4 text-[#0090AD]" /> Corporate Profile & Identity
+              <Shield className="w-4 h-4 text-[#0090AD]" /> Profile Details
             </h2>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">

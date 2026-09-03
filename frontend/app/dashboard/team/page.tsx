@@ -88,10 +88,10 @@ export default function TeamPage() {
         <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-medium tracking-tight text-slate-900">
-              Team & Staff Directory
+              Team Directory
             </h1>
             <p className="text-xs text-slate-500 font-medium mt-1">
-              Registered corporate personnel, email verification audit, and permission roles.
+              Team members, roles, and event assignments across FifthLab and CWG.
             </p>
           </div>
 

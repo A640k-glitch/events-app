@@ -94,14 +94,14 @@ export default function DemoBookingPage() {
               <ArrowLeft className="w-3.5 h-3.5" /> Home
             </Link>
             <ChevronRight className="w-3 h-3 text-gray-300" />
-            <span className="text-[#111827] font-medium">Schedule Briefing</span>
+            <span className="text-[#111827] font-medium">Book a Demo</span>
           </div>
 
           <h1 className="text-2xl sm:text-3xl font-medium text-[#111827] tracking-tight">
-            Schedule an Executive Product Briefing
+            Book a Live Product Demo
           </h1>
           <p className="text-xs sm:text-sm text-[#6B7280]">
-            Connect 1-on-1 with designated FifthLab engineering and product leads. Normalized to West Africa Time (WAT).
+            Connect 1-on-1 with product teams behind FifthLab and CWG fintech solutions. All times in West Africa Time (WAT).
           </p>
         </div>
       </section>
@@ -117,9 +117,9 @@ export default function DemoBookingPage() {
               </div>
 
               <div className="space-y-1">
-                <h2 className="text-xl font-bold text-[#111827]">Briefing Confirmed</h2>
+                <h2 className="text-xl font-bold text-[#111827]">Demo Request Confirmed</h2>
                 <p className="text-xs text-[#6B7280]">
-                  Your briefing for <strong className="text-[#111827]">{selectedProduct}</strong> has been scheduled for <strong className="text-[#111827]">{bookingDate} • {bookingTime}</strong>.
+                  Your demo for <strong className="text-[#111827]">{selectedProduct}</strong> has been scheduled for <strong className="text-[#111827]">{bookingDate} • {bookingTime}</strong>.
                 </p>
               </div>
 

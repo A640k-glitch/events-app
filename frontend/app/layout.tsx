@@ -13,10 +13,10 @@ export const viewport: Viewport = {
 export const metadata: Metadata = {
   metadataBase: new URL(process.env.NEXT_PUBLIC_APP_URL || "https://fifthevents.vercel.app"),
   title: {
-    default: "FifthEvents — Enterprise Event & Lead Management Platform",
-    template: "%s | FifthEvents",
+    default: "fifthEvents - Central hub for all events shaping technology",
+    template: "%s | fifthEvents",
   },
-  description: "Enterprise event discovery, staff attendance manifests, and visitor lead acquisition for The FifthLab Nigeria & CWG PLC.",
+  description: "Find technology events across Africa, get entry tickets, and book product demos from FifthLab and CWG.",
   manifest: "/manifest.json",
   icons: {
     icon: [
@@ -32,22 +32,22 @@ export const metadata: Metadata = {
     type: "website",
     locale: "en_US",
     url: "https://fifthevents.vercel.app",
-    siteName: "FifthEvents",
-    title: "FifthEvents — Enterprise Event & Lead Management Platform",
-    description: "Enterprise event discovery, staff attendance manifests, and visitor lead acquisition for The FifthLab & CWG PLC ecosystems.",
+    siteName: "fifthEvents",
+    title: "fifthEvents - Central hub for all events shaping technology",
+    description: "Find technology events across Africa, get entry tickets, and book product demos from FifthLab and CWG.",
     images: [
       {
         url: "/brand/fifthevents_card_hero.jpg",
         width: 1200,
         height: 630,
-        alt: "FifthEvents — A FifthLab Product",
+        alt: "fifthEvents — A FifthLab Product",
       },
     ],
   },
   twitter: {
     card: "summary_large_image",
-    title: "FifthEvents — Enterprise Event & Lead Management Platform",
-    description: "Enterprise event discovery, staff attendance manifests, and visitor lead acquisition for The FifthLab & CWG PLC.",
+    title: "fifthEvents - Central hub for all events shaping technology",
+    description: "Find technology events across Africa, get entry tickets, and book product demos from FifthLab and CWG.",
     images: ["/brand/fifthevents_card_hero.jpg"],
     creator: "@TheFifthLab",
   },

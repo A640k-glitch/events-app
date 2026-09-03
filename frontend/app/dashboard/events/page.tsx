@@ -141,10 +141,10 @@ export default function EventsPage() {
         <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
             <h1 className="text-2xl font-medium tracking-tight text-slate-900">
-              Events & Attendance Operations
+              Events & Attendance
             </h1>
             <p className="text-xs text-slate-500 font-medium mt-1">
-              Internal staff attendance rosters, public attendee passes, and organizer proposals.
+              Manage event schedules, view verified attendee check-ins, and review organizer proposals.
             </p>
           </div>
 
