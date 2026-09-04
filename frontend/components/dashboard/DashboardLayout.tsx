@@ -15,17 +15,29 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   const router = useRouter();
-  const { user } = useApp();
+  const { user, authInitialized } = useApp();
   const [mobileSidebarOpen, setMobileSidebarOpen] = useState(false);
 
   useEffect(() => {
-    if (user === null) {
-      router.push("/");
+    // Only redirect when auth restoration has finished and no user exists
+    if (authInitialized && !user) {
+      const savedUser = typeof window !== "undefined" ? localStorage.getItem("fifthlab_user") : null;
+      if (!savedUser) {
+        router.push("/login");
+      }
     }
-  }, [user, router]);
+  }, [user, authInitialized, router]);
+
+  if (!authInitialized) {
+    return <LogoChargingLoader fullScreen={true} message="Loading dashboard..." />;
+  }
 
   if (!user) {
-    return <LogoChargingLoader fullScreen={true} message="Loading dashboard..." />;
+    const savedUser = typeof window !== "undefined" ? localStorage.getItem("fifthlab_user") : null;
+    if (savedUser) {
+      return <LogoChargingLoader fullScreen={true} message="Restoring session..." />;
+    }
+    return null;
   }
 
   return (

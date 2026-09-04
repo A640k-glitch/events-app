@@ -334,13 +334,15 @@ function ProductCard({
         </div>
 
         <div className="flex items-center gap-2">
-          <Link
-            href={`/demo?product=${id || name.toLowerCase().replace(/[^a-z0-9]/g, "")}`}
-            onClick={(e: React.MouseEvent) => e.stopPropagation()}
-            className="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-[#0090AD] hover:bg-[#007b94] text-white text-[11px] font-bold shadow-xs hover:scale-105 transition-all"
-          >
-            Book Demo
-          </Link>
+          {id !== "cwg-training" && id !== "texcellence" && (
+            <Link
+              href={`/demo?product=${id || name.toLowerCase().replace(/[^a-z0-9]/g, "")}`}
+              onClick={(e: React.MouseEvent) => e.stopPropagation()}
+              className="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-[#0090AD] hover:bg-[#007b94] text-white text-[11px] font-bold shadow-xs hover:scale-105 transition-all"
+            >
+              Book Demo
+            </Link>
+          )}
           <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-950 text-white text-[11px] font-semibold group-hover:bg-black transition-all shrink-0 shadow-sm group-hover:scale-105">
             <span>Details</span>
             <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />

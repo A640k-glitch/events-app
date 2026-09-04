@@ -63,6 +63,7 @@ interface AppContextType {
   isCommandPaletteOpen: boolean;
   setCommandPaletteOpen: (open: boolean) => void;
   isLoading: boolean;
+  authInitialized: boolean;
   
   // User Authentication State
   user: AppUser | null;
@@ -218,15 +219,18 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const [currentRegion, setRegion] = useState<string>("WAT (Lagos)");
   const [isCommandPaletteOpen, setCommandPaletteOpen] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [authInitialized, setAuthInitialized] = useState(false);
 
   // User state
   const [user, setUser] = useState<AppUser | null>(null);
   const [notifications, setNotifications] = useState<SystemNotification[]>([]);
 
-  // Fetch live data from backend API
-  const refreshData = useCallback(async () => {
+  // Fetch live data from backend API. By default isSilent is true so background sync never causes flicker or skeletons.
+  const refreshData = useCallback(async (isSilent = true) => {
     try {
-      setIsLoading(true);
+      if (!isSilent) {
+        setIsLoading(true);
+      }
 
       const [eventsRes, productsRes, statsRes] = await Promise.all([
         api.getEvents().catch(() => null),
@@ -285,10 +289,10 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   }, []);
 
-  // Check saved session on mount
+  // Check saved session on mount and perform initial data load
   useEffect(() => {
     async function restoreSession() {
-      const savedUserStr = localStorage.getItem("fifthlab_user");
+      const savedUserStr = typeof window !== "undefined" ? localStorage.getItem("fifthlab_user") : null;
       if (savedUserStr) {
         try {
           const parsed = JSON.parse(savedUserStr);
@@ -299,7 +303,8 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           // ignore
         }
       }
-      await refreshData();
+      setAuthInitialized(true);
+      await refreshData(false);
     }
 
     restoreSession();
@@ -310,13 +315,24 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     let sse: EventSource | null = null;
     let isSubscribed = true;
     let channel: BroadcastChannel | null = null;
+    let lastRefreshTime = Date.now();
+
+    // Throttled silent refresh to prevent rapid back-to-back renders
+    const triggerSilentRefresh = () => {
+      const now = Date.now();
+      if (now - lastRefreshTime < 2000) return; // debounce within 2s
+      lastRefreshTime = now;
+      if (isSubscribed) {
+        refreshData(true);
+      }
+    };
 
     try {
       if (typeof window !== "undefined" && "BroadcastChannel" in window) {
         channel = new BroadcastChannel("fifthevents_sync");
-        channel.onmessage = () => {
-          if (isSubscribed) {
-            refreshData();
+        channel.onmessage = (event) => {
+          if (event.data?.type && event.data.type !== "CONNECTED") {
+            triggerSilentRefresh();
           }
         };
       }
@@ -324,24 +340,42 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       // ignore
     }
 
-    // Connect to Server-Sent Events (SSE) stream
+    // Connect to Server-Sent Events (SSE) stream if an appropriate endpoint is available
     function connectSSE() {
       try {
-        const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
-        const streamEndpoint = rawApiUrl.endsWith("/api")
-          ? `${rawApiUrl}/realtime/stream`
-          : `${rawApiUrl}/api/realtime/stream`;
+        if (typeof window === "undefined") return;
+
+        const isLocalHost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
+        const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || "";
+
+        let streamEndpoint: string | null = null;
+        if (rawApiUrl) {
+          // If in production, do not attempt to contact localhost loopback
+          if (!isLocalHost && (rawApiUrl.includes("localhost") || rawApiUrl.includes("127.0.0.1"))) {
+            return;
+          }
+          const clean = rawApiUrl.endsWith("/api") ? rawApiUrl : `${rawApiUrl.replace(/\/+$/, "")}/api`;
+          streamEndpoint = `${clean}/realtime/stream`;
+        } else if (isLocalHost) {
+          streamEndpoint = "http://localhost:5000/api/realtime/stream";
+        }
+
+        if (!streamEndpoint) {
+          // In production without a dedicated SSE host, BroadcastChannel and silent refresh handle sync cleanly
+          return;
+        }
 
         sse = new EventSource(streamEndpoint);
 
         sse.onmessage = (event) => {
           try {
             const data = JSON.parse(event.data);
-            if (data.type !== "CONNECTED" && isSubscribed) {
-              refreshData();
+            // Only refresh on actual mutation events (e.g. EVENT_CREATED, LEAD_CREATED)
+            if (data && data.type && data.type !== "CONNECTED" && data.type !== "PING") {
+              triggerSilentRefresh();
             }
           } catch {
-            // Heartbeat or malformed payload
+            // Heartbeat comment (: ping) or non-JSON
           }
         };
 
@@ -350,8 +384,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
             sse.close();
             sse = null;
           }
-          if (isSubscribed) {
-            setTimeout(connectSSE, 4000);
+          // Only retry if on localhost or configured remote endpoint
+          if (isSubscribed && isLocalHost) {
+            setTimeout(connectSSE, 10000);
           }
         };
       } catch (err) {
@@ -361,35 +396,23 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
     connectSSE();
 
-    // Instant refresh when user returns to phone or desktop tab
+    // Silent refresh only when user returns to tab after being away for > 90 seconds
     const handleVisibilityChange = () => {
       if (document.visibilityState === "visible" && isSubscribed) {
-        refreshData();
-      }
-    };
-    const handleFocus = () => {
-      if (isSubscribed) {
-        refreshData();
+        const now = Date.now();
+        if (now - lastRefreshTime > 90000) {
+          triggerSilentRefresh();
+        }
       }
     };
 
     window.addEventListener("visibilitychange", handleVisibilityChange);
-    window.addEventListener("focus", handleFocus);
-
-    // Fallback polling interval (every 12 seconds)
-    const interval = setInterval(() => {
-      if (isSubscribed) {
-        refreshData();
-      }
-    }, 12000);
 
     return () => {
       isSubscribed = false;
       if (sse) sse.close();
       if (channel) channel.close();
       window.removeEventListener("visibilitychange", handleVisibilityChange);
-      window.removeEventListener("focus", handleFocus);
-      clearInterval(interval);
     };
   }, [refreshData]);
 
@@ -672,6 +695,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         isCommandPaletteOpen,
         setCommandPaletteOpen,
         isLoading,
+        authInitialized,
         user,
         loginAs,
         requestOtp,

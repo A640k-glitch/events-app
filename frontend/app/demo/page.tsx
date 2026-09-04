@@ -144,14 +144,14 @@ const DEMO_PRODUCTS: DemoProductItem[] = [
     badge: "Custom Software",
   },
   {
-    id: "cwg-training",
-    name: "CWG Training Academy",
-    tagline: "IT Professional Certification & Development",
-    logoUrl: "/brand/cwg/training.svg",
-    accentColor: "#D97706",
-    bgColor: "#FFFBEB",
-    borderColor: "#FDE68A",
-    badge: "Academy",
+    id: "cwg-atm",
+    name: "CWG Self-Service & ATM Solutions",
+    tagline: "Banking Hardware & Fleet Management",
+    logoUrl: "/brand/cwg/atm.svg",
+    accentColor: "#475569",
+    bgColor: "#F8FAFC",
+    borderColor: "#E2E8F0",
+    badge: "CWG Hardware",
   },
 ];
 
