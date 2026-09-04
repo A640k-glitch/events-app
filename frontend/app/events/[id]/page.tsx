@@ -224,7 +224,7 @@ export default function EventDetailPage() {
 
               <div className="pt-3 border-t border-gray-100 flex items-center gap-2 text-[11px] text-gray-500">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                <span>NDPR & GDPR Compliant</span>
+                <span>Data Privacy & Security Compliant</span>
               </div>
             </div>
 

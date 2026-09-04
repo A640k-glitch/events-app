@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import { 
@@ -27,6 +27,29 @@ export default function Home() {
   const { events } = useApp();
   const [openFaq, setOpenFaq] = useState<number | null>(0);
 
+  // Scroll reveal trigger for About section cards and buttons
+  const aboutRef = useRef<HTMLElement>(null);
+  const [aboutInView, setAboutInView] = useState(false);
+
+  useEffect(() => {
+    const el = aboutRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            setAboutInView(true);
+          }
+        });
+      },
+      { threshold: 0.12 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
   // Modals state
   const [isPassModalOpen, setIsPassModalOpen] = useState(false);
   const [passModalTier, setPassModalTier] = useState<"FREE_VISITOR" | "PRO_ORGANIZER" | "ENTERPRISE_PARTNER">("FREE_VISITOR");
@@ -40,7 +63,7 @@ export default function Home() {
     },
     {
       q: "How do I book a product demo with FifthLab or CWG?",
-      a: "You can book a demo directly through any event page or the demo booking portal. Select the solution you want to explore—like Bulkwave, FinEdge, or SMERP—and pick a preferred date and time.",
+      a: "You can book a demo directly through any event page or the demo booking portal. Select the solution you want to explore, such as Bulkwave, FinEdge, or SMERP, and pick a preferred date and time.",
     },
     {
       q: "How do digital event passes work?",
@@ -48,7 +71,7 @@ export default function Home() {
     },
     {
       q: "Is attendee registration data kept private?",
-      a: "Yes. All registrations and contact details are encrypted and stored in full compliance with Nigeria Data Protection Regulation (NDPR) guidelines.",
+      a: "Yes. All registrations and contact details are encrypted and stored in full compliance with enterprise data protection and privacy standards.",
     },
   ];
 
@@ -90,18 +113,18 @@ export default function Home() {
                 Track tech summits across Africa, get entry passes in seconds, and book live product demos from <span className="tracking-tight text-slate-950 font-semibold"><strong className="font-bold">fifth</strong><span className="font-normal">lab</span></span> and <strong className="text-slate-950 font-bold">CWG</strong>.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-center lg:items-start justify-center lg:justify-start gap-3 pt-2">
-                <button
-                  onClick={() => handleOpenPassModal("FREE_VISITOR")}
-                  className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full bg-[#0090AD] hover:bg-[#007A94] text-white font-semibold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] cursor-pointer"
+              <div className="flex flex-col sm:flex-row items-stretch sm:items-center lg:items-start justify-center lg:justify-start gap-2.5 sm:gap-3 pt-2 w-full sm:w-auto">
+                <Link
+                  href="/events"
+                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 rounded-full bg-[#0090AD] hover:bg-[#007A94] text-white font-semibold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all hover:scale-[1.01] active:scale-[0.99] whitespace-nowrap"
                 >
                   <span>Explore Events</span>
-                  <ArrowRight className="w-4 h-4" />
-                </button>
+                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                </Link>
 
                 <Link
                   href="/demo"
-                  className="inline-flex items-center justify-center px-8 py-3.5 rounded-full bg-slate-900 hover:bg-black text-white font-semibold text-xs sm:text-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
+                  className="inline-flex items-center justify-center px-5 py-2.5 sm:px-6 sm:py-3 rounded-full bg-slate-900 hover:bg-black text-white font-semibold text-xs sm:text-sm transition-all hover:scale-[1.01] active:scale-[0.99] whitespace-nowrap"
                 >
                   Book a Demo &rarr;
                 </Link>
@@ -309,7 +332,8 @@ export default function Home() {
       {/* 4. About Section — The Infrastructure & People Behind Africa's Flagship Summits */}
       <section 
         id="about" 
-        className="py-24 px-4 sm:px-6 lg:px-8 bg-white relative overflow-hidden z-10 border-t border-slate-200/70 scroll-mt-24"
+        ref={aboutRef}
+        className="py-16 sm:py-20 lg:py-24 px-4 sm:px-6 lg:px-8 bg-white relative overflow-hidden z-10 border-t border-slate-200/70 scroll-mt-24"
       >
         {/* Ambient Subtle Biometric Pattern Deco */}
         <FingerprintPattern
@@ -324,15 +348,33 @@ export default function Home() {
         />
 
         <div className="max-w-6xl mx-auto relative z-10">
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 lg:gap-16 items-center">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
             
-            {/* Left Column: Clean Image in an elevated frame */}
-            <div className="lg:col-span-5 relative">
-              <div className="relative mx-auto max-w-md lg:max-w-none">
+            {/* Left Column: Section Header Above Image to Fill White Space + Photo Card */}
+            <div className="lg:col-span-5 relative space-y-4 sm:space-y-5">
+              {/* Left-Justified Typography Section Header — Prominent, Bold & Commanding */}
+              <div 
+                className={cn(
+                  "text-left pt-1 sm:pt-2 transition-all duration-700 ease-out",
+                  aboutInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+                )}
+              >
+                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight uppercase text-[#0090AD] leading-tight m-0">
+                  ABOUT <span className="text-slate-950 font-black">FIFTH</span><span className="font-light text-slate-900">EVENTS</span>
+                </h3>
+              </div>
+
+              <div 
+                className={cn(
+                  "relative mx-auto max-w-md lg:max-w-none transition-all duration-700 ease-out",
+                  aboutInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-8"
+                )}
+                style={{ transitionDelay: "150ms" }}
+              >
                 {/* Ambient glow ring behind card */}
                 <div className="absolute -inset-4 bg-gradient-to-tr from-[#0090AD]/20 via-[#26B5BA]/15 to-[#162054]/10 rounded-3xl blur-2xl opacity-70 pointer-events-none" />
 
-                {/* Main Photo Card without distracting pills */}
+                {/* Main Photo Card without pills */}
                 <div className="relative rounded-3xl overflow-hidden shadow-2xl border border-slate-200/80 bg-slate-900 group">
                   <div className="aspect-[4/5] relative w-full">
                     <Image
@@ -349,11 +391,13 @@ export default function Home() {
             </div>
 
             {/* Right Column: Narrative & Value Pillars */}
-            <div className="lg:col-span-7 space-y-6 text-left">
-              <div className="space-y-3">
-                <div className="text-xs font-bold tracking-widest uppercase text-[#0090AD]">
-                  ABOUT <span className="font-bold">FIFTH</span><span className="font-light">EVENTS</span>
-                </div>
+            <div className="lg:col-span-7 space-y-6 text-left lg:pt-1">
+              <div 
+                className={cn(
+                  "space-y-3 transition-all duration-700 ease-out",
+                  aboutInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+                )}
+              >
                 <h2 className="text-3xl sm:text-4xl font-semibold text-slate-900 tracking-tight leading-tight">
                   Built for the events that actually matter in African tech.
                 </h2>
@@ -362,30 +406,72 @@ export default function Home() {
                 </p>
               </div>
 
-              {/* 3 Value Pillars with thefifthlab.com Signature Pastel Card Palette */}
+              {/* 3 Value Pillars with thefifthlab.com Signature Pastel Card Palette — Staggered Entry Animation */}
               <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 pt-2">
-                <div className="p-5 rounded-2xl bg-[#EAF7F7] border border-[#CEEFEF] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:border-[#0090AD]/40 transition-all space-y-2.5">
-                  <QrCode className="w-6 h-6 text-[#0090AD] stroke-[1.75]" />
-                  <h4 className="text-sm font-bold text-slate-950 tracking-tight">Digital Event Passes</h4>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Save passes to your phone for instant check-in at the gate.
-                  </p>
+                {/* Card 1: Digital Event Passes */}
+                <div 
+                  className={cn(
+                    "relative overflow-hidden p-5 sm:p-6 rounded-2xl bg-[#EAF7F7] border border-[#CEEFEF] shadow-[0_2px_12px_rgba(0,0,0,0.02)]",
+                    "hover:border-[#0090AD]/50 hover:shadow-[0_16px_36px_-8px_rgba(0,144,173,0.2)] hover:-translate-y-1.5",
+                    "group flex flex-col justify-between min-h-[152px] transition-all duration-700 ease-out",
+                    aboutInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+                  )}
+                  style={{ transitionDelay: "150ms" }}
+                >
+                  <div className="relative z-10 space-y-2 pr-6">
+                    <h4 className="text-sm sm:text-base font-bold text-slate-950 tracking-tight">Digital Event Passes</h4>
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      Save passes to your phone for instant check-in at the gate.
+                    </p>
+                  </div>
+                  {/* Watermark Icon in Bottom Right Corner with Solid Sharp Color */}
+                  <div className="absolute -bottom-2.5 -right-2.5 z-0 pointer-events-none transition-all duration-500 ease-out group-hover:scale-115 group-hover:-rotate-6 group-hover:opacity-45">
+                    <QrCode className="w-16 h-16 sm:w-20 sm:h-20 text-[#0090AD] opacity-25 stroke-[1.5]" />
+                  </div>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-[#F0F6FF] border border-[#D8E6FA] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:border-[#2563EB]/40 transition-all space-y-2.5">
-                  <Calendar className="w-6 h-6 text-[#162054] stroke-[1.75]" />
-                  <h4 className="text-sm font-bold text-slate-950 tracking-tight">Verified Schedules</h4>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Keynote times, stage locations, and speaker lineups kept up to date in real time.
-                  </p>
+                {/* Card 2: Verified Schedules */}
+                <div 
+                  className={cn(
+                    "relative overflow-hidden p-5 sm:p-6 rounded-2xl bg-[#F0F6FF] border border-[#D8E6FA] shadow-[0_2px_12px_rgba(0,0,0,0.02)]",
+                    "hover:border-[#162054]/40 hover:shadow-[0_16px_36px_-8px_rgba(22,32,84,0.2)] hover:-translate-y-1.5",
+                    "group flex flex-col justify-between min-h-[152px] transition-all duration-700 ease-out",
+                    aboutInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+                  )}
+                  style={{ transitionDelay: "300ms" }}
+                >
+                  <div className="relative z-10 space-y-2 pr-6">
+                    <h4 className="text-sm sm:text-base font-bold text-slate-950 tracking-tight">Verified Schedules</h4>
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      Keynote times, stage locations, and speaker lineups kept up to date in real time.
+                    </p>
+                  </div>
+                  {/* Watermark Icon in Bottom Right Corner with Solid Sharp Color */}
+                  <div className="absolute -bottom-2.5 -right-2.5 z-0 pointer-events-none transition-all duration-500 ease-out group-hover:scale-115 group-hover:-rotate-6 group-hover:opacity-45">
+                    <Calendar className="w-16 h-16 sm:w-20 sm:h-20 text-[#162054] opacity-25 stroke-[1.5]" />
+                  </div>
                 </div>
 
-                <div className="p-5 rounded-2xl bg-[#F3F4FD] border border-[#E0E4FB] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:border-[#4F46E5]/40 transition-all space-y-2.5">
-                  <Laptop className="w-6 h-6 text-[#4F46E5] stroke-[1.75]" />
-                  <h4 className="text-sm font-bold text-slate-950 tracking-tight">Live Product Demos</h4>
-                  <p className="text-xs text-slate-600 leading-relaxed">
-                    Meet the engineering teams and test live banking, payment, and ERP solutions firsthand.
-                  </p>
+                {/* Card 3: Live Product Demos */}
+                <div 
+                  className={cn(
+                    "relative overflow-hidden p-5 sm:p-6 rounded-2xl bg-[#F3F4FD] border border-[#E0E4FB] shadow-[0_2px_12px_rgba(0,0,0,0.02)]",
+                    "hover:border-[#4F46E5]/40 hover:shadow-[0_16px_36px_-8px_rgba(79,70,229,0.2)] hover:-translate-y-1.5",
+                    "group flex flex-col justify-between min-h-[152px] transition-all duration-700 ease-out",
+                    aboutInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-10"
+                  )}
+                  style={{ transitionDelay: "450ms" }}
+                >
+                  <div className="relative z-10 space-y-2 pr-6">
+                    <h4 className="text-sm sm:text-base font-bold text-slate-950 tracking-tight">Live Product Demos</h4>
+                    <p className="text-xs text-slate-600 leading-relaxed">
+                      Meet the engineering teams and test live banking, payment, and ERP solutions firsthand.
+                    </p>
+                  </div>
+                  {/* Watermark Icon in Bottom Right Corner with Solid Sharp Color */}
+                  <div className="absolute -bottom-2.5 -right-2.5 z-0 pointer-events-none transition-all duration-500 ease-out group-hover:scale-115 group-hover:-rotate-6 group-hover:opacity-45">
+                    <Laptop className="w-16 h-16 sm:w-20 sm:h-20 text-[#4F46E5] opacity-25 stroke-[1.5]" />
+                  </div>
                 </div>
               </div>
 
@@ -397,7 +483,7 @@ export default function Home() {
                     href="https://thefifthlab.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="opacity-90 hover:opacity-100 hover:scale-105 transition-all"
+                    className="opacity-90 hover:opacity-100 hover:scale-105 transition-all duration-200"
                     title="The FifthLab"
                   >
                     <img
@@ -411,26 +497,34 @@ export default function Home() {
                     href="https://cwg-plc.com"
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="opacity-90 hover:opacity-100 hover:scale-105 transition-all"
+                    className="opacity-90 hover:opacity-100 hover:scale-105 transition-all duration-200"
                     title="CWG PLC"
                   >
                     <CwgLogo color="#162054" height={28} className="h-7 w-auto" />
                   </a>
                 </div>
 
-                <div className="flex items-center gap-3">
+                <div 
+                  className={cn(
+                    "flex items-center gap-3 transition-all duration-700 ease-out",
+                    aboutInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-6"
+                  )}
+                  style={{ transitionDelay: "600ms" }}
+                >
                   <Link
                     href="/events"
-                    className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full bg-[#0090AD] hover:bg-[#007A94] text-white text-xs font-semibold shadow-sm transition-all hover:scale-[1.02] active:scale-[0.98]"
+                    className="group relative inline-flex items-center gap-2 px-6 py-3 rounded-full bg-gradient-to-r from-[#0090AD] to-[#229EA6] hover:from-[#007A94] hover:to-[#1E8B92] text-white text-xs sm:text-sm font-bold shadow-md shadow-[#0090AD]/25 transition-all duration-300 hover:scale-[1.04] hover:-translate-y-0.5 hover:shadow-lg hover:shadow-[#0090AD]/35 active:scale-[0.98] overflow-hidden"
                   >
-                    <span>Explore Events</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
+                    <span className="relative z-10">Explore Events</span>
+                    <ArrowRight className="w-4 h-4 relative z-10 transition-transform duration-300 group-hover:translate-x-1.5" />
+                    <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
                   </Link>
                   <Link
                     href="/demo"
-                    className="inline-flex items-center gap-1.5 px-5 py-2.5 rounded-full border border-slate-200 text-slate-700 hover:text-slate-900 hover:bg-slate-50 text-xs font-semibold transition-all hover:scale-[1.02] active:scale-[0.98]"
+                    className="group inline-flex items-center gap-2 px-6 py-3 rounded-full border border-slate-300/90 bg-white hover:bg-slate-50 text-slate-800 hover:text-slate-950 text-xs sm:text-sm font-bold shadow-xs hover:border-slate-400 transition-all duration-300 hover:scale-[1.04] hover:-translate-y-0.5 active:scale-[0.98]"
                   >
-                    Platform Demo
+                    <span>Platform Demo</span>
+                    <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1 text-slate-400 group-hover:text-slate-700" />
                   </Link>
                 </div>
               </div>

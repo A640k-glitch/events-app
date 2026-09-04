@@ -93,9 +93,9 @@ export default function SettingsPage() {
                   onChange={(e) => setTimezone(e.target.value)}
                   className="w-full bg-white border border-gray-200 rounded-xl px-3.5 py-2 text-[#111827] focus:outline-none focus:border-[#0090AD]"
                 >
-                  <option value="WAT">West Africa Time (WAT) — Lagos / Abuja (UTC+1)</option>
-                  <option value="GMT">Greenwich Mean Time (GMT) — Accra (UTC+0)</option>
-                  <option value="EAT">East Africa Time (EAT) — Nairobi / Kigali (UTC+3)</option>
+                  <option value="WAT">West Africa Time (WAT) (Lagos / Abuja, UTC+1)</option>
+                  <option value="GMT">Greenwich Mean Time (GMT) (Accra, UTC+0)</option>
+                  <option value="EAT">East Africa Time (EAT) (Nairobi / Kigali, UTC+3)</option>
                 </select>
               </div>
             </div>

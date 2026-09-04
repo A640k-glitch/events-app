@@ -36,7 +36,7 @@ export default function EditEventModal({ isOpen, onClose, event, onEventUpdated 
   const [country, setCountry] = useState("Nigeria");
   const [description, setDescription] = useState("");
   const [boothNumber, setBoothNumber] = useState("");
-  const [expectedAttendance, setExpectedAttendance] = useState(2500);
+  const [expectedAttendance, setExpectedAttendance] = useState(0);
 
   // Image states
   const [imageUrl, setImageUrl] = useState("/images/auth/real_lagos_keynote.jpg");
@@ -65,7 +65,7 @@ export default function EditEventModal({ isOpen, onClose, event, onEventUpdated 
       setCountry(event.country || "Nigeria");
       setDescription(event.description || "");
       setBoothNumber(event.boothNumber || "");
-      setExpectedAttendance(event.expectedAttendance || 1500);
+      setExpectedAttendance(event.expectedAttendance || 0);
       
       const currentImg = event.imageUrl || "/images/auth/real_lagos_keynote.jpg";
       if (PRESET_IMAGES.some(p => p.url === currentImg)) {

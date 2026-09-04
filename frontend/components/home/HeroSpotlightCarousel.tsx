@@ -29,7 +29,7 @@ const FALLBACK_SLIDES = [
     image: "/images/keynote_lagos.jpg",
     city: "Eko Convention Centre, Lagos",
     date: "Sept 15, 2026",
-    badge: "2,500+ RSVPs",
+    badge: "Keynote Summit",
     category: "Banking Keynote",
     accentColor: "#0090AD",
   },
@@ -41,7 +41,7 @@ const FALLBACK_SLIDES = [
     image: "/images/exhibition_hall.jpg",
     city: "Landmark Event Centre, Lagos",
     date: "Sept 24, 2026",
-    badge: "1,800+ RSVPs",
+    badge: "Expo Pavilion",
     category: "Expo Pavilion",
     accentColor: "#2563EB",
   },
@@ -65,7 +65,7 @@ const FALLBACK_SLIDES = [
     image: "/images/qr_registration.jpg",
     city: "Transcorp Hilton, Abuja",
     date: "Oct 22, 2026",
-    badge: "1,200+ RSVPs",
+    badge: "Cloud Summit",
     category: "Cloud Summit",
     accentColor: "#059669",
   },
@@ -85,7 +85,7 @@ export default function HeroSpotlightCarousel() {
         image: evt.imageUrl && evt.imageUrl.startsWith("/") ? evt.imageUrl : (evt.imageUrl || FALLBACK_SLIDES[idx % FALLBACK_SLIDES.length].image),
         city: `${evt.location}, ${evt.city}`,
         date: evt.date,
-        badge: `${evt.expectedAttendance || 1200}+ RSVPs`,
+        badge: evt.category,
         category: evt.category,
         accentColor: FALLBACK_SLIDES[idx % FALLBACK_SLIDES.length].accentColor,
       }))
@@ -105,46 +105,46 @@ export default function HeroSpotlightCarousel() {
 
   return (
     <div className="relative w-full py-4">
-      <div className="w-full flex flex-col lg:flex-row items-center justify-between gap-8 lg:gap-8">
+      <div className="w-full flex flex-col xl:flex-row items-center justify-between gap-6 xl:gap-8">
         
-        {/* Spotlight Card - matching height with right Demo Card */}
+        {/* Spotlight Card - Responsive sizing without squishing text */}
         <div 
-          className="relative w-full lg:w-[calc(100%-420px)] xl:w-[calc(100%-480px)] 2xl:w-[calc(100%-520px)] max-w-4xl xl:max-w-[860px] lg:h-[380px] xl:h-[440px] 2xl:h-[480px] rounded-3xl overflow-hidden shadow-2xl border border-slate-200/90 bg-white font-sans text-left z-10 mx-auto lg:mx-0 lg:ml-8 xl:ml-12 mr-auto"
+          className="relative w-full xl:w-[calc(100%-460px)] 2xl:w-[calc(100%-500px)] max-w-4xl xl:max-w-[860px] h-auto md:h-[360px] xl:h-[420px] 2xl:h-[460px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border border-slate-200/90 bg-white font-sans text-left z-10 mx-auto xl:mx-0 xl:ml-8 mr-auto"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
-          <div className="grid grid-cols-1 lg:grid-cols-12 h-full min-h-[340px] sm:min-h-[380px]">
+          <div className="grid grid-cols-1 md:grid-cols-12 h-full">
             
-            {/* Left: Interactive Details Pane (5 cols) in Clean CWG Style */}
-            <div className="lg:col-span-5 p-6 sm:p-8 flex flex-col justify-between h-full space-y-4 bg-white border-b lg:border-b-0 lg:border-r border-slate-200/90 text-left">
-              <div className="space-y-3.5">
-                {/* Clean CWG category & location header without pill containers */}
-                <div className="flex items-center gap-2 text-[11px] font-mono tracking-wider uppercase">
-                  <span className="font-bold text-[#0090AD]">{slide.category}</span>
+            {/* Details Pane (6 cols on md+ for generous breathing room) */}
+            <div className="md:col-span-6 p-4 sm:p-6 lg:p-7 xl:p-8 flex flex-col justify-between h-full space-y-3 sm:space-y-4 bg-white border-b md:border-b-0 md:border-r border-slate-200/90 text-left order-1">
+              <div className="space-y-2.5 sm:space-y-3">
+                {/* Category & location header */}
+                <div className="flex items-center gap-2 text-[10px] sm:text-[11px] font-mono tracking-wider uppercase">
+                  <span className="font-bold text-[#0090AD] shrink-0">{slide.category}</span>
                   <span className="text-slate-300">•</span>
-                  <span className="text-slate-600 font-medium truncate max-w-[220px]">{slide.city}</span>
+                  <span className="text-slate-600 font-medium truncate">{slide.city}</span>
                 </div>
 
-                <h3 className="text-xl sm:text-2xl font-bold tracking-tight text-slate-950 leading-snug">
+                <h3 className="text-lg sm:text-xl xl:text-2xl font-bold tracking-tight text-slate-950 leading-snug">
                   {slide.title}
                 </h3>
 
-                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed line-clamp-3">
+                <p className="text-xs sm:text-sm text-slate-600 leading-relaxed line-clamp-2 sm:line-clamp-3">
                   {slide.description}
                 </p>
               </div>
 
               {/* Bottom Info & Navigation */}
-              <div className="space-y-4 pt-4 border-t border-slate-100">
-                <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-xs font-semibold text-slate-700 font-mono">
-                    <Calendar className="w-4 h-4 text-[#0090AD]" />
-                    <span>{slide.date}</span>
+              <div className="space-y-3 pt-3 border-t border-slate-100">
+                <div className="flex items-center justify-between gap-2">
+                  <div className="flex items-center gap-1.5 text-xs font-semibold text-slate-700 font-mono">
+                    <Calendar className="w-3.5 h-3.5 text-[#0090AD] shrink-0" />
+                    <span className="whitespace-nowrap">{slide.date}</span>
                   </div>
 
                   <Link
                     href={`/events/${slide.id || ""}`}
-                    className="inline-flex items-center gap-1.5 px-4 py-2 rounded-lg bg-[#162054] hover:bg-[#0f172a] text-white text-xs font-semibold transition-all shadow-xs"
+                    className="inline-flex items-center gap-1.5 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-xl bg-[#162054] hover:bg-[#0f172a] text-white text-xs font-semibold transition-all shadow-xs shrink-0 whitespace-nowrap"
                   >
                     <span>View Event</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -152,17 +152,17 @@ export default function HeroSpotlightCarousel() {
                 </div>
 
                 {/* Pagination Controls */}
-                <div className="flex items-center justify-between pt-1">
-                  <div className="flex items-center gap-2">
+                <div className="flex items-center justify-between pt-0.5">
+                  <div className="flex items-center gap-1.5">
                     {slides.map((_, i) => (
                       <button
                         key={i}
                         onClick={() => setCurrentSlide(i)}
                         className={cn(
-                          "h-2 rounded-full transition-all cursor-pointer",
+                          "h-1.5 sm:h-2 rounded-full transition-all cursor-pointer",
                           i === (currentSlide % total)
-                            ? "w-7 bg-[#162054]"
-                            : "w-2 bg-slate-200 hover:bg-slate-300"
+                            ? "w-6 sm:w-7 bg-[#162054]"
+                            : "w-1.5 sm:w-2 bg-slate-200 hover:bg-slate-300"
                         )}
                         aria-label={`Go to slide ${i + 1}`}
                       />
@@ -172,14 +172,14 @@ export default function HeroSpotlightCarousel() {
                   <div className="flex items-center gap-1">
                     <button
                       onClick={() => setCurrentSlide((prev) => (prev - 1 + total) % total)}
-                      className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer"
+                      className="p-1 sm:p-1.5 rounded-lg hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer"
                       aria-label="Previous slide"
                     >
                       <ChevronLeft className="w-4 h-4" />
                     </button>
                     <button
                       onClick={() => setCurrentSlide((prev) => (prev + 1) % total)}
-                      className="p-1.5 rounded-lg hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer"
+                      className="p-1 sm:p-1.5 rounded-lg hover:bg-slate-100 text-slate-600 transition-colors cursor-pointer"
                       aria-label="Next slide"
                     >
                       <ChevronRight className="w-4 h-4" />
@@ -189,8 +189,8 @@ export default function HeroSpotlightCarousel() {
               </div>
             </div>
 
-            {/* Right: Rich Visual Hero Pane (7 cols) - Clean CWG Enterprise Photo */}
-            <div className="lg:col-span-7 relative h-64 sm:h-80 lg:h-full overflow-hidden bg-slate-950">
+            {/* Right: Rich Visual Hero Pane (6 cols on md+) */}
+            <div className="md:col-span-6 relative h-48 sm:h-60 md:h-full overflow-hidden bg-slate-950 order-2 min-h-[190px]">
               <AnimatePresence mode="wait">
                 <motion.div
                   key={slide.id || currentSlide}
@@ -205,11 +205,11 @@ export default function HeroSpotlightCarousel() {
                     alt={slide.title}
                     fill
                     priority={currentSlide === 0}
-                    sizes="(max-width: 1024px) 100vw, 60vw"
+                    sizes="(max-width: 768px) 100vw, 50vw"
                     className="object-cover"
                   />
 
-                  {/* Natural Lighting Gradient Overlays without fake floating tags */}
+                  {/* Natural Lighting Gradient Overlays */}
                   <div className="absolute inset-0 bg-gradient-to-t from-black/50 via-transparent to-transparent" />
                 </motion.div>
               </AnimatePresence>
@@ -219,7 +219,7 @@ export default function HeroSpotlightCarousel() {
         </div>
 
         {/* Animated FifthEvents Demo Card - visible on both mobile and desktop */}
-        <div className="flex items-center justify-center flex-shrink-0 mx-auto lg:mx-0 mr-auto lg:mr-8 xl:mr-12 z-20">
+        <div className="w-full xl:w-auto flex items-center justify-center flex-shrink-0 mx-auto xl:mx-0 xl:mr-8 z-20">
           <DemoCardAnimated />
         </div>
 

@@ -14,6 +14,7 @@ export default function Navbar() {
   const { user, logout } = useApp();
   const [scrolled, setScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [inAboutSection, setInAboutSection] = useState(false);
 
   // Universal background scroll lock when mobile navigation is open
   useBodyScrollLock(mobileMenuOpen);
@@ -26,11 +27,58 @@ export default function Navbar() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Scroll spy to detect when user is viewing the About section on the landing page
+  useEffect(() => {
+    if (pathname !== "/") {
+      setInAboutSection(false);
+      return;
+    }
+
+    const checkAboutInView = () => {
+      const aboutEl = document.getElementById("about");
+      if (!aboutEl) {
+        setInAboutSection(false);
+        return;
+      }
+      const rect = aboutEl.getBoundingClientRect();
+      const windowHeight = window.innerHeight || document.documentElement.clientHeight;
+      // Active when scrolled into the about section
+      const inView = rect.top <= windowHeight * 0.45 && rect.bottom >= 150;
+      setInAboutSection(inView);
+    };
+
+    checkAboutInView();
+    window.addEventListener("scroll", checkAboutInView, { passive: true });
+    return () => window.removeEventListener("scroll", checkAboutInView);
+  }, [pathname]);
+
   const navLinks = [
     { name: "Events", href: "/events" },
     { name: "Products", href: "/products" },
     { name: "About", href: "/#about" },
   ];
+
+  const checkIsActive = (href: string) => {
+    if (href === "/#about") {
+      return pathname === "/" && inAboutSection;
+    }
+    return pathname === href;
+  };
+
+  const handleNavClick = (e: React.MouseEvent<HTMLAnchorElement>, href: string) => {
+    setMobileMenuOpen(false);
+    if (href === "/#about") {
+      if (pathname === "/") {
+        e.preventDefault();
+        const aboutEl = document.getElementById("about");
+        if (aboutEl) {
+          aboutEl.scrollIntoView({ behavior: "smooth" });
+          window.history.pushState(null, "", "#about");
+          setInAboutSection(true);
+        }
+      }
+    }
+  };
 
   return (
     <>
@@ -66,11 +114,12 @@ export default function Navbar() {
           {/* 2. Middle: Desktop Navigation Links */}
           <nav className="hidden md:flex items-center gap-7 lg:gap-9">
             {navLinks.map((link) => {
-              const isActive = pathname === link.href;
+              const isActive = checkIsActive(link.href);
               return (
                 <Link
                   key={link.name}
                   href={link.href}
+                  onClick={(e: React.MouseEvent<HTMLAnchorElement>) => handleNavClick(e, link.href)}
                   className={cn(
                     "text-xs font-semibold transition-all relative py-1",
                     isActive
@@ -140,41 +189,39 @@ export default function Navbar() {
 
         </div>
 
-        {/* Directly Attached Downward Dropdown Menu (Opens cleanly under nav capsule without any circular morphing) */}
+        {/* Directly Attached Downward Dropdown Menu — High-polish mobile navigation */}
         {mobileMenuOpen && (
-          <div className="md:hidden absolute top-[calc(100%+8px)] left-0 right-0 w-full bg-white/95 backdrop-blur-2xl rounded-2xl border border-slate-100/90 shadow-2xl p-4 text-left space-y-3">
-            <nav className="space-y-1">
+          <div className="md:hidden absolute top-[calc(100%+10px)] left-0 right-0 w-full bg-white/98 backdrop-blur-2xl rounded-3xl border border-slate-200/90 shadow-[0_20px_60px_-15px_rgba(15,23,42,0.22)] p-4 sm:p-5 text-left space-y-3.5 animate-in fade-in-0 zoom-in-95 duration-150">
+            <nav className="space-y-1.5">
               {navLinks.map((link) => {
-                const isActive = pathname === link.href;
+                const isActive = checkIsActive(link.href);
                 return (
                   <Link
                     key={link.name}
                     href={link.href}
-                    onClick={() => setMobileMenuOpen(false)}
+                    onClick={(e: React.MouseEvent<HTMLAnchorElement>) => handleNavClick(e, link.href)}
                     className={cn(
-                      "px-4 py-2.5 rounded-xl text-xs font-semibold transition-colors flex items-center justify-between",
+                      "px-4 py-3 rounded-2xl text-sm transition-all flex items-center justify-between",
                       isActive
-                        ? "bg-[#E8F8FA] text-[#00829B] font-bold"
-                        : "text-slate-700 hover:bg-slate-50 hover:text-slate-950"
+                        ? "bg-slate-950 text-white font-bold shadow-xs"
+                        : "text-slate-700 font-semibold hover:bg-slate-100/80 hover:text-slate-950"
                     )}
                   >
                     <span>{link.name}</span>
-                    {isActive && <span className="w-2 h-2 rounded-full bg-[#0090AD]" />}
                   </Link>
                 );
               })}
             </nav>
 
             {/* Mobile Auth CTAs */}
-            <div className="pt-2.5 border-t border-slate-100 flex flex-col gap-2">
+            <div className="pt-3 border-t border-slate-100 flex flex-col gap-2">
               {user ? (
                 <>
                   <Link
                     href="/dashboard"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="w-full py-2.5 px-4 rounded-xl bg-slate-900 text-white text-xs font-bold text-center flex items-center justify-center gap-2 shadow-xs hover:bg-black transition-colors"
+                    className="w-full py-3 px-4 rounded-2xl bg-[#0090AD] hover:bg-[#007A94] text-white text-sm font-bold text-center flex items-center justify-center shadow-md shadow-[#0090AD]/25 active:scale-[0.99] transition-all cursor-pointer"
                   >
-                    <LayoutDashboard className="w-4 h-4" />
                     <span>Open Dashboard</span>
                   </Link>
                   <button
@@ -182,9 +229,8 @@ export default function Navbar() {
                       logout();
                       setMobileMenuOpen(false);
                     }}
-                    className="w-full py-2 px-4 rounded-xl border border-rose-200 text-rose-600 hover:bg-rose-50 text-xs font-semibold transition-colors flex items-center justify-center gap-2 cursor-pointer"
+                    className="w-full py-2.5 px-4 rounded-2xl bg-[#991B1B] hover:bg-[#7F1D1D] text-white text-sm font-bold text-center flex items-center justify-center shadow-sm active:scale-[0.99] transition-all cursor-pointer"
                   >
-                    <LogOut className="w-3.5 h-3.5" />
                     <span>Sign Out</span>
                   </button>
                 </>
@@ -193,17 +239,15 @@ export default function Navbar() {
                   <Link
                     href="/demo"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-[#0090AD] to-[#229EA6] hover:from-[#007A94] hover:to-[#1E8B92] text-white text-xs font-bold text-center flex items-center justify-center gap-2 shadow-md shadow-[#0090AD]/20 transition-all"
+                    className="w-full py-3 px-4 rounded-2xl bg-[#0090AD] hover:bg-[#007A94] text-white text-sm font-bold text-center flex items-center justify-center shadow-md shadow-[#0090AD]/25 active:scale-[0.99] transition-all"
                   >
                     <span>Book Product Demo</span>
-                    <ArrowRight className="w-3.5 h-3.5" />
                   </Link>
                   <Link
                     href="/login"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="w-full py-2 px-4 rounded-xl border border-slate-200 text-slate-800 hover:bg-slate-50 text-xs font-semibold text-center flex items-center justify-center gap-2 transition-colors"
+                    className="w-full py-2.5 px-4 rounded-2xl bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-900 text-sm font-bold text-center flex items-center justify-center transition-colors"
                   >
-                    <LogIn className="w-3.5 h-3.5" />
                     <span>Portal Login</span>
                   </Link>
                 </>

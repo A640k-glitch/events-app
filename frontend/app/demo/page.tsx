@@ -507,7 +507,7 @@ function DemoBookingContent() {
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-1">
                 <div className="flex items-center gap-2 text-[11px] text-gray-500 font-mono">
                   <ShieldCheck className="w-4 h-4 text-emerald-600" />
-                  <span>NDPR & Enterprise Security Compliant</span>
+                  <span>Data Privacy & Enterprise Security Compliant</span>
                 </div>
 
                 <BrandButton

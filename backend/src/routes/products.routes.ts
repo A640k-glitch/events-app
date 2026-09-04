@@ -39,7 +39,7 @@ const CANONICAL_PRODUCTS = [
     slug: "smerp",
     name: "Smerp / SmerpGo",
     tagline: "SME & Field-Team ERP Platform",
-    description: "Comprehensive enterprise resource planning built for SMEs and distributed field teams — covering inventory management, accounting, order tracking, and real-time operations dashboards.",
+    description: "Comprehensive enterprise resource planning built for SMEs and distributed field teams, covering inventory management, accounting, order tracking, and real-time operations dashboards.",
     iconName: "Layers",
     bgColor: "#FCEDFF",
     activeDemosThisMonth: 42,
@@ -159,7 +159,7 @@ const CANONICAL_PRODUCTS = [
     slug: "cwg-training",
     name: "CWG Training Academy",
     tagline: "IT Professional Certification & Development",
-    description: "Professional IT training and certification programs for enterprise technologists — covering cloud, cybersecurity, networking, and the CWG Tech Community.",
+    description: "Professional IT training and certification programs for enterprise technologists, covering cloud, cybersecurity, networking, and the CWG Tech Community.",
     iconName: "GraduationCap",
     bgColor: "#FFFBEB",
     activeDemosThisMonth: 25,
@@ -182,8 +182,10 @@ const LOGO_MAP: Record<string, string> = {
   "cwg-managed": "/brand/cwg/managed.svg",
   "cwg-payments": "/brand/cwg/payments.svg",
   "cwg-infra": "/brand/cwg/infrastructure.svg",
+  "cwg-infrastructure": "/brand/cwg/infrastructure.svg",
   "cwg-software": "/brand/cwg/software.svg",
   "cwg-training": "/brand/cwg/training.svg",
+  texcellence: "/brand/texcellence-logo.png",
 };
 
 const TAGS_MAP: Record<string, string[]> = {

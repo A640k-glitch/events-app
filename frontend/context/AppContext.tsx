@@ -3,6 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { FifthLabEvent, Lead, FifthLabProduct, ProductOwner, LeadStatus, EventCategory, EventPriority, AttendanceRecord } from "@/lib/types";
 import { api, setAuthToken, clearAuthToken } from "@/lib/api-client";
+import { resolveProductLogo, CANONICAL_FALLBACK_PRODUCTS } from "@/lib/products-data";
 import { useRouter } from "next/navigation";
 
 export interface SystemNotification {
@@ -180,6 +181,7 @@ function mapPrismaLead(l: any): Lead {
 }
 
 function mapPrismaProduct(p: any): FifthLabProduct {
+  const resolvedLogo = resolveProductLogo(p.slug || p.name, p.logoUrl);
   return {
     id: p.id,
     slug: p.slug || p.id,
@@ -190,7 +192,7 @@ function mapPrismaProduct(p: any): FifthLabProduct {
     ownerName: p.owner?.name || "Product Lead",
     iconName: p.iconName || "Briefcase",
     bgColor: p.bgColor || "#F4F4FF",
-    logoUrl: p.logoUrl || "/favicon.ico",
+    logoUrl: resolvedLogo,
     tags: p.tags || ["Enterprise Solution"],
     activeDemosThisMonth: p.activeDemosThisMonth || 0,
     availableSlots: p.availableSlots || ["09:00 AM", "11:00 AM", "02:00 PM", "04:00 PM"],
@@ -204,7 +206,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const router = useRouter();
   const [events, setEvents] = useState<FifthLabEvent[]>([]);
   const [leads, setLeads] = useState<Lead[]>([]);
-  const [products, setProducts] = useState<FifthLabProduct[]>([]);
+  const [products, setProducts] = useState<FifthLabProduct[]>(CANONICAL_FALLBACK_PRODUCTS);
   const [owners, setOwners] = useState<ProductOwner[]>([]);
   const [pitches, setPitches] = useState<EventPitch[]>([]);
   const [stats, setStats] = useState<LiveStats>({
@@ -340,12 +342,13 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       // ignore
     }
 
+    const isLocalHost = typeof window !== "undefined" && (window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1");
+
     // Connect to Server-Sent Events (SSE) stream if an appropriate endpoint is available
     function connectSSE() {
       try {
-        if (typeof window === "undefined") return;
+        if (typeof window === "undefined" || !isSubscribed) return;
 
-        const isLocalHost = window.location.hostname === "localhost" || window.location.hostname === "127.0.0.1";
         const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || "";
 
         let streamEndpoint: string | null = null;
@@ -380,39 +383,47 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         };
 
         sse.onerror = () => {
-          if (sse) {
-            sse.close();
-            sse = null;
-          }
-          // Only retry if on localhost or configured remote endpoint
-          if (isSubscribed && isLocalHost) {
-            setTimeout(connectSSE, 10000);
-          }
+          // Native EventSource automatically reconnects on dropped connections / server restarts.
+          // We do not close the instance here so the browser's built-in retry mechanism operates seamlessly.
         };
-      } catch (err) {
-        console.warn("SSE connection error:", err);
+      } catch {
+        // Safe silent catch
       }
     }
 
     connectSSE();
 
-    // Silent refresh only when user returns to tab after being away for > 90 seconds
+    // Refresh data when user returns to tab after prolonged absence (> 5 mins)
     const handleVisibilityChange = () => {
+      if (typeof document === "undefined") return;
       if (document.visibilityState === "visible" && isSubscribed) {
+        if (!sse) {
+          connectSSE();
+        }
         const now = Date.now();
-        if (now - lastRefreshTime > 90000) {
+        if (now - lastRefreshTime > 300000) {
           triggerSilentRefresh();
         }
       }
     };
 
+    const handleBeforeUnload = () => {
+      isSubscribed = false;
+      if (sse) {
+        sse.close();
+        sse = null;
+      }
+    };
+
     window.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("beforeunload", handleBeforeUnload);
 
     return () => {
       isSubscribed = false;
       if (sse) sse.close();
       if (channel) channel.close();
       window.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("beforeunload", handleBeforeUnload);
     };
   }, [refreshData]);
 

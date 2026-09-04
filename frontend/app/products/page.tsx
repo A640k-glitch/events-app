@@ -52,7 +52,7 @@ const FIFTHLAB_PRODUCTS = [
     name: "Smerp / SmerpGo",
     tagline: "SME & Field-Team ERP Platform",
     description:
-      "Comprehensive enterprise resource planning built for SMEs and distributed field teams — covering inventory management, accounting, order tracking, and real-time operations dashboards.",
+      "Comprehensive enterprise resource planning built for SMEs and distributed field teams, covering inventory management, accounting, order tracking, and real-time operations dashboards.",
     url: "https://smerp.ng",
     logoUrl: "/brand/smerp-icon.png",
     accentColor: "#EAB308",
@@ -66,7 +66,7 @@ const FIFTHLAB_PRODUCTS = [
     name: "UCP",
     tagline: "Unified Cooperative Platform",
     description:
-      "Digital-first platform to manage cooperative societies end-to-end — member record-keeping, contribution tracking, loan processing, and governance workflows all in one unified system.",
+      "Digital-first platform to manage cooperative societies end-to-end, including member record-keeping, contribution tracking, loan processing, and governance workflows all in one unified system.",
     url: "https://thefifthlab.com/ucp",
     logoUrl: "/brand/ucp-emblem.png",
     accentColor: "#7C3AED",
@@ -80,7 +80,7 @@ const FIFTHLAB_PRODUCTS = [
     name: "KuleanPay",
     tagline: "AI-Driven Escrow & Secure Payments",
     description:
-      "Secure, AI-powered escrow payment engine that protects buyers and sellers in high-value transactions — reducing fraud risk and enabling trust-based commerce across Africa.",
+      "Secure, AI-powered escrow payment engine that protects buyers and sellers in high-value transactions, reducing fraud risk and enabling trust-based commerce across Africa.",
     url: "https://kuleanpay.com",
     logoUrl: "/brand/kuleanpay-icon.png",
     accentColor: "#1E3A8A",
@@ -177,7 +177,7 @@ const CWG_PRODUCTS = [
     name: "CWG Training Academy",
     tagline: "IT Professional Certification & Development",
     description:
-      "Professional IT training and certification programs for enterprise technologists — covering cloud, cybersecurity, networking, and the CWG Tech Community.",
+      "Professional IT training and certification programs for enterprise technologists, covering cloud, cybersecurity, networking, and the CWG Tech Community.",
     url: "https://cwg-plc.com/services/training",
     logoUrl: "/brand/cwg/training.svg",
     accentColor: "#16A34A",
@@ -321,29 +321,34 @@ function ProductCard({
       </div>
 
       {/* Bottom Row: Tags + thefifthlab.com Signature Black Pill Button */}
-      <div className="pt-4 border-t border-black/[0.06] flex items-center justify-between gap-3">
-        <div className="flex flex-wrap gap-1.5">
-          {tags.slice(0, 2).map((tag) => (
+      <div className="pt-4 border-t border-black/[0.06] flex items-center justify-between gap-2">
+        <div className="flex flex-wrap gap-1 min-w-0 flex-1 overflow-hidden">
+          {tags.slice(0, 1).map((tag) => (
             <span
               key={tag}
-              className="text-[10.5px] font-medium text-slate-700 bg-white/90 border border-black/[0.06] px-2.5 py-0.5 rounded-md shadow-2xs"
+              className="text-[10px] sm:text-[10.5px] font-medium text-slate-700 bg-white/90 border border-black/[0.06] px-2 py-0.5 rounded-md shadow-2xs whitespace-nowrap"
             >
               {tag}
             </span>
           ))}
+          {tags.length > 1 && (
+            <span className="hidden sm:inline-flex text-[10px] sm:text-[10.5px] font-medium text-slate-700 bg-white/90 border border-black/[0.06] px-2 py-0.5 rounded-md shadow-2xs whitespace-nowrap">
+              {tags[1]}
+            </span>
+          )}
         </div>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
           {id !== "cwg-training" && id !== "texcellence" && (
             <Link
               href={`/demo?product=${id || name.toLowerCase().replace(/[^a-z0-9]/g, "")}`}
               onClick={(e: React.MouseEvent) => e.stopPropagation()}
-              className="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-[#0090AD] hover:bg-[#007b94] text-white text-[11px] font-bold shadow-xs hover:scale-105 transition-all"
+              className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#0090AD] hover:bg-[#007b94] text-white text-[11px] font-bold shadow-xs hover:scale-105 transition-all whitespace-nowrap shrink-0"
             >
-              Book Demo
+              <span>Book Demo</span>
             </Link>
           )}
-          <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-950 text-white text-[11px] font-semibold group-hover:bg-black transition-all shrink-0 shadow-sm group-hover:scale-105">
+          <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-slate-950 text-white text-[11px] font-semibold group-hover:bg-black transition-all shrink-0 shadow-sm group-hover:scale-105 whitespace-nowrap">
             <span>Details</span>
             <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
           </span>
@@ -598,7 +603,7 @@ export default function ProductsPage() {
             </h1>
             <p className="text-sm text-slate-300 max-w-2xl leading-relaxed">
               From fintech infrastructure and cooperative platforms to enterprise cloud services and
-              bulk payment engines — explore the full suite of solutions built by <span className="text-white tracking-tight"><strong className="font-bold">fifth</strong><span className="font-light">lab</span></span> and
+              bulk payment engines, explore the full suite of solutions built by <span className="text-white tracking-tight"><strong className="font-bold">fifth</strong><span className="font-light">lab</span></span> and
               CWG PLC.
             </p>
           </div>

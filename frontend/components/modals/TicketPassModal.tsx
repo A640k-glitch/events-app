@@ -1,5 +1,7 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { X, Download, CheckCircle2 } from "lucide-react";
 import { BrandButton } from "@/components/ui/BrandButtons";
 import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
@@ -27,10 +29,15 @@ interface TicketPassModalProps {
 }
 
 export default function TicketPassModal({ isOpen, onClose, ticket }: TicketPassModalProps) {
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Lock background scrolling when modal is open
   useBodyScrollLock(isOpen && Boolean(ticket));
 
-  if (!isOpen || !ticket) return null;
+  if (!isOpen || !ticket || !mounted) return null;
 
   const downloadBadge = () => {
     const link = document.createElement("a");
@@ -41,13 +48,13 @@ export default function TicketPassModal({ isOpen, onClose, ticket }: TicketPassM
     document.body.removeChild(link);
   };
 
-  return (
+  const modalContent = (
     <div
-      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150"
+      className="fixed inset-0 z-[100] bg-black/65 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-150"
       onClick={onClose}
     >
       <div
-        className="w-full max-w-md bg-white border border-gray-200 rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 text-left relative overflow-hidden font-sans text-[#0E0E0E]"
+        className="w-full max-w-md bg-white border border-gray-200 rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 text-left relative overflow-hidden font-sans my-auto max-h-[90vh] overflow-y-auto text-[#0E0E0E]"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}
@@ -133,4 +140,6 @@ export default function TicketPassModal({ isOpen, onClose, ticket }: TicketPassM
       </div>
     </div>
   );
+
+  return createPortal(modalContent, document.body);
 }

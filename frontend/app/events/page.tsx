@@ -239,9 +239,6 @@ export default function EventsPublicCatalogPage() {
                       <span className="text-[10.5px] font-medium text-slate-700 bg-white/90 border border-black/[0.06] px-2.5 py-1 rounded-md shadow-2xs">
                         {evt.category}
                       </span>
-                      <span className="text-[10.5px] font-medium text-slate-700 bg-white/90 border border-black/[0.06] px-2.5 py-1 rounded-md shadow-2xs">
-                        {manifestCount} Attending
-                      </span>
                       {evt.boothNumber && (
                         <span className="text-[10.5px] font-medium text-[#007A94] bg-white/90 border border-[#0090AD]/30 px-2.5 py-1 rounded-md shadow-2xs">
                           {evt.boothNumber}

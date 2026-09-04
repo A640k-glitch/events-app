@@ -169,7 +169,7 @@ async function main() {
       location: "Villa Rosa Kempinski",
       city: "Nairobi",
       country: "Kenya",
-      description: "Private executive lounges and strategic briefings with unified attendee credentials and encrypted NDPR compliance.",
+      description: "Private executive lounges and strategic briefings with unified attendee credentials and encrypted data privacy compliance.",
       strategicNotes: "VIP discussions on cross-border payments with regional financial regulators.",
       boothNumber: "VIP Boardroom 2",
       imageUrl: "/images/vip_lounge.jpg",

@@ -35,7 +35,7 @@ export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
   const [country, setCountry] = useState("Nigeria");
   const [description, setDescription] = useState("");
   const [boothNumber, setBoothNumber] = useState("");
-  const [expectedAttendance, setExpectedAttendance] = useState(2500);
+  const [expectedAttendance, setExpectedAttendance] = useState(0);
   
   // Image states
   const [imageUrl, setImageUrl] = useState("/images/auth/real_lagos_keynote.jpg");

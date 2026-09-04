@@ -144,11 +144,11 @@ export default function LiveEventsCarousel({ events, onClaimPass }: LiveEventsCa
                   </p>
                 </div>
 
-                {/* Stats & Attendance */}
+                {/* Event Schedule & Status */}
                 <div className="pt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-1.5 text-slate-700 font-bold font-mono">
-                    <Users className="w-3.5 h-3.5 text-[#0090AD]" />
-                    <span>{evt.expectedAttendance || 1200}+ RSVPs</span>
+                  <div className="flex items-center gap-1.5 text-slate-700 font-semibold font-mono text-[11px]">
+                    <MapPin className="w-3.5 h-3.5 text-[#0090AD]" />
+                    <span>{evt.city}</span>
                   </div>
 
                   <span className="text-xs font-semibold text-emerald-600">

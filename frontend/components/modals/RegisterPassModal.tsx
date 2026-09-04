@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { X, Ticket, ArrowRight, ShieldCheck, User, Mail, Building, Phone } from "lucide-react";
 import { api } from "@/lib/api-client";
 import { useApp } from "@/context/AppContext";
@@ -30,6 +31,11 @@ export default function RegisterPassModal(props: RegisterPassModalProps) {
     eventId: propEventId,
   } = props;
 
+  const [mounted, setMounted] = useState(false);
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
   // Lock background scrolling when modal is open
   useBodyScrollLock(isOpen);
 
@@ -49,7 +55,7 @@ export default function RegisterPassModal(props: RegisterPassModalProps) {
   const [confirmedTicket, setConfirmedTicket] = useState<TicketPassData | null>(null);
   const [isPassModalOpen, setIsPassModalOpen] = useState(false);
 
-  if (!isOpen) return null;
+  if (!isOpen || !mounted) return null;
 
   const targetEventId = chosenEventId || effectiveEventId;
 
@@ -104,20 +110,20 @@ export default function RegisterPassModal(props: RegisterPassModalProps) {
     onClose();
   };
 
-  return (
+  const modalContent = (
     <>
       <div
-        className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 animate-in fade-in duration-150"
+        className="fixed inset-0 z-[100] bg-black/65 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-150"
         onClick={onClose}
       >
         <div
-          className="w-full max-w-lg bg-white border border-gray-200 rounded-3xl p-6 sm:p-8 space-y-6 text-left shadow-2xl relative overflow-hidden font-sans max-h-[90vh] overflow-y-auto text-[#0E0E0E]"
+          className="w-full max-w-lg bg-white border border-gray-200 rounded-3xl p-6 sm:p-8 space-y-6 text-left shadow-2xl relative overflow-hidden font-sans my-auto max-h-[90vh] overflow-y-auto text-[#0E0E0E]"
           onClick={(e) => e.stopPropagation()}
         >
           {/* Close Button */}
           <button
             onClick={onClose}
-            className="absolute top-5 right-5 p-2 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors"
+            className="absolute top-5 right-5 p-2 rounded-full text-gray-400 hover:text-gray-700 hover:bg-gray-100 transition-colors cursor-pointer"
           >
             <X className="w-5 h-5" />
           </button>
@@ -153,7 +159,7 @@ export default function RegisterPassModal(props: RegisterPassModalProps) {
               >
                 {events.map((e) => (
                   <option key={e.id} value={e.id}>
-                    {e.title} ({e.city}) — {e.date}
+                    {e.title} ({e.city}) • {e.date}
                   </option>
                 ))}
               </select>
@@ -249,11 +255,11 @@ export default function RegisterPassModal(props: RegisterPassModalProps) {
               </div>
             </div>
 
-            {/* NDPR Compliance Notice */}
+            {/* Data Privacy Notice */}
             <div className="p-3 bg-gray-50 border border-gray-200 rounded-xl flex items-start gap-2 text-[11px] text-[#5F5F7A]">
               <ShieldCheck className="w-4 h-4 text-[#0090AD] shrink-0 mt-0.5" />
               <span>
-                By registering, your badge information is securely processed in accordance with NDPR data protection regulations.
+                By registering, your badge information is securely processed in accordance with global data protection and enterprise privacy standards.
               </span>
             </div>
 
@@ -296,4 +302,6 @@ export default function RegisterPassModal(props: RegisterPassModalProps) {
       )}
     </>
   );
+
+  return createPortal(modalContent, document.body);
 }

@@ -244,7 +244,7 @@ export default function Footer() {
           <div className="flex flex-wrap items-center justify-center sm:justify-end gap-4 sm:gap-6">
             <a href="https://thefifthlab.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Privacy Policy</a>
             <a href="https://thefifthlab.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Terms of Service</a>
-            <a href="https://thefifthlab.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">NDPR Compliance</a>
+            <a href="https://thefifthlab.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Data Privacy & Security</a>
           </div>
         </div>
 

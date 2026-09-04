@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useEffect } from "react";
 import { usePathname } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
@@ -12,6 +12,24 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
   const isDashboard = pathname.startsWith("/dashboard");
   const isAuth = pathname.startsWith("/login") || pathname.startsWith("/register");
   const isDarkHeroPage = pathname.startsWith("/events") || pathname.startsWith("/products");
+
+  // Scroll to top on every page transition (unless an anchor hash like #about is targeted)
+  useEffect(() => {
+    if (typeof window === "undefined") return;
+
+    if (window.location.hash) {
+      const id = window.location.hash.replace("#", "");
+      const el = document.getElementById(id);
+      if (el) {
+        setTimeout(() => {
+          el.scrollIntoView({ behavior: "smooth" });
+        }, 100);
+        return;
+      }
+    }
+
+    window.scrollTo({ top: 0, left: 0, behavior: "instant" });
+  }, [pathname]);
 
   if (isAuth) {
     return (
@@ -41,7 +59,7 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
       <Navbar />
       <main
         className={cn(
-          "flex-1 overscroll-none relative z-10",
+          "flex-1 overscroll-none relative",
           isDarkHeroPage ? "pt-0" : "pt-16"
         )}
       >

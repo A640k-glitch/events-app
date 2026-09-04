@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { CardGridSkeleton } from "@/components/ui/SkeletonLoaders";
 import { FifthLabProduct } from "@/lib/types";
+import { resolveProductLogo } from "@/lib/products-data";
 import { cn } from "@/lib/utils";
 
 export default function ProductsPage() {
@@ -242,15 +243,14 @@ export default function ProductsPage() {
                       <div className="flex items-start justify-between gap-3">
                         <div className="flex items-center gap-3">
                           <div className="w-12 h-12 rounded-xl bg-slate-50 border border-slate-100 p-2 flex items-center justify-center shrink-0 group-hover:scale-105 transition-transform shadow-2xs">
-                            {prod.logoUrl ? (
-                              <img
-                                src={prod.logoUrl}
-                                alt={prod.name}
-                                className="w-full h-full object-contain"
-                              />
-                            ) : (
-                              <Layers className="w-6 h-6 text-[#0090AD]" />
-                            )}
+                            <img
+                              src={resolveProductLogo(prod.slug || prod.name, prod.logoUrl)}
+                              alt={prod.name}
+                              className="w-full h-full object-contain"
+                              onError={(e) => {
+                                (e.target as HTMLImageElement).src = "/brand/bulkwave-icon.png";
+                              }}
+                            />
                           </div>
                           <div>
                             <div className="flex items-center gap-1.5">
@@ -341,15 +341,14 @@ export default function ProductsPage() {
               <div className="flex items-start justify-between gap-4 pb-4 border-b border-slate-100">
                 <div className="flex items-center gap-4">
                   <div className="w-16 h-16 rounded-2xl bg-slate-50 border border-slate-100 p-2.5 flex items-center justify-center shrink-0 shadow-xs">
-                    {selectedProduct.logoUrl ? (
-                      <img
-                        src={selectedProduct.logoUrl}
-                        alt={selectedProduct.name}
-                        className="w-full h-full object-contain"
-                      />
-                    ) : (
-                      <Layers className="w-8 h-8 text-[#0090AD]" />
-                    )}
+                    <img
+                      src={resolveProductLogo(selectedProduct.slug || selectedProduct.name, selectedProduct.logoUrl)}
+                      alt={selectedProduct.name}
+                      className="w-full h-full object-contain"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = "/brand/bulkwave-icon.png";
+                      }}
+                    />
                   </div>
                   <div>
                     <div className="flex items-center gap-2">

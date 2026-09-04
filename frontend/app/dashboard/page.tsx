@@ -59,10 +59,10 @@ export default function DashboardOverviewPage() {
         {/* 1. Header Area with Structured Layout & High-Contrast Styling */}
         <motion.div 
           variants={itemVariants} 
-          className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-4"
+          className="bg-white p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4"
         >
           <div className="space-y-1">
-            <h1 className="text-2xl sm:text-3xl font-medium tracking-tight text-slate-900">
+            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-slate-900">
               Dashboard Overview
             </h1>
             <p className="text-xs sm:text-sm text-slate-600 font-medium max-w-2xl">
@@ -70,10 +70,10 @@ export default function DashboardOverviewPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2.5 shrink-0">
+          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0">
             <button
               onClick={() => setIsAddEventOpen(true)}
-              className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-800 transition-all cursor-pointer shadow-2xs hover:border-slate-300"
+              className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-800 transition-all cursor-pointer shadow-2xs hover:border-slate-300"
             >
               <Plus className="w-3.5 h-3.5 text-[#0090AD]" />
               <span>Create Event</span>
@@ -81,7 +81,7 @@ export default function DashboardOverviewPage() {
 
             <button
               onClick={() => setIsAddLeadOpen(true)}
-              className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-gradient-to-r from-[#0090AD] to-[#229EA6] hover:from-[#007A94] hover:to-[#1E8B92] text-white text-xs font-bold shadow-md shadow-[#0090AD]/20 transition-all cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
+              className="inline-flex items-center gap-1.5 px-3.5 sm:px-4.5 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-[#0090AD] to-[#229EA6] hover:from-[#007A94] hover:to-[#1E8B92] text-white text-xs font-bold shadow-md shadow-[#0090AD]/20 transition-all cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
             >
               <UserPlus className="w-3.5 h-3.5" />
               <span>Add Lead</span>
@@ -90,13 +90,13 @@ export default function DashboardOverviewPage() {
         </motion.div>
 
         {/* 2. Dual Hero Action Cards with Cohesive FifthEvents Palette */}
-        <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
           
           {/* Left Hero Card: YOUR TEAM */}
-          <div className="lg:col-span-8 rounded-2xl border border-[#20B2AA]/30 bg-gradient-to-br from-[#F2FAFB] via-white to-[#F6FCFD] p-6 sm:p-7 flex flex-col justify-between space-y-5 relative overflow-hidden shadow-2xs">
-            <div className="space-y-3">
+          <div className="lg:col-span-8 rounded-xl sm:rounded-2xl border border-[#20B2AA]/30 bg-gradient-to-br from-[#F2FAFB] via-white to-[#F6FCFD] p-4 sm:p-6 lg:p-7 flex flex-col justify-between space-y-4 sm:space-y-5 relative overflow-hidden shadow-2xs">
+            <div className="space-y-2 sm:space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#00829B] flex items-center gap-1.5">
+                <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#00829B] flex items-center gap-1.5">
                   <Users className="w-3.5 h-3.5" /> TEAM ROSTER
                 </span>
                 <Link
@@ -108,7 +108,7 @@ export default function DashboardOverviewPage() {
                 </Link>
               </div>
 
-              <h2 className="text-lg font-bold text-slate-900 tracking-tight">
+              <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
                 Staff your booths and sessions
               </h2>
 
@@ -117,10 +117,10 @@ export default function DashboardOverviewPage() {
               </p>
             </div>
 
-            <div className="pt-2 flex items-center gap-3">
+            <div className="pt-1 sm:pt-2 flex items-center gap-3">
               <Link
                 href="/dashboard/team"
-                className="inline-flex items-center justify-center gap-2 px-5 py-2.5 rounded-xl bg-gradient-to-r from-[#0090AD] to-[#229EA6] hover:from-[#007A94] hover:to-[#1E8B92] text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
+                className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-[#0090AD] to-[#229EA6] hover:from-[#007A94] hover:to-[#1E8B92] text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
               >
                 <span>Invite your team</span>
                 <ArrowRight className="w-3.5 h-3.5" />
@@ -129,7 +129,7 @@ export default function DashboardOverviewPage() {
           </div>
 
           {/* Right Hero Card: HELP CENTER */}
-          <div className="lg:col-span-4 rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-7 flex flex-col justify-between space-y-4 relative overflow-hidden shadow-2xs">
+          <div className="lg:col-span-4 rounded-xl sm:rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-6 lg:p-7 flex flex-col justify-between space-y-3 sm:space-y-4 relative overflow-hidden shadow-2xs">
             <div className="space-y-2.5">
               <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
                 ADMIN GUIDES
@@ -210,46 +210,46 @@ export default function DashboardOverviewPage() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             
             {/* Metric 1: Created Events (Kuleanpay Ice-Blue Tint) */}
-            <div className="p-5 rounded-2xl border border-[#D8E6FA] bg-[#F0F6FF] space-y-1.5 shadow-2xs hover:border-[#2563EB]/40 transition-colors">
-              <span className="text-xs font-semibold text-slate-600 block">Active events</span>
-              <div className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight">
+            <div className="p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-[#D8E6FA] bg-[#F0F6FF] space-y-1 sm:space-y-1.5 shadow-2xs hover:border-[#2563EB]/40 transition-colors">
+              <span className="text-[11px] sm:text-xs font-semibold text-slate-600 block">Active events</span>
+              <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">
                 {events.length}
               </div>
-              <div className="text-xs text-slate-500">
+              <div className="text-[11px] sm:text-xs text-slate-500">
                 Summits and workshops scheduled
               </div>
-              <div className="pt-1 flex items-center gap-1 text-[11px] text-[#2563EB] font-semibold">
-                <TrendingUp className="w-3.5 h-3.5" />
+              <div className="pt-0.5 sm:pt-1 flex items-center gap-1 text-[10px] sm:text-[11px] text-[#2563EB] font-semibold">
+                <TrendingUp className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 <span>+12% this month</span>
               </div>
             </div>
 
             {/* Metric 2: Inbound Leads (Finedge Aqua-Mint Tint) */}
-            <div className="p-5 rounded-2xl border border-[#CEEFEF] bg-[#EAF7F7] space-y-1.5 shadow-2xs hover:border-[#0090AD]/40 transition-colors">
-              <span className="text-xs font-semibold text-slate-600 block">Inbound leads</span>
-              <div className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight">
+            <div className="p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-[#CEEFEF] bg-[#EAF7F7] space-y-1 sm:space-y-1.5 shadow-2xs hover:border-[#0090AD]/40 transition-colors">
+              <span className="text-[11px] sm:text-xs font-semibold text-slate-600 block">Inbound leads</span>
+              <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">
                 {leads.length}
               </div>
-              <div className="text-xs text-slate-500">
+              <div className="text-[11px] sm:text-xs text-slate-500">
                 Booth inquiries and demo requests
               </div>
-              <div className="pt-1 flex items-center gap-1 text-[#0090AD] font-semibold text-[11px]">
-                <TrendingUp className="w-3.5 h-3.5" />
+              <div className="pt-0.5 sm:pt-1 flex items-center gap-1 text-[#0090AD] font-semibold text-[10px] sm:text-[11px]">
+                <TrendingUp className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 <span>+18.4% conversion</span>
               </div>
             </div>
 
             {/* Metric 3: Door Check-ins (Bulkwave Periwinkle Tint) */}
-            <div className="p-5 rounded-2xl border border-[#E0E4FB] bg-[#F3F4FD] space-y-1.5 shadow-2xs hover:border-[#4F46E5]/40 transition-colors">
-              <span className="text-xs font-semibold text-slate-600 block">Checked-in rate</span>
-              <div className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight">
+            <div className="p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-[#E0E4FB] bg-[#F3F4FD] space-y-1 sm:space-y-1.5 shadow-2xs hover:border-[#4F46E5]/40 transition-colors">
+              <span className="text-[11px] sm:text-xs font-semibold text-slate-600 block">Checked-in rate</span>
+              <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">
                 98.4%
               </div>
-              <div className="text-xs text-slate-500">
+              <div className="text-[11px] sm:text-xs text-slate-500">
                 Attendees verified with digital QR
               </div>
-              <div className="pt-1 flex items-center gap-1 text-[#4F46E5] font-semibold text-[11px]">
-                <CheckCircle2 className="w-3.5 h-3.5" />
+              <div className="pt-0.5 sm:pt-1 flex items-center gap-1 text-[#4F46E5] font-semibold text-[10px] sm:text-[11px]">
+                <CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
                 <span>Sub-second door scan</span>
               </div>
             </div>
@@ -259,10 +259,10 @@ export default function DashboardOverviewPage() {
         </motion.div>
 
         {/* 5. Data Pipelines: High-Contrast CRM Table + Upcoming Summits */}
-        <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-12 gap-5">
+        <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
           
           {/* Left: Leads CRM Table (8 Cols) */}
-          <div className="lg:col-span-8 rounded-2xl border border-slate-200/90 bg-white p-5 space-y-3.5 shadow-2xs text-left">
+          <div className="lg:col-span-8 rounded-xl sm:rounded-2xl border border-slate-200/90 bg-white p-3.5 sm:p-5 space-y-3 sm:space-y-3.5 shadow-2xs text-left">
             <div className="flex items-center justify-between pb-2.5 border-b border-slate-100">
               <div>
                 <h2 className="text-base font-bold text-slate-900">
@@ -393,7 +393,7 @@ export default function DashboardOverviewPage() {
 
                   <div className="flex items-center justify-between text-[11px] text-slate-600 font-medium">
                     <span>{evt.city} • {evt.date}</span>
-                    <span className="text-[#00829B] font-bold">{evt.expectedAttendance} RSVPs</span>
+                    <span className="text-emerald-700 font-semibold">{evt.time || "Scheduled"}</span>
                   </div>
                 </div>
               ))}
