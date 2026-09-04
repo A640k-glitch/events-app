@@ -13,13 +13,13 @@ export default function Topbar({ onMenuToggle }: TopbarProps) {
   const { user, setCommandPaletteOpen } = useApp();
 
   const getBreadcrumb = () => {
-    if (pathname === "/dashboard") return { section: "Admin center", label: "Dashboard Overview" };
-    if (pathname.startsWith("/dashboard/events")) return { section: "Operations", label: "Events & Summits" };
-    if (pathname.startsWith("/dashboard/leads")) return { section: "Operations", label: "Attendee Leads" };
-    if (pathname.startsWith("/dashboard/products")) return { section: "Operations", label: "Product Demos" };
-    if (pathname.startsWith("/dashboard/team")) return { section: "Organization", label: "Team Directory" };
-    if (pathname.startsWith("/dashboard/settings")) return { section: "Organization", label: "Preferences" };
-    return { section: "Admin center", label: "Overview" };
+    if (pathname === "/dashboard") return { section: "Dashboard", label: "Overview" };
+    if (pathname.startsWith("/dashboard/events")) return { section: "Dashboard", label: "Events & Summits" };
+    if (pathname.startsWith("/dashboard/leads")) return { section: "Dashboard", label: "Attendee Leads" };
+    if (pathname.startsWith("/dashboard/products")) return { section: "Dashboard", label: "Product Demos" };
+    if (pathname.startsWith("/dashboard/team")) return { section: "Dashboard", label: "Team Directory" };
+    if (pathname.startsWith("/dashboard/settings")) return { section: "Dashboard", label: "Preferences" };
+    return { section: "Dashboard", label: "Overview" };
   };
 
   const breadcrumb = getBreadcrumb();
@@ -54,7 +54,7 @@ export default function Topbar({ onMenuToggle }: TopbarProps) {
           className="hidden md:flex items-center gap-2.5 px-3.5 py-1.5 rounded-xl border border-slate-200 bg-slate-50 hover:bg-slate-100/80 text-xs text-slate-500 hover:text-slate-900 transition-all cursor-pointer shadow-2xs group"
         >
           <Search className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#0090AD] transition-colors" />
-          <span className="text-xs">Search console...</span>
+          <span className="text-xs">Search dashboard...</span>
           <kbd className="px-1.5 py-0.5 rounded-md bg-white border border-slate-200 text-[10px] font-mono text-slate-400 shadow-2xs">
             ⌘K
           </kbd>

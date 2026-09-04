@@ -43,7 +43,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
       ]
     },
     {
-      title: "OPERATIONS",
+      title: "MANAGEMENT",
       items: [
         { 
           name: "Events & Summits", 

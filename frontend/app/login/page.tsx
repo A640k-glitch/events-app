@@ -192,7 +192,7 @@ export default function LoginPage() {
                   Welcome back
                 </h1>
                 <p className="text-sm text-slate-500 leading-relaxed">
-                  Enter your corporate email to access the event operations dashboard. First-time users are automatically provisioned.
+                  Enter your corporate email to access the dashboard. First-time users are automatically provisioned.
                 </p>
               </div>
 
@@ -306,7 +306,7 @@ export default function LoginPage() {
                   disabled={isSubmitting || otpDigits.some((d) => !d)}
                   className="w-full py-3.5 px-6 rounded-xl bg-[#0D1522] hover:bg-[#162235] text-white font-semibold text-sm shadow-md transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50 active:scale-[0.99]"
                 >
-                  <span>{isSubmitting ? "Authenticating..." : "Verify & Enter Console"}</span>
+                  <span>{isSubmitting ? "Authenticating..." : "Verify & Enter Dashboard"}</span>
                   <ArrowRight className="w-4 h-4 text-slate-300" />
                 </button>
 

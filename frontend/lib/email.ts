@@ -67,7 +67,7 @@ export async function sendOtpVerificationEmail(props: OtpEmailProps): Promise<{ 
             <span style="display: inline-block; background: rgba(0,180,216,0.12); color: #00B4D8; border: 1px solid rgba(0,180,216,0.3); padding: 4px 14px; border-radius: 999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px;">PERSONNEL AUTHENTICATION</span>
             <h2 style="color: #ffffff; margin-top: 18px; margin-bottom: 8px; font-size: 22px; font-weight: 700; letter-spacing: -0.02em;">Your Single-Use Access Code</h2>
             <p style="color: rgba(255,255,255,0.7); font-size: 13px; line-height: 1.6; margin: 0 0 28px 0;">
-              Hello <strong style="color: #ffffff;">${recipientName}</strong>, enter this single-use verification code to authenticate your session in The FifthLab Operations Console.
+              Hello <strong style="color: #ffffff;">${recipientName}</strong>, enter this single-use verification code to authenticate your session in The FifthLab Dashboard.
             </p>
 
             <div style="background: rgba(255,255,255,0.03); border: 1px solid rgba(0,180,216,0.35); border-radius: 14px; padding: 20px 28px; display: inline-block; margin: 0 auto 28px auto;">
@@ -79,7 +79,7 @@ export async function sendOtpVerificationEmail(props: OtpEmailProps): Promise<{ 
             </p>
           </div>
           <div style="background: #000000; padding: 18px 24px; text-align: center; color: rgba(255,255,255,0.4); font-size: 11px; border-top: 1px solid rgba(255,255,255,0.08); line-height: 1.5;">
-            © 2026 The FifthLab Nigeria. All rights reserved.<br>Corporate Access Control & Operations Console
+            © 2026 The FifthLab Nigeria. All rights reserved.<br>Corporate Access Control & Dashboard
           </div>
         </div>
       </body>

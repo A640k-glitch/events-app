@@ -2,7 +2,7 @@
 
 import React from "react";
 import { cn } from "@/lib/utils";
-import { Loader2 } from "lucide-react";
+import AppleSpinner from "@/components/ui/AppleSpinner";
 
 interface BrandButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: "primary" | "secondary" | "secondaryDark" | "outline" | "ghost" | "danger";
@@ -68,7 +68,7 @@ export function BrandButton({
       {...props}
     >
       {isLoading ? (
-        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+        <AppleSpinner size={14} color="currentColor" />
       ) : (
         leftIcon && <span className="shrink-0">{leftIcon}</span>
       )}

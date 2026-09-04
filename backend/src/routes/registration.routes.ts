@@ -4,6 +4,7 @@ import prisma from "../db/prisma.js";
 import { requireAuth } from "../middleware/auth.middleware.js";
 import { generateBadgeQRCode } from "../services/qr.service.js";
 import { sendEventTicketEmail } from "../services/email.service.js";
+import { broadcast } from "../services/realtime.service.js";
 
 export const registrationRouter: Router = Router();
 
@@ -86,6 +87,8 @@ registrationRouter.post("/:id/register", async (req: Request, res: Response): Pr
       qrPassCode,
       qrBadgeDataUrl,
     }).catch((err: unknown) => console.error("Ticket email dispatch error:", err));
+
+    broadcast("REGISTRATION_CHANGE", { eventId: event.id, registrationId: registration.id });
 
     res.status(201).json({
       success: true,

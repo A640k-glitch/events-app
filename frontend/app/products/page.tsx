@@ -217,6 +217,7 @@ const CWG_PRODUCTS = [
 
 // ─── Reusable Product Card ────────────────────────────────────────────────────
 interface ProductCardProps {
+  id?: string;
   name: string;
   tagline: string;
   description: string;
@@ -236,6 +237,7 @@ interface ProductCardProps {
 }
 
 function ProductCard({
+  id,
   name,
   tagline,
   description,
@@ -250,12 +252,24 @@ function ProductCard({
   className,
   onCardClick,
 }: ProductCardProps) {
+  const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
+    if (onCardClick) onCardClick(e);
+    if (url && !e.defaultPrevented) {
+      window.open(url, "_blank", "noopener,noreferrer");
+    }
+  };
+
   return (
-    <a
-      href={url}
-      target="_blank"
-      rel="noopener noreferrer"
-      onClick={onCardClick}
+    <div
+      role="button"
+      tabIndex={0}
+      onClick={handleCardClick}
+      onKeyDown={(e) => {
+        if (e.key === "Enter" || e.key === " ") {
+          e.preventDefault();
+          if (url) window.open(url, "_blank", "noopener,noreferrer");
+        }
+      }}
       style={{
         backgroundColor: bgColor || "#FFFFFF",
         borderColor: cardBorder || "rgba(226, 232, 240, 0.9)",
@@ -319,12 +333,21 @@ function ProductCard({
           ))}
         </div>
 
-        <span className="inline-flex items-center gap-1.5 px-4 py-2 rounded-full bg-slate-950 text-white text-[11px] font-semibold group-hover:bg-black transition-all shrink-0 shadow-sm group-hover:scale-105">
-          <span>Read More</span>
-          <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-        </span>
+        <div className="flex items-center gap-2">
+          <Link
+            href={`/demo?product=${id || name.toLowerCase().replace(/[^a-z0-9]/g, "")}`}
+            onClick={(e: React.MouseEvent) => e.stopPropagation()}
+            className="inline-flex items-center gap-1 px-3.5 py-1.5 rounded-full bg-[#0090AD] hover:bg-[#007b94] text-white text-[11px] font-bold shadow-xs hover:scale-105 transition-all"
+          >
+            Book Demo
+          </Link>
+          <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-slate-950 text-white text-[11px] font-semibold group-hover:bg-black transition-all shrink-0 shadow-sm group-hover:scale-105">
+            <span>Details</span>
+            <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
+          </span>
+        </div>
       </div>
-    </a>
+    </div>
   );
 }
 

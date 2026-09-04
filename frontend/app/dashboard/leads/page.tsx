@@ -13,9 +13,10 @@ import {
   X 
 } from "lucide-react";
 import { cn } from "@/lib/utils";
+import { TableSkeleton } from "@/components/ui/SkeletonLoaders";
 
 export default function LeadsPage() {
-  const { leads, updateLeadStatus, deleteLead } = useApp();
+  const { leads, updateLeadStatus, deleteLead, isLoading } = useApp();
   const [searchQuery, setSearchQuery] = useState("");
   const [statusFilter, setStatusFilter] = useState("ALL");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -107,7 +108,7 @@ export default function LeadsPage() {
 
         {/* Filter Pills & Search Container */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-1 p-1.5 rounded-xl bg-slate-100/90 border border-slate-200/80 overflow-x-auto no-scrollbar shadow-2xs">
+          <div className="flex items-center gap-1 p-1.5 rounded-xl bg-slate-200/90 border border-slate-300 overflow-x-auto no-scrollbar shadow-2xs">
             {tabs.map((t) => {
               const isActive = statusFilter === t.id;
               return (
@@ -117,14 +118,14 @@ export default function LeadsPage() {
                   className={cn(
                     "px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap",
                     isActive
-                      ? "bg-white text-slate-900 shadow-xs"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-white/50"
+                      ? "bg-white text-slate-950 shadow-xs ring-1 ring-slate-300"
+                      : "text-slate-700 hover:text-slate-950 hover:bg-white/60"
                   )}
                 >
                   <span>{t.label}</span>
                   <span className={cn(
-                    "text-[10px] font-mono px-1.5 py-0.5 rounded-full",
-                    isActive ? "bg-[#E8F8FA] text-[#0090AD] font-bold" : "bg-slate-200 text-slate-600 font-medium"
+                    "text-[10px] px-1.5 py-0.5 rounded-full font-bold",
+                    isActive ? "bg-[#E8F8FA] text-[#0090AD]" : "bg-slate-300 text-slate-800"
                   )}>
                     {t.count}
                   </span>
@@ -146,22 +147,28 @@ export default function LeadsPage() {
         </div>
 
         {/* CRM Leads Table */}
-        <div className="rounded-2xl border border-gray-200 bg-white shadow-2xs overflow-hidden">
+        <div className="rounded-2xl border border-slate-200 bg-white shadow-2xs overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-gray-100 bg-gray-50/60 text-[#8E8EA0] uppercase tracking-wider text-[10px] font-semibold">
-                  <th className="py-3 px-4">Visitor & Contact</th>
-                  <th className="py-3 px-4">Company</th>
-                  <th className="py-3 px-4">Product Interest</th>
-                  <th className="py-3 px-4">Status Pipeline</th>
-                  <th className="py-3 px-4">Assigned Specialist</th>
-                  <th className="py-3 px-4">Demo Schedule</th>
-                  <th className="py-3 px-4 text-right">Actions</th>
+                <tr className="border-b border-slate-200 bg-slate-100/90 text-slate-800 uppercase tracking-wider text-[10.5px] font-bold">
+                  <th className="py-3.5 px-4">Visitor & Contact</th>
+                  <th className="py-3.5 px-4">Company</th>
+                  <th className="py-3.5 px-4">Product Interest</th>
+                  <th className="py-3.5 px-4">Status</th>
+                  <th className="py-3.5 px-4">Assigned To</th>
+                  <th className="py-3.5 px-4">Demo Time</th>
+                  <th className="py-3.5 px-4 text-right">Actions</th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-gray-100">
-                {filteredLeads.length > 0 ? (
+              <tbody className="divide-y divide-slate-100">
+                {isLoading ? (
+                  <tr>
+                    <td colSpan={7} className="p-0">
+                      <TableSkeleton rows={5} columns={6} hasAvatar={false} />
+                    </td>
+                  </tr>
+                ) : filteredLeads.length > 0 ? (
                   filteredLeads.map((lead) => (
                     <tr
                       key={lead.id}
@@ -185,7 +192,7 @@ export default function LeadsPage() {
 
                       {/* Product Interest */}
                       <td className="py-3.5 px-4">
-                        <span className="px-2.5 py-1 rounded-md bg-gray-100 text-[#111827] text-[11px] font-mono font-medium">
+                        <span className="px-2.5 py-1 rounded-md bg-gray-100 text-[#111827] text-[11px] font-medium">
                           {lead.productInterested || "Bulkwave"}
                         </span>
                       </td>
@@ -216,7 +223,7 @@ export default function LeadsPage() {
                       </td>
 
                       {/* Demo Schedule */}
-                      <td className="py-3.5 px-4 text-[11px] text-[#6B7280] font-mono">
+                      <td className="py-3.5 px-4 text-[11px] text-[#6B7280]">
                         {lead.bookingDate} {lead.bookingTime}
                       </td>
 
@@ -257,7 +264,7 @@ export default function LeadsPage() {
               <div className="space-y-6">
                 <div className="flex items-center justify-between pb-3 border-b border-gray-100">
                   <div>
-                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#0090AD] font-mono">
+                    <span className="text-[10px] font-bold uppercase tracking-wider text-[#0090AD]">
                       Lead Record #{activeLeadDrawer.id.slice(0, 8)}
                     </span>
                     <h3 className="text-xl font-bold text-[#111827]">{activeLeadDrawer.visitorName}</h3>
@@ -303,7 +310,7 @@ export default function LeadsPage() {
 
               <div className="pt-4 border-t border-gray-100 flex items-center justify-between">
                 <span className="text-[11px] text-gray-400 font-mono">
-                  Recorded via FifthEvents Engine
+                  Recorded via FifthEvents Platform
                 </span>
                 <button
                   onClick={() => setActiveLeadDrawer(null)}

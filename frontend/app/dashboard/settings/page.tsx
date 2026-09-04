@@ -82,7 +82,7 @@ export default function SettingsPage() {
                   type="text"
                   readOnly
                   value={user?.role || "STAFF"}
-                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2 text-[#0090AD] font-mono font-semibold cursor-not-allowed"
+                  className="w-full bg-gray-50 border border-gray-200 rounded-xl px-3.5 py-2 text-[#0090AD] font-semibold cursor-not-allowed"
                 />
               </div>
 
@@ -104,7 +104,7 @@ export default function SettingsPage() {
           {/* Section 2: Security & Session Status */}
           <div className="rounded-2xl border border-gray-200 bg-white p-6 sm:p-7 space-y-4 shadow-2xs">
             <h2 className="text-sm font-bold text-[#111827] tracking-tight flex items-center gap-2">
-              <Clock className="w-4 h-4 text-[#0090AD]" /> Security & Access Audit
+              <Clock className="w-4 h-4 text-[#0090AD]" /> Security & Login
             </h2>
 
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs bg-gray-50 p-4 rounded-xl border border-gray-200">

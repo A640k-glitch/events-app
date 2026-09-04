@@ -65,14 +65,31 @@ export interface ProductOwner {
 
 export interface FifthLabProduct {
   id: string;
+  slug?: string;
   name: string;
   tagline: string;
   description: string;
-  ownerId: string;
-  ownerName: string;
+  ownerId?: string;
+  ownerName?: string;
   iconName: string;
+  bgColor?: string;
+  logoUrl?: string;
+  tags?: string[];
   activeDemosThisMonth: number;
   availableSlots: string[];
+  leadsCount?: number;
+  conversionRate?: number;
+  recentLeads?: Array<{
+    id: string;
+    visitorName: string;
+    company: string;
+    email: string;
+    phone: string;
+    status: string;
+    bookingDate?: string;
+    bookingTime?: string;
+    createdAt?: string;
+  }>;
 }
 
 export interface BookingSubmission {

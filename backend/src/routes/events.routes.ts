@@ -3,6 +3,7 @@ import { EventCategory, EventPriority, AttendanceStatus } from "@prisma/client";
 import prisma from "../db/prisma.js";
 import { requireAuth, AuthenticatedRequest } from "../middleware/auth.middleware.js";
 import { generateBadgeQRCode } from "../services/qr.service.js";
+import { broadcast } from "../services/realtime.service.js";
 
 export const eventsRouter: Router = Router();
 
@@ -208,6 +209,7 @@ eventsRouter.post("/", requireAuth, async (req: AuthenticatedRequest, res: Respo
       },
     });
 
+    broadcast("EVENT_CHANGE", { action: "create", eventId: event.id });
     res.status(201).json({ success: true, data: event });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Failed to create event";
@@ -264,6 +266,7 @@ eventsRouter.put("/:id", requireAuth, async (req: AuthenticatedRequest, res: Res
       },
     });
 
+    broadcast("EVENT_CHANGE", { action: "update", eventId: event.id });
     res.json({ success: true, data: event });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Failed to update event";
@@ -276,6 +279,7 @@ eventsRouter.delete("/:id", requireAuth, async (req: AuthenticatedRequest, res: 
   try {
     const id = getParam(req.params.id);
     await prisma.event.delete({ where: { id } });
+    broadcast("EVENT_CHANGE", { action: "delete", eventId: id });
     res.json({ success: true, message: "Event removed successfully" });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Failed to delete event";
@@ -319,6 +323,7 @@ eventsRouter.post("/:id/rsvp", requireAuth, async (req: AuthenticatedRequest, re
       },
     });
 
+    broadcast("EVENT_CHANGE", { action: "rsvp", eventId });
     res.json({ success: true, data: rsvp });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Failed to submit RSVP";

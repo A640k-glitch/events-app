@@ -4,6 +4,7 @@ import { signAuthToken, verifyAuthToken } from "../services/jwt.service.js";
 import { requireAuth, AuthenticatedRequest } from "../middleware/auth.middleware.js";
 import { UserRole } from "@prisma/client";
 import { sendOtpVerificationEmail } from "../services/email.service.js";
+import { broadcast } from "../services/realtime.service.js";
 
 export const authRouter: Router = Router();
 
@@ -18,11 +19,15 @@ authRouter.post("/send-otp", async (req: Request, res: Response): Promise<void> 
     }
 
     const normalizedEmail = email.trim().toLowerCase();
+    const localPart = normalizedEmail.split("@")[0];
+    const isAllowedDomain =
+      normalizedEmail.endsWith("@thefifthlab.com") ||
+      normalizedEmail.endsWith("@cwg-plc.com");
 
-    if (!normalizedEmail.endsWith("@thefifthlab.com")) {
+    if (!isAllowedDomain || localPart.length < 3) {
       res.status(403).json({
         success: false,
-        error: "Access restricted: Only corporate @thefifthlab.com accounts can access FifthLab Events.",
+        error: "Access restricted: Only verified corporate accounts (@thefifthlab.com or @cwg-plc.com) can access FifthLab Events.",
       });
       return;
     }
@@ -297,9 +302,53 @@ authRouter.patch(
         data: { role: role as UserRole },
       });
 
+      broadcast("USER_CHANGE", { action: "role_update", userId, role: updated.role });
+
       res.json({ success: true, message: `Updated role for ${updated.name} to ${updated.role}`, data: updated });
     } catch (error: unknown) {
       const message = error instanceof Error ? error.message : "Failed to update user role";
+      res.status(400).json({ success: false, error: message });
+    }
+  }
+);
+
+// DELETE /api/auth/users/:id - Delete staff member from team roster (Protected)
+authRouter.delete(
+  "/users/:id",
+  requireAuth,
+  async (req: AuthenticatedRequest, res: Response): Promise<void> => {
+    try {
+      const userId = Array.isArray(req.params.id) ? req.params.id[0] : req.params.id;
+
+      if (req.user?.id === userId) {
+        res.status(400).json({ success: false, error: "You cannot delete your own active account." });
+        return;
+      }
+
+      // Remove attendance records
+      await prisma.attendanceRecord.deleteMany({ where: { userId } });
+
+      // Unassign leads if any
+      await prisma.lead.updateMany({
+        where: { assignedProductOwnerId: userId },
+        data: { assignedProductOwnerId: null },
+      });
+
+      // Unassign products if any
+      await prisma.product.updateMany({
+        where: { ownerId: userId },
+        data: { ownerId: null },
+      });
+
+      const deleted = await prisma.user.delete({
+        where: { id: userId },
+      });
+
+      broadcast("USER_CHANGE", { action: "delete", userId, name: deleted.name });
+
+      res.json({ success: true, message: `Team member ${deleted.name} removed successfully.` });
+    } catch (error: unknown) {
+      const message = error instanceof Error ? error.message : "Failed to delete team member";
       res.status(400).json({ success: false, error: message });
     }
   }

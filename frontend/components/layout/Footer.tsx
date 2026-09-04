@@ -65,23 +65,23 @@ export default function Footer() {
 
           {/* Column 2: Product Links */}
           <div className="space-y-3.5 text-xs flex flex-col items-center sm:items-start text-center sm:text-left">
-            <div className="text-[11px] font-semibold text-white uppercase tracking-wider font-mono">
-              Product &amp; Solutions
+            <div className="text-[11px] font-semibold text-white uppercase tracking-wider">
+              Products &amp; Solutions
             </div>
             <ul className="space-y-2.5 flex flex-col items-center sm:items-start">
               <li>
                 <Link href="/events" className="text-[#C8C8DC] hover:text-white transition-colors inline-flex items-center justify-center sm:justify-start">
-                  Summit Schedule &amp; Agendas
+                  Event Schedules
                 </Link>
               </li>
               <li>
                 <Link href="/products" className="text-[#C8C8DC] hover:text-white transition-colors inline-flex items-center justify-center sm:justify-start">
-                  FifthLab Product Suite
+                  FifthLab Products
                 </Link>
               </li>
               <li>
                 <Link href="/#pricing" className="text-[#C8C8DC] hover:text-white transition-colors inline-flex items-center justify-center sm:justify-start">
-                  Digital Pass Management
+                  Digital Passes
                 </Link>
               </li>
               <li>
@@ -107,7 +107,7 @@ export default function Footer() {
 
           {/* Column 3: Company Links */}
           <div className="space-y-3.5 text-xs flex flex-col items-center sm:items-start text-center sm:text-left">
-            <div className="text-[11px] font-semibold text-white uppercase tracking-wider font-mono">
+            <div className="text-[11px] font-semibold text-white uppercase tracking-wider">
               Company &amp; Ecosystem
             </div>
             <ul className="space-y-2.5 flex flex-col items-center sm:items-start">
@@ -149,12 +149,12 @@ export default function Footer() {
               </li>
               <li>
                 <Link href="/login" className="text-[#C8C8DC] hover:text-white transition-colors inline-flex items-center justify-center sm:justify-start">
-                  Staff Admin Console
+                  Staff Portal
                 </Link>
               </li>
               <li>
                 <Link href="/demo" className="text-[#C8C8DC] hover:text-white transition-colors inline-flex items-center justify-center sm:justify-start">
-                  Schedule Executive Briefing
+                  Book a Demo
                 </Link>
               </li>
             </ul>
@@ -162,8 +162,8 @@ export default function Footer() {
 
           {/* Column 4: Contact & Newsletter */}
           <div className="space-y-3.5 flex flex-col items-center sm:items-start text-center sm:text-left">
-            <div className="text-[11px] font-semibold text-white uppercase tracking-wider font-mono">
-              Contact &amp; Briefing
+            <div className="text-[11px] font-semibold text-white uppercase tracking-wider">
+              Contact
             </div>
             
             <div className="space-y-2 text-xs text-[#C8C8DC] flex flex-col items-center sm:items-start">

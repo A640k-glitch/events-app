@@ -46,7 +46,7 @@ export default function NotFound() {
               Page Not Found
             </h1>
             <p className="text-sm sm:text-base text-slate-600 leading-relaxed max-w-md mx-auto">
-              The requested summit, pass verification, or administrative route does not exist or has been relocated within the operations console.
+              The requested summit, pass verification, or administrative route does not exist or has been relocated within the dashboard.
             </p>
           </div>
 
@@ -73,7 +73,7 @@ export default function NotFound() {
               className="inline-flex items-center gap-2 px-5 py-2.5 rounded-full border border-slate-200 bg-white hover:bg-slate-50 text-slate-800 text-xs font-semibold shadow-2xs transition-all hover:scale-[1.02] active:scale-[0.98]"
             >
               <Compass className="w-3.5 h-3.5 text-[#0090AD]" />
-              <span>Console Dashboard</span>
+              <span>Dashboard</span>
             </Link>
           </div>
         </div>

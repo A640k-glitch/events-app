@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import { PitchStatus, EventCategory, EventPriority } from "@prisma/client";
 import prisma from "../db/prisma.js";
 import { requireAuth } from "../middleware/auth.middleware.js";
+import { broadcast } from "../services/realtime.service.js";
 
 export const pitchRouter: Router = Router();
 
@@ -49,6 +50,8 @@ pitchRouter.post("/", async (req: Request, res: Response): Promise<void> => {
         status: PitchStatus.SUBMITTED,
       },
     });
+
+    broadcast("PITCH_CHANGE", { action: "create", pitchId: pitch.id });
 
     res.status(201).json({
       success: true,
@@ -110,6 +113,11 @@ pitchRouter.patch("/:id/status", requireAuth, async (req: Request, res: Response
           isFeatured: true,
         },
       });
+    }
+
+    broadcast("PITCH_CHANGE", { action: "update", pitchId: pitch.id });
+    if (createdEvent) {
+      broadcast("EVENT_CHANGE", { action: "create", eventId: createdEvent.id });
     }
 
     res.json({

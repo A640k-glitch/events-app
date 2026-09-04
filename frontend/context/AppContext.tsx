@@ -181,14 +181,21 @@ function mapPrismaLead(l: any): Lead {
 function mapPrismaProduct(p: any): FifthLabProduct {
   return {
     id: p.id,
+    slug: p.slug || p.id,
     name: p.name,
     tagline: p.tagline,
     description: p.description,
     ownerId: p.ownerId || "",
-    ownerName: p.owner?.name || "Unassigned Specialist",
+    ownerName: p.owner?.name || "Product Lead",
     iconName: p.iconName || "Briefcase",
+    bgColor: p.bgColor || "#F4F4FF",
+    logoUrl: p.logoUrl || "/favicon.ico",
+    tags: p.tags || ["Enterprise Solution"],
     activeDemosThisMonth: p.activeDemosThisMonth || 0,
     availableSlots: p.availableSlots || ["09:00 AM", "11:00 AM", "02:00 PM", "04:00 PM"],
+    leadsCount: p.leadsCount || 0,
+    conversionRate: p.conversionRate || 65,
+    recentLeads: p.recentLeads || [],
   };
 }
 
@@ -298,6 +305,94 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     restoreSession();
   }, [refreshData]);
 
+  // Real-time synchronization across mobile devices, browsers, and tabs
+  useEffect(() => {
+    let sse: EventSource | null = null;
+    let isSubscribed = true;
+    let channel: BroadcastChannel | null = null;
+
+    try {
+      if (typeof window !== "undefined" && "BroadcastChannel" in window) {
+        channel = new BroadcastChannel("fifthevents_sync");
+        channel.onmessage = () => {
+          if (isSubscribed) {
+            refreshData();
+          }
+        };
+      }
+    } catch {
+      // ignore
+    }
+
+    // Connect to Server-Sent Events (SSE) stream
+    function connectSSE() {
+      try {
+        const rawApiUrl = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000/api";
+        const streamEndpoint = rawApiUrl.endsWith("/api")
+          ? `${rawApiUrl}/realtime/stream`
+          : `${rawApiUrl}/api/realtime/stream`;
+
+        sse = new EventSource(streamEndpoint);
+
+        sse.onmessage = (event) => {
+          try {
+            const data = JSON.parse(event.data);
+            if (data.type !== "CONNECTED" && isSubscribed) {
+              refreshData();
+            }
+          } catch {
+            // Heartbeat or malformed payload
+          }
+        };
+
+        sse.onerror = () => {
+          if (sse) {
+            sse.close();
+            sse = null;
+          }
+          if (isSubscribed) {
+            setTimeout(connectSSE, 4000);
+          }
+        };
+      } catch (err) {
+        console.warn("SSE connection error:", err);
+      }
+    }
+
+    connectSSE();
+
+    // Instant refresh when user returns to phone or desktop tab
+    const handleVisibilityChange = () => {
+      if (document.visibilityState === "visible" && isSubscribed) {
+        refreshData();
+      }
+    };
+    const handleFocus = () => {
+      if (isSubscribed) {
+        refreshData();
+      }
+    };
+
+    window.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener("focus", handleFocus);
+
+    // Fallback polling interval (every 12 seconds)
+    const interval = setInterval(() => {
+      if (isSubscribed) {
+        refreshData();
+      }
+    }, 12000);
+
+    return () => {
+      isSubscribed = false;
+      if (sse) sse.close();
+      if (channel) channel.close();
+      window.removeEventListener("visibilitychange", handleVisibilityChange);
+      window.removeEventListener("focus", handleFocus);
+      clearInterval(interval);
+    };
+  }, [refreshData]);
+
   const requestOtp = async (email: string, name?: string) => {
     if (!email) throw new Error("Corporate email address is required.");
     const res = await api.sendOtp(email.trim().toLowerCase(), name?.trim());
@@ -380,6 +475,16 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     return () => window.removeEventListener("keydown", handleKeyDown);
   }, []);
 
+  const notifySync = () => {
+    if (typeof window !== "undefined" && "BroadcastChannel" in window) {
+      try {
+        new BroadcastChannel("fifthevents_sync").postMessage({ type: "SYNC", timestamp: Date.now() });
+      } catch {
+        // ignore
+      }
+    }
+  };
+
   const addEvent = async (eventData: Omit<FifthLabEvent, "id" | "confirmedStaffCount" | "attendanceManifest"> & { imageUrl?: string; isFeatured?: boolean; isPublished?: boolean }) => {
     try {
       const res = await api.createEvent({
@@ -404,6 +509,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       if (res.success && res.data) {
         const newEvt = mapPrismaEvent(res.data);
         setEvents((prev) => [newEvt, ...prev]);
+        notifySync();
         await refreshData();
       }
     } catch (e) {
@@ -417,6 +523,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       const res = await api.rsvpEvent(eventId, dbStatus, user?.id);
 
       if (res.success) {
+        notifySync();
         await refreshData();
       }
     } catch (e) {
@@ -428,6 +535,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     try {
       await api.deleteEvent(eventId);
       setEvents((prev) => prev.filter((e) => e.id !== eventId));
+      notifySync();
       await refreshData();
     } catch (e) {
       console.error("Failed to delete event:", e);
@@ -437,6 +545,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const approvePitch = async (pitchId: string, autoPublish = true, reviewNotes = "Approved by FifthLab Admin") => {
     try {
       await api.updatePitchStatus(pitchId, "APPROVED", { autoPublishEvent: autoPublish, adminReviewNotes: reviewNotes });
+      notifySync();
       await refreshData();
     } catch (e) {
       console.error("Failed to approve pitch:", e);
@@ -446,6 +555,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   const declinePitch = async (pitchId: string, reviewNotes = "Declined by FifthLab Review Board") => {
     try {
       await api.updatePitchStatus(pitchId, "DECLINED", { adminReviewNotes: reviewNotes });
+      notifySync();
       await refreshData();
     } catch (e) {
       console.error("Failed to decline pitch:", e);
@@ -468,6 +578,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       if (res.success && res.data) {
         const newLead = mapPrismaLead(res.data);
         setLeads((prev) => [newLead, ...prev]);
+        notifySync();
         await refreshData();
       }
     } catch (e) {
@@ -482,6 +593,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setLeads((prev) =>
         prev.map((l) => (l.id === leadId ? { ...l, status } : l))
       );
+      notifySync();
       await refreshData();
     } catch (e) {
       console.error("Failed to update lead status:", e);
@@ -494,6 +606,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       setLeads((prev) =>
         prev.map((l) => (l.id === leadId ? { ...l, ...updatedFields } : l))
       );
+      notifySync();
       await refreshData();
     } catch (e) {
       console.error("Failed to update lead:", e);
@@ -502,6 +615,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const deleteLead = (leadId: string) => {
     setLeads((prev) => prev.filter((l) => l.id !== leadId));
+    notifySync();
   };
 
   const addProduct = async (productData: { slug: string; name: string; tagline: string; description: string; iconName?: string; ownerId?: string }) => {

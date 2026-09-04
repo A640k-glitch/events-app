@@ -98,7 +98,7 @@ export default function Navbar() {
                     href="/dashboard"
                     className="px-4 py-2 rounded-full text-xs font-semibold bg-slate-900 text-white hover:bg-black transition-all shadow-xs hover:scale-[1.02] active:scale-[0.98]"
                   >
-                    Console
+                    Dashboard
                   </Link>
                   <button
                     onClick={logout}
@@ -175,7 +175,7 @@ export default function Navbar() {
                     className="w-full py-2.5 px-4 rounded-xl bg-slate-900 text-white text-xs font-bold text-center flex items-center justify-center gap-2 shadow-xs hover:bg-black transition-colors"
                   >
                     <LayoutDashboard className="w-4 h-4" />
-                    <span>Open Operations Console</span>
+                    <span>Open Dashboard</span>
                   </Link>
                   <button
                     onClick={() => {

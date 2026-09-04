@@ -25,7 +25,7 @@ export default function DashboardLayout({ children }: DashboardLayoutProps) {
   }, [user, router]);
 
   if (!user) {
-    return <LogoChargingLoader fullScreen={true} message="Loading operations center..." />;
+    return <LogoChargingLoader fullScreen={true} message="Loading dashboard..." />;
   }
 
   return (

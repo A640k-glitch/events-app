@@ -68,7 +68,7 @@ export default function AWSHeader({ onMenuToggle }: AWSHeaderProps) {
             </div>
           </div>
           <span className="text-xs font-bold tracking-tight text-white group-hover:text-[#ff9900] transition-colors">
-            FifthLab Console
+            FifthLab Dashboard
           </span>
         </Link>
 
@@ -86,7 +86,7 @@ export default function AWSHeader({ onMenuToggle }: AWSHeaderProps) {
           {isServicesOpen && (
             <div className="absolute left-0 top-full mt-1 w-64 bg-[#1b2537] border border-[#29364d] shadow-2xl rounded-xs p-2 z-50 space-y-1 font-mono text-xs animate-in fade-in duration-150">
               <div className="px-2 py-1 text-[10px] text-[#7d8f9e] uppercase tracking-wider">
-                FifthLab Console Modules
+                FifthLab Dashboard Modules
               </div>
 
               <Link
@@ -252,7 +252,7 @@ export default function AWSHeader({ onMenuToggle }: AWSHeaderProps) {
               href="/login"
               className="inline-flex items-center gap-1 px-3 py-1 bg-[#ff9900] hover:bg-[#ec8b00] text-black font-bold rounded-xs text-[11px] transition-all"
             >
-              Sign In to Console
+              Sign In to Dashboard
             </Link>
           )}
 
@@ -276,7 +276,7 @@ export default function AWSHeader({ onMenuToggle }: AWSHeaderProps) {
                   }} 
                   className="w-full text-left block p-1.5 hover:bg-[#29364d] text-[#ff453a] rounded-xs cursor-pointer"
                 >
-                  Sign Out of Console
+                  Sign Out of Dashboard
                 </button>
               </div>
             </div>

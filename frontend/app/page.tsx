@@ -10,7 +10,7 @@ import {
   ShieldCheck,
   QrCode,
   Users,
-  Sparkles,
+  Laptop,
   Calendar
 } from "lucide-react";
 import CwgLogo from "@/components/brand/CwgLogo";
@@ -169,7 +169,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto space-y-10 relative z-10">
           
           <div className="text-center space-y-2">
-            <span className="text-xs uppercase tracking-widest font-mono text-[#30B5C1]">
+            <span className="text-xs uppercase tracking-widest font-semibold text-[#30B5C1]">
               BUILT FOR THE <span className="font-bold">FIFTH</span><span className="font-light">LAB</span> ECOSYSTEM
             </span>
             <h2 className="text-2xl sm:text-4xl font-semibold text-white tracking-tight">
@@ -351,7 +351,7 @@ export default function Home() {
             {/* Right Column: Narrative & Value Pillars */}
             <div className="lg:col-span-7 space-y-6 text-left">
               <div className="space-y-3">
-                <div className="text-xs font-bold tracking-widest uppercase text-[#0090AD] font-mono">
+                <div className="text-xs font-bold tracking-widest uppercase text-[#0090AD]">
                   ABOUT <span className="font-bold">FIFTH</span><span className="font-light">EVENTS</span>
                 </div>
                 <h2 className="text-3xl sm:text-4xl font-semibold text-slate-900 tracking-tight leading-tight">
@@ -381,7 +381,7 @@ export default function Home() {
                 </div>
 
                 <div className="p-5 rounded-2xl bg-[#F3F4FD] border border-[#E0E4FB] shadow-[0_2px_8px_rgba(0,0,0,0.02)] hover:border-[#4F46E5]/40 transition-all space-y-2.5">
-                  <Sparkles className="w-6 h-6 text-[#4F46E5] stroke-[1.75]" />
+                  <Laptop className="w-6 h-6 text-[#4F46E5] stroke-[1.75]" />
                   <h4 className="text-sm font-bold text-slate-950 tracking-tight">Live Product Demos</h4>
                   <p className="text-xs text-slate-600 leading-relaxed">
                     Meet the engineering teams and test live banking, payment, and ERP solutions firsthand.
@@ -446,7 +446,7 @@ export default function Home() {
         <div className="max-w-6xl mx-auto space-y-10">
           
           <div className="text-center space-y-2">
-            <span className="text-xs font-bold text-[#0090AD] uppercase tracking-widest font-mono">
+            <span className="text-xs font-bold text-[#0090AD] uppercase tracking-widest">
               ACCESS PASS TIERS
             </span>
             <h2 className="text-3xl sm:text-4xl font-medium text-slate-900 tracking-tight">
@@ -462,7 +462,7 @@ export default function Home() {
             {/* Free Visitor Pass */}
             <div className="rounded-3xl bg-white/95 backdrop-blur-xs border border-slate-200 p-8 space-y-6 shadow-xs flex flex-col justify-between">
               <div className="space-y-4">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                   DELEGATE
                 </span>
                 <div className="text-3xl font-medium text-slate-900">
@@ -494,12 +494,12 @@ export default function Home() {
 
             {/* Pro Organizer Pass */}
             <div className="rounded-3xl bg-white/95 backdrop-blur-xs border-2 border-[#0090AD] p-8 space-y-6 shadow-lg relative flex flex-col justify-between">
-              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-[#0090AD] text-white text-[10px] font-bold font-mono uppercase tracking-wider">
+              <div className="absolute -top-3 left-1/2 -translate-x-1/2 px-3 py-0.5 rounded-full bg-[#0090AD] text-white text-[10px] font-bold uppercase tracking-wider">
                 FEATURED
               </div>
 
               <div className="space-y-4">
-                <span className="text-xs font-bold text-[#0090AD] uppercase tracking-wider font-mono">
+                <span className="text-xs font-bold text-[#0090AD] uppercase tracking-wider">
                   ORGANIZER
                 </span>
                 <div className="text-3xl font-medium text-slate-900">
@@ -532,7 +532,7 @@ export default function Home() {
             {/* Enterprise Partner Pass */}
             <div className="rounded-3xl bg-white/95 backdrop-blur-xs border border-slate-200 p-8 space-y-6 shadow-xs flex flex-col justify-between">
               <div className="space-y-4">
-                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider font-mono">
+                <span className="text-xs font-bold text-slate-500 uppercase tracking-wider">
                   ENTERPRISE
                 </span>
                 <div className="text-3xl font-medium text-slate-900">
@@ -569,41 +569,47 @@ export default function Home() {
       {/* 5. Frequently Asked Questions */}
       <section className="py-20 px-4 sm:px-6 lg:px-8 bg-transparent border-t border-slate-200/60 relative z-10">
         <div className="max-w-4xl mx-auto space-y-8 text-left">
-          
           <div className="space-y-2">
-            <span className="text-xs font-bold text-[#0090AD] uppercase tracking-widest font-mono">
+            <span className="text-xs font-bold text-[#0090AD] uppercase tracking-widest">
               FREQUENTLY ASKED QUESTIONS
             </span>
-            <h2 className="text-2xl sm:text-3xl font-medium text-slate-900 tracking-tight">
+            <h2 className="text-2xl sm:text-4xl font-medium text-slate-900 tracking-tight">
               Everything you need to know about <span className="tracking-tight"><span className="font-bold">fifth</span><span className="font-light">Events</span></span>
             </h2>
           </div>
 
           <div className="space-y-3">
-            {faqs.map((faq, idx) => (
-              <div
-                key={idx}
-                className="rounded-2xl border border-slate-200 bg-slate-50/60 overflow-hidden transition-colors"
-              >
-                <button
-                  onClick={() => setOpenFaq(openFaq === idx ? null : idx)}
-                  className="w-full p-5 flex items-center justify-between gap-4 text-left font-bold text-sm text-slate-900 hover:text-[#0090AD] transition-colors cursor-pointer"
+            {faqs.map((faq, idx) => {
+              const isOpen = openFaq === idx;
+              return (
+                <div
+                  key={idx}
+                  className={cn(
+                    "rounded-2xl border transition-all duration-200 overflow-hidden shadow-sm",
+                    isOpen
+                      ? "bg-[#0F172A] border-slate-700 shadow-md ring-1 ring-slate-700/50"
+                      : "bg-[#0F172A] hover:bg-[#141E34] border-slate-800 hover:border-slate-700"
+                  )}
                 >
-                  <span>{faq.q}</span>
-                  <ChevronDown className={cn(
-                    "w-4 h-4 shrink-0 transition-transform duration-200 text-slate-400",
-                    openFaq === idx ? "rotate-180 text-[#0090AD]" : ""
-                  )} />
-                </button>
-                {openFaq === idx && (
-                  <div className="px-5 pb-5 text-xs text-slate-600 leading-relaxed border-t border-slate-200/60 pt-3">
-                    {faq.a}
-                  </div>
-                )}
-              </div>
-            ))}
+                  <button
+                    onClick={() => setOpenFaq(isOpen ? null : idx)}
+                    className="w-full p-5 flex items-center justify-between gap-4 text-left font-semibold text-sm text-white hover:text-[#30B5C1] transition-colors cursor-pointer"
+                  >
+                    <span>{faq.q}</span>
+                    <ChevronDown className={cn(
+                      "w-4 h-4 shrink-0 transition-transform duration-200",
+                      isOpen ? "rotate-180 text-[#30B5C1]" : "text-slate-400"
+                    )} />
+                  </button>
+                  {isOpen && (
+                    <div className="px-5 pb-5 pt-3.5 text-xs text-slate-200 leading-relaxed border-t border-slate-800 bg-[#090E1A]">
+                      {faq.a}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
           </div>
-
         </div>
       </section>
 

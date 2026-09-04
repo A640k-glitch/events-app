@@ -21,9 +21,10 @@ import Link from "next/link";
 import { cn } from "@/lib/utils";
 import AddLeadModal from "@/components/modals/AddLeadModal";
 import AddEventModal from "@/components/modals/AddEventModal";
+import { StatsRowSkeleton, TableSkeleton } from "@/components/ui/SkeletonLoaders";
 
 export default function DashboardOverviewPage() {
-  const { events, leads, pitches, approvePitch, declinePitch } = useApp();
+  const { events, leads, pitches, approvePitch, declinePitch, isLoading } = useApp();
   const [isAddLeadOpen, setIsAddLeadOpen] = useState(false);
   const [isAddEventOpen, setIsAddEventOpen] = useState(false);
 
@@ -65,7 +66,7 @@ export default function DashboardOverviewPage() {
               Dashboard Overview
             </h1>
             <p className="text-xs sm:text-sm text-slate-600 font-medium max-w-2xl">
-              Track your events, check who is on duty, and follow up with summit leads.
+              Manage your upcoming events, check booth staff rosters, and follow up with attendees.
             </p>
           </div>
 
@@ -83,7 +84,7 @@ export default function DashboardOverviewPage() {
               className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-gradient-to-r from-[#0090AD] to-[#229EA6] hover:from-[#007A94] hover:to-[#1E8B92] text-white text-xs font-bold shadow-md shadow-[#0090AD]/20 transition-all cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
             >
               <UserPlus className="w-3.5 h-3.5" />
-              <span>Log Lead</span>
+              <span>Add Lead</span>
             </button>
           </div>
         </motion.div>
@@ -95,7 +96,7 @@ export default function DashboardOverviewPage() {
           <div className="lg:col-span-8 rounded-2xl border border-[#20B2AA]/30 bg-gradient-to-br from-[#F2FAFB] via-white to-[#F6FCFD] p-6 sm:p-7 flex flex-col justify-between space-y-5 relative overflow-hidden shadow-2xs">
             <div className="space-y-3">
               <div className="flex items-center justify-between">
-                <span className="text-[11px] font-bold uppercase tracking-wider text-[#00829B] font-mono flex items-center gap-1.5">
+                <span className="text-[11px] font-bold uppercase tracking-wider text-[#00829B] flex items-center gap-1.5">
                   <Users className="w-3.5 h-3.5" /> TEAM ROSTER
                 </span>
                 <Link
@@ -112,7 +113,7 @@ export default function DashboardOverviewPage() {
               </h2>
 
               <p className="text-xs sm:text-sm text-slate-600 max-w-xl leading-relaxed">
-                Add team members to event rosters so visitors can connect directly with the engineer or product manager behind each solution.
+                Assign engineers and product managers to upcoming events and demo sessions.
               </p>
             </div>
 
@@ -130,8 +131,8 @@ export default function DashboardOverviewPage() {
           {/* Right Hero Card: HELP CENTER */}
           <div className="lg:col-span-4 rounded-2xl border border-slate-200/90 bg-white p-6 sm:p-7 flex flex-col justify-between space-y-4 relative overflow-hidden shadow-2xs">
             <div className="space-y-2.5">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 font-mono block">
-                GUIDES
+              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
+                ADMIN GUIDES
               </span>
 
               <h3 className="text-base font-bold text-slate-900 leading-snug">
@@ -139,7 +140,7 @@ export default function DashboardOverviewPage() {
               </h3>
 
               <p className="text-xs text-slate-600 leading-relaxed">
-                Quick guides on badge scanning, digital pass issuance, and exporting leads to your CRM.
+                Quick guides on badge check-in, event setups, and exporting attendee lists.
               </p>
             </div>
 
@@ -163,7 +164,7 @@ export default function DashboardOverviewPage() {
             className="p-4 rounded-2xl border border-amber-300 bg-amber-50/90 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-2xs"
           >
             <div className="space-y-1 text-left">
-              <span className="text-xs font-bold text-amber-900 uppercase tracking-wider flex items-center gap-1.5 font-mono">
+              <span className="text-xs font-bold text-amber-900 uppercase tracking-wider flex items-center gap-1.5">
                 <Inbox className="w-4 h-4 text-amber-700" /> Pending Organizer Proposal ({pendingPitches.length})
               </span>
               <p className="text-xs text-amber-950 font-medium">
@@ -192,7 +193,7 @@ export default function DashboardOverviewPage() {
         <motion.div variants={itemVariants} className="space-y-3">
           
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-700 font-mono">
+            <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
               LAST 30 DAYS
             </span>
             <Link
@@ -203,12 +204,15 @@ export default function DashboardOverviewPage() {
             </Link>
           </div>
 
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          {isLoading ? (
+            <StatsRowSkeleton count={3} />
+          ) : (
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
             
             {/* Metric 1: Created Events (Kuleanpay Ice-Blue Tint) */}
             <div className="p-5 rounded-2xl border border-[#D8E6FA] bg-[#F0F6FF] space-y-1.5 shadow-2xs hover:border-[#2563EB]/40 transition-colors">
               <span className="text-xs font-semibold text-slate-600 block">Active events</span>
-              <div className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight font-mono">
+              <div className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight">
                 {events.length}
               </div>
               <div className="text-xs text-slate-500">
@@ -223,7 +227,7 @@ export default function DashboardOverviewPage() {
             {/* Metric 2: Inbound Leads (Finedge Aqua-Mint Tint) */}
             <div className="p-5 rounded-2xl border border-[#CEEFEF] bg-[#EAF7F7] space-y-1.5 shadow-2xs hover:border-[#0090AD]/40 transition-colors">
               <span className="text-xs font-semibold text-slate-600 block">Inbound leads</span>
-              <div className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight font-mono">
+              <div className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight">
                 {leads.length}
               </div>
               <div className="text-xs text-slate-500">
@@ -238,7 +242,7 @@ export default function DashboardOverviewPage() {
             {/* Metric 3: Door Check-ins (Bulkwave Periwinkle Tint) */}
             <div className="p-5 rounded-2xl border border-[#E0E4FB] bg-[#F3F4FD] space-y-1.5 shadow-2xs hover:border-[#4F46E5]/40 transition-colors">
               <span className="text-xs font-semibold text-slate-600 block">Checked-in rate</span>
-              <div className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight font-mono">
+              <div className="text-2xl sm:text-3xl font-semibold text-slate-900 tracking-tight">
                 98.4%
               </div>
               <div className="text-xs text-slate-500">
@@ -251,7 +255,7 @@ export default function DashboardOverviewPage() {
             </div>
 
           </div>
-
+        )}
         </motion.div>
 
         {/* 5. Data Pipelines: High-Contrast CRM Table + Upcoming Summits */}
@@ -262,10 +266,10 @@ export default function DashboardOverviewPage() {
             <div className="flex items-center justify-between pb-2.5 border-b border-slate-100">
               <div>
                 <h2 className="text-base font-bold text-slate-900">
-                  Recent Inbound Leads
+                  Recent Inbound Inquiries
                 </h2>
                 <p className="text-xs text-slate-500">
-                  Latest summit visitors and demo inquiries routed to product owners.
+                  Latest attendee inquiries and scheduled product walkthroughs.
                 </p>
               </div>
 
@@ -286,11 +290,18 @@ export default function DashboardOverviewPage() {
                     <th className="py-2.5 px-3">Company</th>
                     <th className="py-2.5 px-3">Product</th>
                     <th className="py-2.5 px-3">Status</th>
-                    <th className="py-2.5 px-3">Specialist</th>
+                    <th className="py-2.5 px-3">Assigned To</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
-                  {recentLeads.map((lead) => (
+                  {isLoading ? (
+                    <tr>
+                      <td colSpan={5} className="p-0">
+                        <TableSkeleton rows={4} columns={5} hasAvatar={false} />
+                      </td>
+                    </tr>
+                  ) : recentLeads.length > 0 ? (
+                    recentLeads.map((lead) => (
                     <tr key={lead.id} className="hover:bg-slate-50/90 transition-colors">
                       {/* Visitor */}
                       <td className="py-2.5 px-3">
@@ -309,7 +320,7 @@ export default function DashboardOverviewPage() {
 
                       {/* Product */}
                       <td className="py-2.5 px-3">
-                        <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-900 text-[11px] font-mono font-medium border border-slate-200/80">
+                        <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-900 text-[11px] font-medium border border-slate-200/80">
                           {lead.productInterested || "Bulkwave"}
                         </span>
                       </td>
@@ -333,20 +344,27 @@ export default function DashboardOverviewPage() {
                         {lead.assignedProductOwner || "Product Specialist"}
                       </td>
                     </tr>
-                  ))}
+                  ))
+                  ) : (
+                    <tr>
+                      <td colSpan={5} className="py-8 text-center text-slate-400">
+                        No inquiries yet.
+                      </td>
+                    </tr>
+                  )}
                 </tbody>
               </table>
             </div>
           </div>
 
-          {/* Right: Upcoming Summits (4 Cols) */}
+          {/* Right: Upcoming Events (4 Cols) */}
           <div className="lg:col-span-4 rounded-2xl border border-slate-200/90 bg-white p-6 space-y-4 shadow-2xs text-left">
             <div className="flex items-center justify-between pb-3 border-b border-slate-100">
               <div>
                 <h2 className="text-base font-bold text-slate-900">
-                  Upcoming Summits
+                  Upcoming Events
                 </h2>
-                <p className="text-xs text-slate-500 font-medium">Active schedules & venues</p>
+                <p className="text-xs text-slate-500 font-medium">Next events on the calendar</p>
               </div>
 
               <Link
@@ -368,14 +386,14 @@ export default function DashboardOverviewPage() {
                     <span className="text-xs font-bold text-slate-900 line-clamp-1">
                       {evt.title}
                     </span>
-                    <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-700 font-semibold shrink-0">
+                    <span className="text-[10px] px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-700 font-semibold shrink-0">
                       {evt.category}
                     </span>
                   </div>
 
                   <div className="flex items-center justify-between text-[11px] text-slate-600 font-medium">
                     <span>{evt.city} • {evt.date}</span>
-                    <span className="text-[#00829B] font-bold font-mono">{evt.expectedAttendance} RSVPs</span>
+                    <span className="text-[#00829B] font-bold">{evt.expectedAttendance} RSVPs</span>
                   </div>
                 </div>
               ))}

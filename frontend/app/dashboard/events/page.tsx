@@ -17,7 +17,8 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { api } from "@/lib/api-client";
-import LogoChargingLoader from "@/components/brand/LogoChargingLoader";
+import { TableSkeleton } from "@/components/ui/SkeletonLoaders";
+import AppleSpinner from "@/components/ui/AppleSpinner";
 
 export default function EventsPage() {
   const { events, deleteEvent, pitches, approvePitch, declinePitch, refreshData } = useApp();
@@ -161,7 +162,7 @@ export default function EventsPage() {
 
         {/* Sliding View Switcher Tabs & Search Controls */}
         <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-1 p-1.5 rounded-xl bg-slate-100/90 border border-slate-200/80 overflow-x-auto no-scrollbar shadow-2xs">
+          <div className="flex items-center gap-1 p-1.5 rounded-xl bg-slate-200/90 border border-slate-300 overflow-x-auto no-scrollbar shadow-2xs">
             {tabOptions.map((t) => {
               const isActive = viewTab === t.id;
               return (
@@ -171,14 +172,14 @@ export default function EventsPage() {
                   className={cn(
                     "px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap",
                     isActive
-                      ? "bg-white text-slate-900 shadow-xs"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-white/50"
+                      ? "bg-white text-slate-950 shadow-xs ring-1 ring-slate-300"
+                      : "text-slate-700 hover:text-slate-950 hover:bg-white/60"
                   )}
                 >
                   <span>{t.label}</span>
                   <span className={cn(
-                    "text-[10px] font-mono px-1.5 py-0.5 rounded-full",
-                    isActive ? "bg-[#E8F8FA] text-[#0090AD] font-bold" : "bg-slate-200 text-slate-600 font-medium"
+                    "text-[10px] px-1.5 py-0.5 rounded-full font-bold",
+                    isActive ? "bg-[#E8F8FA] text-[#0090AD]" : "bg-slate-300 text-slate-800"
                   )}>
                     {t.count}
                   </span>
@@ -227,7 +228,7 @@ export default function EventsPage() {
                     <div className="flex items-start justify-between gap-4">
                       <div className="space-y-1">
                         <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-[#E8F8FA] text-[#0090AD] border border-[#20B2AA]/20 uppercase">
+                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#E8F8FA] text-[#0090AD] border border-[#20B2AA]/20 uppercase">
                             {evt.category}
                           </span>
                           <span className="text-xs text-gray-500">{evt.date} • {evt.time}</span>
@@ -267,7 +268,7 @@ export default function EventsPage() {
                         <MapPin className="w-3.5 h-3.5 text-[#0090AD]" />
                         <span>{evt.location}, {evt.city}</span>
                       </div>
-                      <span className="text-emerald-700 font-mono font-semibold">
+                      <span className="text-emerald-700 font-semibold">
                         {evt.confirmedStaffCount || evt.attendanceManifest?.length || 0} Staff Attending
                       </span>
                     </div>
@@ -281,8 +282,8 @@ export default function EventsPage() {
               {selectedEvent && (
                 <div className="rounded-2xl border border-gray-200 bg-white p-6 space-y-6 shadow-2xs sticky top-20 text-left">
                   <div className="space-y-1 pb-3 border-b border-gray-100">
-                    <span className="text-[10px] font-semibold text-[#0090AD] uppercase tracking-wider font-mono">
-                      Summit Control Center
+                    <span className="text-[10px] font-semibold text-[#0090AD] uppercase tracking-wider">
+                      Event Details
                     </span>
                     <h3 className="text-lg font-bold text-[#111827] leading-snug">{selectedEvent.title}</h3>
                     <p className="text-xs text-[#6B7280]">{selectedEvent.city} • {selectedEvent.date}</p>
@@ -292,7 +293,7 @@ export default function EventsPage() {
                   <form onSubmit={handleVerifyPass} className="p-4 rounded-xl bg-gray-50 border border-gray-200 space-y-3">
                     <div className="flex items-center gap-2 text-xs font-bold text-[#111827]">
                       <QrCode className="w-4 h-4 text-[#0090AD]" />
-                      <span>Door Pass Verification</span>
+                      <span>Check In Attendee</span>
                     </div>
                     
                     <div className="flex gap-2">
@@ -301,7 +302,7 @@ export default function EventsPage() {
                         placeholder="Pass Code (e.g. FL-5821)..."
                         value={verifyPassCode}
                         onChange={(e) => setVerifyPassCode(e.target.value)}
-                        className="flex-1 bg-white border border-gray-200 rounded-xl px-3 py-1.5 text-xs text-[#111827] placeholder:text-gray-400 focus:outline-none focus:border-[#0090AD] font-mono"
+                        className="flex-1 bg-white border border-gray-200 rounded-xl px-3 py-1.5 text-xs text-[#111827] placeholder:text-gray-400 focus:outline-none focus:border-[#0090AD]"
                       />
                       <button
                         type="submit"
@@ -325,7 +326,7 @@ export default function EventsPage() {
                   {/* Staff Attendance Manifest */}
                   <div className="space-y-3">
                     <div className="flex items-center justify-between text-xs font-bold text-[#111827]">
-                      <span>Staff Manifest ({selectedEvent.attendanceManifest?.length || 0})</span>
+                      <span>Assigned Staff ({selectedEvent.attendanceManifest?.length || 0})</span>
                     </div>
 
                     <div className="divide-y divide-gray-100 max-h-56 overflow-y-auto pr-1">
@@ -336,7 +337,7 @@ export default function EventsPage() {
                             <div className="text-[10px] text-gray-500">{staff.userRole}</div>
                           </div>
                           <span className={cn(
-                            "text-[10px] font-mono px-2 py-0.5 rounded-md",
+                            "text-[10px] px-2 py-0.5 rounded-md",
                             staff.status === "Attending" ? "bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold" : "bg-amber-50 text-amber-800 border border-amber-200"
                           )}>
                             {staff.status}
@@ -357,8 +358,8 @@ export default function EventsPage() {
           <div className="rounded-2xl border border-gray-200 bg-white p-6 space-y-4 shadow-2xs text-left">
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gray-100">
               <div>
-                <h3 className="text-base font-bold text-[#111827]">Registered Delegates ({attendeeRoster.length})</h3>
-                <p className="text-xs text-[#6B7280]">Public visitors and delegates registered with digital QR passes.</p>
+                <h3 className="text-base font-bold text-[#111827]">Registered Attendees ({attendeeRoster.length})</h3>
+                <p className="text-xs text-[#6B7280]">List of attendees registered for this event.</p>
               </div>
 
               <button
@@ -373,7 +374,7 @@ export default function EventsPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
-                  <tr className="border-b border-gray-100 bg-gray-50/60 text-[#8E8EA0] uppercase text-[10px] font-semibold">
+                  <tr className="border-b border-slate-200 bg-slate-100/90 text-slate-800 uppercase text-[10.5px] font-bold">
                     <th className="py-3 px-4">Pass Code</th>
                     <th className="py-3 px-4">Attendee Name</th>
                     <th className="py-3 px-4">Organization</th>
@@ -382,22 +383,22 @@ export default function EventsPage() {
                     <th className="py-3 px-4">Check-in Status</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-gray-100">
+                <tbody className="divide-y divide-slate-100">
                   {isLoadingAttendees ? (
                     <tr>
-                      <td colSpan={6} className="py-8 text-center text-gray-400">
-                        <LogoChargingLoader size={40} message="Loading delegate passes..." />
+                      <td colSpan={6} className="p-0">
+                        <TableSkeleton rows={4} columns={6} hasAvatar={false} />
                       </td>
                     </tr>
                   ) : attendeeRoster.length > 0 ? (
                     attendeeRoster.map((a) => (
                       <tr key={a.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="py-3.5 px-4 font-mono font-semibold text-[#0090AD]">{a.qrPassCode}</td>
+                        <td className="py-3.5 px-4 font-semibold text-[#0090AD]">{a.qrPassCode}</td>
                         <td className="py-3.5 px-4 font-semibold text-[#111827]">{a.visitorName}</td>
                         <td className="py-3.5 px-4 text-[#4B5563]">{a.company}</td>
                         <td className="py-3.5 px-4 text-gray-500">{a.email}</td>
                         <td className="py-3.5 px-4">
-                          <span className="px-2 py-0.5 rounded bg-gray-100 text-gray-800 text-[10px] font-mono">
+                          <span className="px-2 py-0.5 rounded bg-gray-100 text-gray-800 text-[10px]">
                             {a.ticketTier}
                           </span>
                         </td>
@@ -428,8 +429,8 @@ export default function EventsPage() {
         {viewTab === "PITCHES" && (
           <div className="rounded-2xl border border-gray-200 bg-white p-6 space-y-4 shadow-2xs text-left">
             <div className="pb-3 border-b border-gray-100">
-              <h3 className="text-base font-bold text-[#111827]">Organizer Summit Proposals</h3>
-              <p className="text-xs text-[#6B7280]">Proposals submitted by external organizers for FifthLab co-hosting and sponsorship.</p>
+              <h3 className="text-base font-bold text-[#111827]">Organizer Proposals</h3>
+              <p className="text-xs text-[#6B7280]">Proposals submitted by organizers for co-hosted summits.</p>
             </div>
 
             <div className="space-y-4">

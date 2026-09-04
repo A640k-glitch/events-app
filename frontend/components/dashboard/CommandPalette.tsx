@@ -30,7 +30,8 @@ export default function CommandPalette() {
 
   const filteredProducts = products.filter((p) =>
     p.name.toLowerCase().includes(query.toLowerCase()) ||
-    p.ownerName.toLowerCase().includes(query.toLowerCase())
+    (p.tagline || "").toLowerCase().includes(query.toLowerCase()) ||
+    (p.ownerName || "").toLowerCase().includes(query.toLowerCase())
   );
 
   const handleNavigate = (url: string) => {

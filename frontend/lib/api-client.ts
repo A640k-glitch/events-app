@@ -90,6 +90,12 @@ export const api = {
     });
   },
 
+  deleteUser: async (userId: string) => {
+    return request<{ success: boolean; message: string }>(`/auth/users/${userId}`, {
+      method: "DELETE",
+    });
+  },
+
   updateProfile: async (profileData: { name?: string; timezone?: string; workingHours?: string; avatarUrl?: string }) => {
     return request<{ success: boolean; data: any }>("/auth/profile", {
       method: "PATCH",

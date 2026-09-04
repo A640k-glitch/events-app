@@ -9,6 +9,7 @@ import { productsRouter } from "./routes/products.routes.js";
 import { authRouter } from "./routes/auth.routes.js";
 import { statsRouter } from "./routes/stats.routes.js";
 import { newsletterRouter } from "./routes/newsletter.routes.js";
+import { realtimeRouter } from "./routes/realtime.routes.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 
 dotenv.config();
@@ -61,6 +62,9 @@ app.use("/stats", statsRouter);
 
 app.use("/api/newsletter", newsletterRouter);
 app.use("/newsletter", newsletterRouter);
+
+app.use("/api/realtime", realtimeRouter);
+app.use("/realtime", realtimeRouter);
 
 // Global Error Handler
 app.use(errorHandler);

@@ -3,6 +3,7 @@ import { LeadStatus } from "@prisma/client";
 import prisma from "../db/prisma.js";
 import { requireAuth } from "../middleware/auth.middleware.js";
 import { sendBookingConfirmationEmail } from "../services/email.service.js";
+import { broadcast } from "../services/realtime.service.js";
 
 export const leadsRouter: Router = Router();
 
@@ -74,7 +75,9 @@ leadsRouter.post("/", async (req: Request, res: Response): Promise<void> => {
       bookingDate: bookingDate || new Date().toLocaleDateString(),
       timeSlot: timeSlot || "Pending Assignment",
       ownerName: product?.owner?.name || "Product Operations Team",
-    }).catch((err: unknown) => console.error("Email send failed:", err));
+    }).catch((err: unknown) => console.error("Booking email dispatch error:", err));
+
+    broadcast("LEAD_CHANGE", { action: "create", leadId: lead.id });
 
     res.status(201).json({ success: true, data: lead });
   } catch (error: unknown) {
@@ -148,6 +151,8 @@ leadsRouter.patch("/:id", requireAuth, async (req: Request, res: Response): Prom
         assignedOwner: true,
       },
     });
+
+    broadcast("LEAD_CHANGE", { action: "update", leadId: lead.id });
 
     res.json({ success: true, data: lead });
   } catch (error: unknown) {
@@ -246,6 +251,8 @@ leadsRouter.delete("/:id", requireAuth, async (req: Request, res: Response): Pro
     await prisma.lead.delete({
       where: { id },
     });
+
+    broadcast("LEAD_CHANGE", { action: "delete", leadId: id });
 
     res.json({ success: true, message: "Lead removed from pipeline successfully." });
   } catch (error: unknown) {

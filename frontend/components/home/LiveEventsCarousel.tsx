@@ -64,7 +64,7 @@ export default function LiveEventsCarousel({ events, onClaimPass }: LiveEventsCa
             Featured Summits & Keynote Conferences
           </h2>
           <p className="text-sm text-slate-600 max-w-2xl">
-            Real-time events index updated directly from the operations console. Claim digital attendee passes or schedule 1-on-1 executive demos.
+            Real-time events index updated directly from the dashboard. Claim digital attendee passes or schedule 1-on-1 executive demos.
           </p>
         </div>
 
