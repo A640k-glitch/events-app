@@ -122,6 +122,10 @@ export const api = {
     return request<{ success: boolean; data: any }>(`/events/${id}`);
   },
 
+  getEvent: async (id: string) => {
+    return request<{ success: boolean; data: any }>(`/events/${id}`);
+  },
+
   createEvent: async (eventData: any) => {
     return request<{ success: boolean; data: any }>("/events", {
       method: "POST",

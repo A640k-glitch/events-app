@@ -54,8 +54,8 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
         isDarkHeroPage ? "bg-[#06090e]" : "bg-white text-[#0E0E0E]"
       )}
     >
-      {/* Scroll-driven logo background — only on public pages with light hero banners */}
-      {!isDarkHeroPage && <ScrollLogoBackground />}
+      {/* Scroll-driven logo background — only on public pages with light hero banners (excluding demo page) */}
+      {!isDarkHeroPage && !pathname.startsWith("/demo") && <ScrollLogoBackground />}
       <Navbar />
       <main
         className={cn(

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useParams } from "next/navigation";
 import Link from "next/link";
 import { 
@@ -20,27 +20,92 @@ import {
   ChevronRight
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
+import { api } from "@/lib/api-client";
 import { BrandButton } from "@/components/ui/BrandButtons";
 import RegisterPassModal from "@/components/modals/RegisterPassModal";
+import AppleSpinner from "@/components/ui/AppleSpinner";
+import { FifthLabEvent } from "@/lib/types";
 import { cn } from "@/lib/utils";
 
 export default function EventDetailPage() {
   const params = useParams();
   const eventId = typeof params?.id === "string" ? params.id : Array.isArray(params?.id) ? params.id[0] : "";
-  const { events, user, toggleAttendance } = useApp();
+  const { events, isLoading: isAppLoading, user, toggleAttendance } = useApp();
   const [isPassModalOpen, setIsPassModalOpen] = useState(false);
   const [copiedLink, setCopiedLink] = useState(false);
+  const [directEvent, setDirectEvent] = useState<FifthLabEvent | null>(null);
+  const [isDirectFetching, setIsDirectFetching] = useState(false);
 
-  const event = events.find((e) => e.id === eventId) || events[0];
+  // Look for event in global memory cache
+  const memoryEvent = events.find((e) => e.id === eventId);
+
+  // If not in context yet, fetch directly from API endpoint
+  useEffect(() => {
+    if (!eventId || memoryEvent) return;
+
+    let isMounted = true;
+    setIsDirectFetching(true);
+    api.getEvent(eventId)
+      .then((res: { success?: boolean; data?: any }) => {
+        if (isMounted && res.success && res.data) {
+          const raw = res.data;
+          setDirectEvent({
+            id: raw.id,
+            title: raw.title,
+            category: raw.category || "Summit",
+            priority: raw.priority || "High",
+            date: raw.date ? new Date(raw.date).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "Upcoming",
+            time: raw.time || "09:00 AM - 05:00 PM WAT",
+            location: raw.location || "Convention Centre",
+            city: raw.city || "Lagos",
+            country: raw.country || "Nigeria",
+            description: raw.description || "",
+            strategicNotes: raw.strategicNotes || "",
+            boothNumber: raw.boothNumber,
+            imageUrl: raw.imageUrl,
+            expectedAttendance: raw.expectedAttendance || 1000,
+            confirmedStaffCount: raw.attendanceManifest?.length || 0,
+            isFifthLabAttending: Boolean(raw.isFifthLabAttending),
+            attendanceManifest: (raw.attendanceManifest || []).map((m: any) => ({
+              userId: m.userId || m.user?.id,
+              userName: m.user?.name || "Staff",
+              userRole: m.user?.role || "Staff",
+              avatarUrl: m.user?.avatarUrl || "",
+              confirmedAt: m.confirmedAt ? new Date(m.confirmedAt).toLocaleDateString() : "Recently",
+              status: m.status === "ATTENDING" ? "Attending" : "Declined",
+            })),
+          });
+        }
+      })
+      .catch((err: unknown) => console.warn("Direct event lookup failed:", err))
+      .finally(() => {
+        if (isMounted) setIsDirectFetching(false);
+      });
+
+    return () => {
+      isMounted = false;
+    };
+  }, [eventId, memoryEvent]);
+
+  const event = memoryEvent || directEvent;
+
+  // Show loading indicator when initial state or direct fetch is pending
+  if ((isAppLoading && !event) || (isDirectFetching && !event)) {
+    return (
+      <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 text-center">
+        <AppleSpinner size="lg" message="Loading summit schedule & pass records..." />
+      </div>
+    );
+  }
 
   if (!event) {
     return (
       <div className="min-h-screen bg-white flex flex-col items-center justify-center p-6 text-center">
         <h2 className="text-xl font-bold text-[#111827]">Event Not Found</h2>
-        <p className="text-xs text-[#6B7280] mt-2 mb-6">The requested summit or conference does not exist.</p>
+        <p className="text-xs text-[#6B7280] mt-2 mb-6">The requested summit or conference does not exist or has concluded.</p>
         <Link href="/events">
           <BrandButton variant="primary" size="sm">
-            Back to Events
+            Browse Summits &amp; Conferences
           </BrandButton>
         </Link>
       </div>

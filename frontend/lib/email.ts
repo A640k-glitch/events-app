@@ -103,3 +103,138 @@ export async function sendOtpVerificationEmail(props: OtpEmailProps): Promise<{ 
     return { success: false, error: error.message || "Failed to dispatch email" };
   }
 }
+
+export interface EventTicketEmailProps {
+  to: string;
+  visitorName: string;
+  company: string;
+  eventTitle: string;
+  eventDate: string;
+  eventTime: string;
+  eventLocation: string;
+  ticketTier: string;
+  qrPassCode: string;
+  qrBadgeDataUrl: string;
+}
+
+/**
+ * Dispatches an official digital event door pass with embedded QR badge to attendee email.
+ */
+export async function sendEventTicketEmail(props: EventTicketEmailProps): Promise<{ success: boolean; simulated?: boolean; error?: string }> {
+  const {
+    to,
+    visitorName,
+    company,
+    eventTitle,
+    eventDate,
+    eventTime,
+    eventLocation,
+    ticketTier,
+    qrPassCode,
+    qrBadgeDataUrl,
+  } = props;
+
+  const user = (process.env.SMTP_USER || process.env.GMAIL_USER || "").trim();
+  const pass = (process.env.SMTP_PASS || process.env.GMAIL_APP_PASS || "").replace(/\s+/g, "");
+
+  if (!user || !pass) {
+    console.log(`[EmailService] 🎟️ Event QR Ticket dispatched in simulation for ${visitorName} (${to}) [Pass Code: ${qrPassCode}]`);
+    return { success: true, simulated: true };
+  }
+
+  try {
+    const base64Data = qrBadgeDataUrl.replace(/^data:image\/png;base64,/, "");
+    const qrBuffer = Buffer.from(base64Data, "base64");
+    const formattedTier = ticketTier.replace(/_/g, " ");
+
+    const htmlContent = `
+      <!DOCTYPE html>
+      <html>
+      <head>
+        <meta charset="utf-8">
+        <style>
+          body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; background-color: #08090b; color: #f5f5f7; margin: 0; padding: 20px; }
+          .ticket-card { max-width: 580px; margin: 0 auto; background: #111318; border: 1px solid rgba(255,255,255,0.1); border-radius: 16px; overflow: hidden; box-shadow: 0 20px 40px rgba(0,0,0,0.6); }
+          .header { background: #000000; padding: 24px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.08); }
+          .content { padding: 32px 24px; text-align: center; }
+          .tier-badge { display: inline-block; background: rgba(0,180,216,0.15); color: #00B4D8; border: 1px solid rgba(0,180,216,0.3); padding: 4px 12px; border-radius: 999px; font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+          .event-title { color: #ffffff; font-size: 22px; font-weight: 600; margin: 16px 0 8px 0; line-height: 1.3; }
+          .qr-container { background: #ffffff; border-radius: 12px; padding: 16px; display: inline-block; margin: 24px auto; box-shadow: 0 8px 24px rgba(0,0,0,0.4); }
+          .meta-table { width: 100%; border-collapse: collapse; margin: 24px 0; text-align: left; font-size: 13px; }
+          .meta-table td { padding: 10px 12px; border-bottom: 1px solid rgba(255,255,255,0.05); color: rgba(255,255,255,0.8); }
+          .meta-label { color: rgba(255,255,255,0.4); font-weight: 500; }
+          .footer { background: #000000; padding: 16px; text-align: center; color: rgba(255,255,255,0.4); font-size: 11px; border-top: 1px solid rgba(255,255,255,0.08); }
+        </style>
+      </head>
+      <body>
+        <div class="ticket-card">
+          <div class="header">
+            <span style="color: #00B4D8; font-size: 12px; font-weight: 700; letter-spacing: 2px; text-transform: uppercase;">THE FIFTHLAB EVENTS</span>
+          </div>
+          <div class="content">
+            <span class="tier-badge">${formattedTier}</span>
+            <h1 class="event-title">${eventTitle}</h1>
+            <p style="color: rgba(255,255,255,0.6); font-size: 13px; margin: 0;">Issued to <strong>${visitorName}</strong> (${company})</p>
+
+            <div class="qr-container">
+              <img src="cid:qrBadge" alt="QR Ticket Code" style="width: 180px; height: 180px; display: block;" />
+            </div>
+
+            <p style="color: #00B4D8; font-family: monospace; font-size: 14px; font-weight: bold; margin: 4px 0 20px 0;">PASS CODE: ${qrPassCode}</p>
+
+            <table class="meta-table">
+              <tr>
+                <td class="meta-label">Date</td>
+                <td><strong>${eventDate}</strong></td>
+              </tr>
+              <tr>
+                <td class="meta-label">Time</td>
+                <td><strong>${eventTime}</strong></td>
+              </tr>
+              <tr>
+                <td class="meta-label">Venue</td>
+                <td><strong>${eventLocation}</strong></td>
+              </tr>
+              <tr>
+                <td class="meta-label">Access</td>
+                <td><span style="color: #10b981;">● Confirmed Verified Registration</span></td>
+              </tr>
+            </table>
+
+            <p style="color: rgba(255,255,255,0.5); font-size: 12px; line-height: 1.5; margin-top: 16px;">
+              Present this digital QR ticket at the venue registration desk for instant pass scanning and badge printing.
+            </p>
+          </div>
+          <div class="footer">
+            © 2026 The FifthLab Nigeria. All rights reserved. • West Africa Event Operations
+          </div>
+        </div>
+      </body>
+      </html>
+    `;
+
+    const transporter = getTransporter();
+    const fromAddress = process.env.SMTP_FROM || `"The FifthLab Events" <${user}>`;
+
+    const info = await transporter.sendMail({
+      from: fromAddress,
+      to,
+      subject: `🎟️ Your Event Pass: ${eventTitle}`,
+      html: htmlContent,
+      attachments: [
+        {
+          filename: `ticket-${qrPassCode}.png`,
+          content: qrBuffer,
+          cid: "qrBadge",
+        },
+      ],
+    });
+
+    console.log(`[EmailService] ✅ Digital Ticket QR Pass successfully delivered to ${to} (MessageId: ${info.messageId})`);
+    return { success: true };
+  } catch (error: any) {
+    console.error(`[EmailService] ❌ Failed to dispatch ticket email to ${to}:`, error);
+    return { success: false, error: error.message || "Failed to dispatch ticket email" };
+  }
+}
+

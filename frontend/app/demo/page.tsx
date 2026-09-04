@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { BrandButton } from "@/components/ui/BrandButtons";
+import FingerprintPattern from "@/components/brand/FingerprintPattern";
 import { cn } from "@/lib/utils";
 import confetti from "canvas-confetti";
 
@@ -195,6 +196,14 @@ function DemoBookingContent() {
     }
   }, [productQuery]);
 
+  useEffect(() => {
+    if (isSubmitted && typeof window !== "undefined") {
+      window.scrollTo({ top: 0, left: 0, behavior: "smooth" });
+      document.documentElement.scrollTo({ top: 0, behavior: "smooth" });
+      document.body.scrollTo({ top: 0, behavior: "smooth" });
+    }
+  }, [isSubmitted]);
+
   const availableSlots = [
     "09:30 AM (WAT)",
     "11:00 AM (WAT)",
@@ -228,10 +237,13 @@ function DemoBookingContent() {
       });
 
       setIsSubmitted(true);
+      if (typeof window !== "undefined") {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+      }
       confetti({
         particleCount: 80,
         spread: 60,
-        origin: { y: 0.6 },
+        origin: { y: 0.4 },
       });
     } catch (err: unknown) {
       setErrorMessage(err instanceof Error ? err.message : "Failed to book session");
@@ -241,17 +253,64 @@ function DemoBookingContent() {
   };
 
   return (
-    <div className="min-h-screen bg-transparent text-[#111827] flex flex-col justify-between font-sans text-left">
+    <div className="min-h-screen bg-white text-[#111827] flex flex-col justify-between font-sans text-left">
       
-      {/* Top Header */}
-      <section className="pt-24 pb-8 px-4 sm:px-6 lg:px-8 bg-white/80 backdrop-blur-sm border-b border-gray-200/80">
-        <div className="max-w-4xl mx-auto space-y-2">
+      {/* Top Header Banner with Biometric Fingerprints on Clean White Background (No Green) */}
+      <section className="relative pt-24 pb-12 px-4 sm:px-6 lg:px-8 bg-white border-b border-gray-200 overflow-hidden">
+        {/* Biometric Fingerprints Vector Background */}
+        <div className="absolute inset-0 pointer-events-none overflow-hidden select-none" aria-hidden="true">
+          {/* Subtle soft ambient glow in FifthLab blue/cyan (zero green) */}
+          <div className="absolute -right-20 -top-20 w-96 h-96 bg-[#0090AD]/5 rounded-full blur-3xl" />
+          <div className="absolute -left-20 -bottom-20 w-80 h-80 bg-blue-500/5 rounded-full blur-3xl" />
+
+          {/* Right Main Dense Fingerprint */}
+          <FingerprintPattern
+            size={580}
+            opacity={0.16}
+            strokeWidth={1.3}
+            className="absolute -right-16 -top-28 text-[#0090AD] rotate-12"
+          />
+
+          {/* Upper Right Secondary Fingerprint */}
+          <FingerprintPattern
+            size={420}
+            opacity={0.12}
+            strokeWidth={1.2}
+            className="absolute right-56 -bottom-36 text-slate-400 -rotate-12"
+          />
+
+          {/* Center-Right Balanced Fingerprint */}
+          <FingerprintPattern
+            size={340}
+            opacity={0.08}
+            strokeWidth={1.1}
+            className="absolute right-[38%] -top-24 text-slate-300 rotate-45"
+          />
+
+          {/* Far Left Subtle Dermal Ridges */}
+          <FingerprintPattern
+            size={460}
+            opacity={0.12}
+            strokeWidth={1.2}
+            className="absolute -left-24 -top-20 text-slate-400 -rotate-45"
+          />
+
+          {/* Lower Left Accent Fingerprint */}
+          <FingerprintPattern
+            size={380}
+            opacity={0.09}
+            strokeWidth={1.1}
+            className="absolute -left-12 -bottom-32 text-[#0284C7] rotate-12"
+          />
+        </div>
+
+        <div className="max-w-4xl mx-auto space-y-2 relative z-10">
           <div className="flex items-center gap-2 text-xs text-[#6B7280]">
-            <Link href="/" className="hover:text-[#111827] flex items-center gap-1">
+            <Link href="/" className="hover:text-[#111827] flex items-center gap-1 transition-colors">
               <ArrowLeft className="w-3.5 h-3.5" /> Home
             </Link>
             <ChevronRight className="w-3 h-3 text-gray-300" />
-            <Link href="/products" className="hover:text-[#111827]">
+            <Link href="/products" className="hover:text-[#111827] transition-colors">
               Products
             </Link>
             <ChevronRight className="w-3 h-3 text-gray-300" />
@@ -261,7 +320,7 @@ function DemoBookingContent() {
           <h1 className="text-2xl sm:text-3xl font-medium text-[#111827] tracking-tight">
             Book a Live Product Demo
           </h1>
-          <p className="text-xs sm:text-sm text-[#6B7280]">
+          <p className="text-xs sm:text-sm text-[#6B7280] max-w-2xl">
             Connect 1-on-1 with product teams behind FifthLab and CWG fintech solutions. All times in West Africa Time (WAT).
           </p>
         </div>
@@ -273,7 +332,7 @@ function DemoBookingContent() {
           
           {isSubmitted ? (
             <div className="rounded-xl border border-gray-200 bg-white p-8 sm:p-12 text-center space-y-5 max-w-lg mx-auto shadow-xs">
-              <div className="w-12 h-12 rounded-full bg-emerald-50 text-emerald-600 flex items-center justify-center mx-auto border border-emerald-200">
+              <div className="w-12 h-12 rounded-full bg-[#0090AD]/10 text-[#0090AD] flex items-center justify-center mx-auto border border-[#0090AD]/25">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
 
@@ -506,7 +565,7 @@ function DemoBookingContent() {
               {/* Submit Action */}
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-1">
                 <div className="flex items-center gap-2 text-[11px] text-gray-500 font-mono">
-                  <ShieldCheck className="w-4 h-4 text-emerald-600" />
+                  <ShieldCheck className="w-4 h-4 text-[#0090AD]" />
                   <span>Data Privacy & Enterprise Security Compliant</span>
                 </div>
 
@@ -515,10 +574,10 @@ function DemoBookingContent() {
                   variant="primary"
                   size="lg"
                   isLoading={isSubmitting}
-                  rightIcon={<ArrowRight className="w-4 h-4" />}
-                  className="w-full sm:w-auto px-8"
+                  rightIcon={<ArrowRight className="w-4 h-4 text-white" />}
+                  className="w-full sm:w-auto px-8 !text-white text-white font-semibold"
                 >
-                  Confirm Executive Briefing
+                  Schedule Demo
                 </BrandButton>
               </div>
 

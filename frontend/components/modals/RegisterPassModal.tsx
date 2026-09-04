@@ -55,6 +55,19 @@ export default function RegisterPassModal(props: RegisterPassModalProps) {
   const [confirmedTicket, setConfirmedTicket] = useState<TicketPassData | null>(null);
   const [isPassModalOpen, setIsPassModalOpen] = useState(false);
 
+  // Synchronize chosen event and tier when modal opens or props change
+  useEffect(() => {
+    if (isOpen) {
+      const defaultId = initialEventId || selectedEventId || propEventId || (events[0]?.id || "");
+      if (defaultId) {
+        setChosenEventId(defaultId);
+      }
+      const tier = initialTier || defaultTier || "FREE_VISITOR";
+      setTicketTier(tier);
+      setErrorMessage(null);
+    }
+  }, [isOpen, initialEventId, selectedEventId, propEventId, initialTier, defaultTier, events]);
+
   if (!isOpen || !mounted) return null;
 
   const targetEventId = chosenEventId || effectiveEventId;
@@ -84,14 +97,23 @@ export default function RegisterPassModal(props: RegisterPassModalProps) {
       });
 
       if (res.success && res.data) {
+        const matchingEvent = events.find((evt) => evt.id === targetEventId);
+        const resolvedEvent = res.data.event || {
+          title: matchingEvent?.title || "FifthLab Technology Summit",
+          date: matchingEvent?.date || "Upcoming",
+          time: matchingEvent?.time || "09:00 AM - 05:00 PM WAT",
+          location: matchingEvent?.location || "Convention Centre",
+          city: matchingEvent?.city || "Lagos, Nigeria",
+        };
+
         setConfirmedTicket({
-          visitorName: res.data.visitorName,
-          email: res.data.email,
-          company: res.data.company,
-          ticketTier: res.data.ticketTier,
-          qrPassCode: res.data.qrPassCode,
-          qrBadgeDataUrl: res.data.qrBadgeDataUrl,
-          event: res.data.event,
+          visitorName: res.data.visitorName || visitorName.trim(),
+          email: res.data.email || email.trim().toLowerCase(),
+          company: res.data.company || company.trim(),
+          ticketTier: res.data.ticketTier || ticketTier,
+          qrPassCode: res.data.qrPassCode || `PASS-${Date.now().toString(36).toUpperCase()}`,
+          qrBadgeDataUrl: res.data.qrBadgeDataUrl || "",
+          event: resolvedEvent,
         });
         setIsPassModalOpen(true);
       } else {

@@ -22,7 +22,7 @@ import { DemoCardAnimated } from "./DemoCardAnimated";
 
 const FALLBACK_SLIDES = [
   {
-    id: "keynote",
+    id: "evt-001",
     title: "West Africa Digital Banking Summit 2026",
     tagline: "Keynote & Stage Schedule",
     description: "Two days of talks, panel sessions, and live banking demos at Eko Hotel in Lagos.",
@@ -34,7 +34,7 @@ const FALLBACK_SLIDES = [
     accentColor: "#0090AD",
   },
   {
-    id: "exhibition",
+    id: "evt-002",
     title: "Fintech Core & Enterprise VAS Exposition",
     tagline: "Exhibition Booths & Live Demos",
     description: "Meet product teams from Bulkwave, Finedge, and SMERP. Test core banking and payment APIs on site.",
@@ -46,7 +46,7 @@ const FALLBACK_SLIDES = [
     accentColor: "#2563EB",
   },
   {
-    id: "vip",
+    id: "evt-003",
     title: "Founders & Banking Executive Roundtable",
     tagline: "Private Briefing Session",
     description: "Closed-door discussions on cross-border payments, compliance, and capital allocation across East and West Africa.",
@@ -58,7 +58,7 @@ const FALLBACK_SLIDES = [
     accentColor: "#7E22CE",
   },
   {
-    id: "doorpass",
+    id: "evt-004",
     title: "Africa Cloud Architecture & DevOps Conference",
     tagline: "Technical Workshops & Demos",
     description: "Hands-on infrastructure sessions, database scaling patterns, and live architecture reviews.",

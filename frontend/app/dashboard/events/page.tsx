@@ -79,7 +79,7 @@ export default function EventsPage() {
     try {
       setIsVerifying(true);
       setVerifyResult(null);
-      const res = await fetch(`http://localhost:5000/api/events/${selectedEvent.id}/verify-pass`, {
+      const res = await fetch(`/api/events/${selectedEvent.id}/verify-pass`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ qrPassCode: verifyPassCode.trim() }),
