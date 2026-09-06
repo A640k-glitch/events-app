@@ -1,8 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
 
-// Helper to format event objects from raw DB rows
-function formatEvent(row: any) {
+// Helper to format event objects from raw DB rows with attendance records
+function formatEvent(row: any, attendanceRows: any[] = []) {
+  const manifest = attendanceRows
+    .filter((ar: any) => ar.eventId === row.id)
+    .map((ar: any) => ({
+      userId: ar.userId,
+      userName: ar.userName || "Staff Member",
+      userRole: ar.userRole || "Staff",
+      avatarUrl: ar.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(ar.userName || "Staff")}&background=0090ad&color=fff&bold=true`,
+      confirmedAt: ar.confirmedAt ? new Date(ar.confirmedAt).toISOString() : null,
+      status: ar.status === "ATTENDING" ? "Attending" : ar.status === "DECLINED" ? "Declined" : "Maybe",
+    }));
+
   return {
     id: row.id,
     title: row.title,
@@ -21,7 +32,8 @@ function formatEvent(row: any) {
     isPublished: Boolean(row.isPublished),
     expectedAttendance: row.expectedAttendance || 0,
     isFifthLabAttending: Boolean(row.isFifthLabAttending),
-    attendanceManifest: [],
+    confirmedStaffCount: manifest.filter((m: any) => m.status === "Attending").length,
+    attendanceManifest: manifest,
   };
 }
 
@@ -35,6 +47,13 @@ export async function GET(request: NextRequest) {
     const publishedOnly = searchParams.get("publishedOnly") !== "false";
 
     let rows: any[];
+
+    const attendancePromise = sql`
+      SELECT ar.*, u.name as "userName", u.email as "userEmail", u.role as "userRole", u."avatarUrl"
+      FROM attendance_records ar
+      JOIN users u ON ar."userId" = u.id
+      ORDER BY ar."confirmedAt" ASC
+    `;
 
     if (search) {
       const term = `%${search}%`;
@@ -66,7 +85,8 @@ export async function GET(request: NextRequest) {
       `;
     }
 
-    const data = rows.map(formatEvent);
+    const attendanceRows = await attendancePromise.catch(() => []);
+    const data = rows.map((r) => formatEvent(r, attendanceRows));
     return NextResponse.json({ success: true, count: data.length, data });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });

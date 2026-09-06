@@ -3,7 +3,7 @@
 import React, { createContext, useContext, useState, useEffect, useCallback } from "react";
 import { FifthLabEvent, Lead, FifthLabProduct, ProductOwner, LeadStatus, EventCategory, EventPriority, AttendanceRecord } from "@/lib/types";
 import { api, setAuthToken, clearAuthToken } from "@/lib/api-client";
-import { resolveProductLogo, CANONICAL_FALLBACK_PRODUCTS } from "@/lib/products-data";
+import { resolveProductLogo, resolveProductTheme, CANONICAL_FALLBACK_PRODUCTS } from "@/lib/products-data";
 import { useRouter } from "next/navigation";
 
 export interface SystemNotification {
@@ -39,6 +39,7 @@ export interface LiveStats {
   activeStaffCount: number;
   pendingPitchesCount: number;
   publicRegistrationsCount: number;
+  checkedInCount?: number;
   totalExpectedAttendance: number;
 }
 
@@ -76,8 +77,9 @@ interface AppContextType {
   refreshData: () => Promise<void>;
   
   // Event Actions
-  addEvent: (event: Omit<FifthLabEvent, "id" | "confirmedStaffCount" | "attendanceManifest"> & { imageUrl?: string; isFeatured?: boolean; isPublished?: boolean }) => Promise<void>;
-  toggleAttendance: (eventId: string, status: "Attending" | "Declined" | "Maybe") => Promise<void>;
+  addEvent: (eventData: Omit<FifthLabEvent, "id" | "confirmedStaffCount" | "attendanceManifest"> & { imageUrl?: string; isFeatured?: boolean; isPublished?: boolean }) => Promise<void>;
+  toggleAttendance: (eventId: string, status: "Attending" | "Declined" | "Maybe", userId?: string) => Promise<void>;
+  removeStaffAttendance: (eventId: string, userId: string) => Promise<void>;
   deleteEvent: (eventId: string) => Promise<void>;
   
   // Pitch Actions
@@ -171,10 +173,11 @@ function mapPrismaLead(l: any): Lead {
     email: l.email,
     phone: l.phone,
     productInterested: l.productInterested,
-    assignedProductOwner: l.assignedOwner?.name || "Unassigned",
+    assignedProductOwner: l.assignedOwner?.name || l.assignedProductOwner || "Unassigned",
+    assignedProductOwnerId: l.assignedProductOwnerId || l.assignedOwner?.id || null,
     bookingDate: l.bookingDate ? new Date(l.bookingDate).toISOString().split("T")[0] : "",
     bookingTime: l.bookingTime || "",
-    status: statusMap[l.status] || "Unread",
+    status: statusMap[l.status] || l.status || "Unread",
     notes: l.notes || "",
     createdAt: l.createdAt ? new Date(l.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "Today",
   };
@@ -182,6 +185,7 @@ function mapPrismaLead(l: any): Lead {
 
 function mapPrismaProduct(p: any): FifthLabProduct {
   const resolvedLogo = resolveProductLogo(p.slug || p.name, p.logoUrl);
+  const theme = resolveProductTheme(p.slug || p.name);
   return {
     id: p.id,
     slug: p.slug || p.id,
@@ -189,15 +193,17 @@ function mapPrismaProduct(p: any): FifthLabProduct {
     tagline: p.tagline,
     description: p.description,
     ownerId: p.ownerId || "",
-    ownerName: p.owner?.name || "Product Lead",
+    ownerName: p.ownerName || p.owner?.name || "Unassigned",
     iconName: p.iconName || "Briefcase",
-    bgColor: p.bgColor || "#F4F4FF",
+    bgColor: p.bgColor || theme.bgColor,
+    accentColor: p.accentColor || theme.accentColor,
+    cardBorder: p.cardBorder || theme.cardBorder,
     logoUrl: resolvedLogo,
     tags: p.tags || ["Enterprise Solution"],
     activeDemosThisMonth: p.activeDemosThisMonth || 0,
     availableSlots: p.availableSlots || ["09:00 AM", "11:00 AM", "02:00 PM", "04:00 PM"],
     leadsCount: p.leadsCount || 0,
-    conversionRate: p.conversionRate || 65,
+    conversionRate: p.conversionRate !== undefined ? p.conversionRate : 0,
     recentLeads: p.recentLeads || [],
   };
 }
@@ -551,10 +557,11 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const toggleAttendance = async (eventId: string, status: "Attending" | "Declined" | "Maybe") => {
+  const toggleAttendance = async (eventId: string, status: "Attending" | "Declined" | "Maybe", targetUserId?: string) => {
     try {
       const dbStatus = status === "Attending" ? "ATTENDING" : status === "Declined" ? "DECLINED" : "MAYBE";
-      const res = await api.rsvpEvent(eventId, dbStatus, user?.id);
+      const effectiveUserId = targetUserId || user?.id || "usr_abraham";
+      const res = await api.rsvpEvent(eventId, dbStatus, effectiveUserId);
 
       if (res.success) {
         notifySync();
@@ -562,6 +569,23 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (e) {
       console.error("Failed to submit RSVP:", e);
+    }
+  };
+
+  const removeStaffAttendance = async (eventId: string, targetUserId: string) => {
+    try {
+      const res = await fetch(`/api/events/${eventId}/rsvp?userId=${encodeURIComponent(targetUserId)}`, {
+        method: "DELETE",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("fifthlab_jwt_token") || ""}`,
+        },
+      });
+      if (res.ok) {
+        notifySync();
+        await refreshData();
+      }
+    } catch (e) {
+      console.error("Failed to remove staff attendance:", e);
     }
   };
 
@@ -716,6 +740,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         refreshData,
         addEvent,
         toggleAttendance,
+        removeStaffAttendance,
         deleteEvent,
         approvePitch,
         declinePitch,

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import { Search, RefreshCw, Trash2, ShieldAlert, CheckCircle2 } from "lucide-react";
+import { Search, RefreshCw, Trash2, ShieldAlert, Users, Calendar, Mail } from "lucide-react";
 import { api } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 import { TableSkeleton } from "@/components/ui/SkeletonLoaders";
@@ -104,15 +104,22 @@ export default function TeamPage() {
 
   return (
     <DashboardLayout>
-      <div className="space-y-6 font-sans text-left text-[#111827]">
+      <div className="space-y-6 font-sans text-left text-slate-900">
         
-        {/* Header Bar Card */}
-        <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* Header Bar - Compact AWS Enterprise Style */}
+        <div className="bg-gradient-to-r from-[#EAF7F7]/70 via-white to-[#F0F6FF]/70 p-3.5 sm:p-4 rounded-lg border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-bold tracking-tight text-slate-950">
+            <div className="flex items-center gap-1.5 mb-0.5">
+              <span className="text-[10.5px] font-bold text-[#005B6E] tracking-wider uppercase">
+                Corporate Directory
+              </span>
+              <span className="text-slate-300">•</span>
+              <span className="text-[11px] text-slate-500 font-medium">Access Control &amp; Event Assignments</span>
+            </div>
+            <h1 className="text-xl font-bold tracking-tight text-slate-950">
               Team Directory
             </h1>
-            <p className="text-xs text-slate-600 font-medium mt-1">
+            <p className="text-xs text-slate-600 font-medium">
               Verified corporate personnel, roles, and event assignments across FifthLab and CWG.
             </p>
           </div>
@@ -120,60 +127,65 @@ export default function TeamPage() {
           <button
             type="button"
             onClick={fetchTeam}
-            className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl border border-slate-300 bg-white hover:bg-slate-50 text-xs font-bold text-slate-900 transition-all cursor-pointer shadow-2xs hover:border-slate-400 self-start sm:self-auto"
+            className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 transition-all cursor-pointer shadow-2xs self-start sm:self-auto"
           >
             {isLoading ? (
-              <AppleSpinner size={14} color="#0090AD" />
+              <AppleSpinner size={13} color="#005B6E" />
             ) : (
-              <RefreshCw className="w-3.5 h-3.5 text-[#0090AD]" />
+              <RefreshCw className="w-3.5 h-3.5 text-[#005B6E]" />
             )}
-            <span>Refresh</span>
+            <span>Refresh Roster</span>
           </button>
         </div>
 
-        {/* High-Contrast Search & Filter Bar */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-1 p-1.5 rounded-xl bg-slate-200/90 border border-slate-300 overflow-x-auto no-scrollbar shadow-2xs">
-            {["ALL", "ADMIN", "STAFF", "PRODUCT_OWNER"].map((role) => (
+        {/* Compact Search & Filter Bar (AWS Console Style) */}
+        <div className="bg-white p-2 rounded-lg border border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-1 p-0.5 rounded-md bg-slate-100 border border-slate-200 overflow-x-auto no-scrollbar">
+            {[
+              { key: "ALL", label: "All Roles" },
+              { key: "ADMIN", label: "Admin" },
+              { key: "PRODUCT_OWNER", label: "Product Owner" },
+              { key: "STAFF", label: "Staff" }
+            ].map((r) => (
               <button
-                key={role}
-                onClick={() => setRoleFilter(role)}
+                key={r.key}
+                onClick={() => setRoleFilter(r.key)}
                 className={cn(
-                  "px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer whitespace-nowrap",
-                  roleFilter === role
-                    ? "bg-white text-slate-950 shadow-xs ring-1 ring-slate-300"
-                    : "text-slate-700 hover:text-slate-950 hover:bg-white/60"
+                  "h-7 px-2.5 rounded text-xs font-medium transition-all cursor-pointer whitespace-nowrap",
+                  roleFilter === r.key
+                    ? "bg-[#005B6E] text-white font-semibold shadow-xs"
+                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
                 )}
               >
-                {role === "ALL" ? "All Roles" : role.replace(/_/g, " ")}
+                {r.label}
               </button>
             ))}
           </div>
 
-          <div className="relative">
-            <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+          <div className="relative w-full sm:w-64">
+            <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
             <input
               type="text"
               placeholder="Search team by name or email..."
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="w-full sm:w-72 bg-white border border-slate-300 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-950 placeholder:text-slate-500 focus:outline-none focus:border-[#0090AD] shadow-2xs font-medium"
+              className="w-full h-8 pl-8 pr-2.5 rounded-md border border-slate-200 text-xs text-slate-900 bg-white focus:outline-none focus:border-[#005B6E] font-medium"
             />
           </div>
         </div>
 
-        {/* High-Contrast Mobile-Responsive Team Table */}
-        <div className="rounded-2xl border border-slate-200 bg-white shadow-2xs overflow-hidden">
+        {/* Team Table - Dense AWS Console Style */}
+        <div className="rounded-lg border border-slate-200 bg-white shadow-none overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-100/90 text-slate-800 uppercase tracking-wider text-[10.5px] font-bold">
-                  <th className="py-3.5 px-4">Staff Member</th>
-                  <th className="py-3.5 px-4">Email</th>
-                  <th className="py-3.5 px-4">Role & Access</th>
-                  <th className="py-3.5 px-4">Assigned Inquiries</th>
-                  <th className="py-3.5 px-4">Events Attending</th>
-                  <th className="py-3.5 px-4 text-right">Actions</th>
+                <tr className="border-b border-slate-200 bg-slate-50 text-slate-500 uppercase tracking-wider text-[10px] font-semibold">
+                  <th className="py-2 px-3">Staff Member</th>
+                  <th className="py-2 px-3">Corporate Email</th>
+                  <th className="py-2 px-3">Role &amp; Access</th>
+                  <th className="py-2 px-3">Assigned Inquiries</th>
+                  <th className="py-2 px-3">Events Attending</th>
+                  <th className="py-2 px-3 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -188,59 +200,84 @@ export default function TeamPage() {
                     const validDomain = isCorporateDomain(u.email);
 
                     return (
-                      <tr key={u.id} className="hover:bg-slate-50/80 transition-colors">
-                        <td className="py-3 px-4">
-                          <div className="flex items-center gap-2.5">
-                            <div className="w-8 h-8 rounded-full bg-[#E8F8FA] border border-[#20B2AA]/30 text-[#0090AD] font-bold text-xs flex items-center justify-center shrink-0">
+                      <tr key={u.id} className="hover:bg-slate-50/70 transition-colors">
+                        {/* Member */}
+                        <td className="py-2 px-3">
+                          <div className="flex items-center gap-2">
+                            <div className="w-6 h-6 rounded-full bg-[#EAF7F7] border border-[#CEEFEF] text-[#005B6E] font-bold text-[10px] flex items-center justify-center shrink-0">
                               {u.name.charAt(0).toUpperCase()}
                             </div>
                             <div className="min-w-0">
-                              <div className="font-bold text-slate-950">{u.name}</div>
-                              <div className="text-[10px] text-slate-500">ID: {u.id.slice(0, 8)}</div>
+                              <div className="font-semibold text-slate-950">{u.name}</div>
+                              <div className="text-[10px] text-slate-400 font-mono">ID: {u.id.slice(0, 8)}</div>
                             </div>
                           </div>
                         </td>
 
-                        <td className="py-3 px-4">
+                        {/* Email */}
+                        <td className="py-2 px-3">
                           <div className="flex items-center gap-1.5">
                             <span className="font-medium text-slate-800">{u.email}</span>
                             {!validDomain && (
                               <span 
-                                title="Non-corporate domain email. Remove this account."
-                                className="inline-flex items-center gap-1 text-[10px] font-bold text-rose-700 bg-rose-50 border border-rose-200 px-2 py-0.5 rounded-full shrink-0"
+                                title="Non-corporate domain email."
+                                className="inline-flex items-center gap-1 text-[10px] font-semibold text-rose-600 shrink-0"
                               >
-                                <ShieldAlert className="w-3 h-3 text-rose-600" /> Non-Domain
+                                <ShieldAlert className="w-3 h-3 text-rose-500" /> Non-Domain
                               </span>
                             )}
                           </div>
                         </td>
 
-                        <td className="py-3 px-4">
-                          <span className={cn(
-                            "px-2.5 py-1 rounded-full text-[10.5px] font-bold",
-                            u.role === "ADMIN" && "bg-purple-100 text-purple-900 border border-purple-300",
-                            u.role === "PRODUCT_OWNER" && "bg-[#E8F8FA] text-[#00829B] border border-[#20B2AA]/40",
-                            u.role === "STAFF" && "bg-slate-100 text-slate-800 border border-slate-300"
-                          )}>
-                            {u.role.replace(/_/g, " ")}
-                          </span>
+                        {/* Role & Access */}
+                        <td className="py-2 px-3 whitespace-nowrap">
+                          {u.role === "ADMIN" && (
+                            <span className="font-semibold text-xs text-purple-700 flex items-center gap-1.5">
+                              <span className="w-1.5 h-1.5 rounded-full bg-purple-600 shrink-0" />
+                              <span>Admin</span>
+                            </span>
+                          )}
+                          {u.role === "PRODUCT_OWNER" && (
+                            <span className="font-semibold text-xs text-[#005B6E] flex items-center gap-1.5">
+                              <span className="w-1.5 h-1.5 rounded-full bg-[#005B6E] shrink-0" />
+                              <span>Product Owner</span>
+                            </span>
+                          )}
+                          {u.role === "STAFF" && (
+                            <span className="font-semibold text-xs text-slate-700 flex items-center gap-1.5">
+                              <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
+                              <span>Staff</span>
+                            </span>
+                          )}
+                          {!["ADMIN", "PRODUCT_OWNER", "STAFF"].includes(u.role) && (
+                            <span className="font-medium text-xs text-slate-600 flex items-center gap-1.5">
+                              <span className="w-1.5 h-1.5 rounded-full bg-slate-300 shrink-0" />
+                              <span>{u.role}</span>
+                            </span>
+                          )}
                         </td>
 
-                        <td className="py-3 px-4 font-bold text-slate-950">
+                        {/* Assigned Inquiries */}
+                        <td className="py-2 px-3 font-semibold text-slate-900">
                           {u._count?.assignedLeads || 0} Leads
                         </td>
 
-                        <td className="py-3 px-4 text-slate-700 font-medium">
-                          {u._count?.rsvps || 0} Summits
+                        {/* Events Attending */}
+                        <td className="py-2 px-3 text-slate-800 font-medium">
+                          <div className="flex items-center gap-1.5">
+                            <Calendar className="w-3 h-3 text-[#005B6E]" />
+                            <span>{u._count?.rsvps || 0} Summits</span>
+                          </div>
                         </td>
 
-                        <td className="py-3 px-4 text-right">
-                          <div className="flex items-center justify-end gap-2">
+                        {/* Actions */}
+                        <td className="py-2 px-3 text-right">
+                          <div className="flex items-center justify-end gap-1.5">
                             <select
                               value={u.role}
                               disabled={updatingUserId === u.id}
                               onChange={(e) => handleRoleChange(u.id, e.target.value)}
-                              className="bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs text-slate-900 font-semibold focus:outline-none focus:border-[#0090AD] cursor-pointer shadow-2xs"
+                              className="bg-white border border-slate-300 rounded px-2 py-0.5 text-[10.5px] text-slate-900 font-medium focus:outline-none focus:border-[#005B6E] cursor-pointer h-6.5"
                             >
                               <option value="STAFF">Staff</option>
                               <option value="PRODUCT_OWNER">Product Owner</option>
@@ -252,12 +289,12 @@ export default function TeamPage() {
                               onClick={() => handleDeleteUser(u.id, u.name)}
                               disabled={deletingUserId === u.id}
                               title="Delete Team Member"
-                              className="p-1.5 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer disabled:opacity-50"
+                              className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors cursor-pointer disabled:opacity-50"
                             >
                               {deletingUserId === u.id ? (
-                                <AppleSpinner size={14} color="#E11D48" />
+                                <AppleSpinner size={12} color="#E11D48" />
                               ) : (
-                                <Trash2 className="w-4 h-4" />
+                                <Trash2 className="w-3.5 h-3.5" />
                               )}
                             </button>
                           </div>
@@ -267,7 +304,7 @@ export default function TeamPage() {
                   })
                 ) : (
                   <tr>
-                    <td colSpan={6} className="py-12 text-center text-slate-500 font-medium">
+                    <td colSpan={6} className="py-8 text-center text-slate-500 font-medium">
                       No staff members match the selected filter.
                     </td>
                   </tr>

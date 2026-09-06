@@ -56,7 +56,7 @@ leadsRouter.post("/", async (req: Request, res: Response): Promise<void> => {
         email: email.trim().toLowerCase(),
         phone,
         productInterested,
-        assignedProductOwnerId: product?.ownerId || null,
+        assignedProductOwnerId: req.body.assignedProductOwnerId || null,
         bookingDate: bookingDate ? new Date(bookingDate) : null,
         bookingTime: timeSlot || null,
         notes: notes || null,

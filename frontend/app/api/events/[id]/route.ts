@@ -8,13 +8,29 @@ export async function GET(
 ) {
   try {
     const { id } = await params;
-    const [row] = await sql`
-      SELECT * FROM events WHERE id = ${id}
-    `;
+    const [row, attendanceRows] = await Promise.all([
+      sql`SELECT * FROM events WHERE id = ${id}`.then((r) => r[0]),
+      sql`
+        SELECT ar.*, u.name as "userName", u.email as "userEmail", u.role as "userRole", u."avatarUrl"
+        FROM attendance_records ar
+        JOIN users u ON ar."userId" = u.id
+        WHERE ar."eventId" = ${id}
+        ORDER BY ar."confirmedAt" ASC
+      `.catch(() => []),
+    ]);
 
     if (!row) {
       return NextResponse.json({ success: false, error: "Event not found" }, { status: 404 });
     }
+
+    const manifest = (attendanceRows || []).map((ar: any) => ({
+      userId: ar.userId,
+      userName: ar.userName || "Staff Member",
+      userRole: ar.userRole || "Staff",
+      avatarUrl: ar.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(ar.userName || "Staff")}&background=0090ad&color=fff&bold=true`,
+      confirmedAt: ar.confirmedAt ? new Date(ar.confirmedAt).toISOString() : null,
+      status: ar.status === "ATTENDING" ? "Attending" : ar.status === "DECLINED" ? "Declined" : "Maybe",
+    }));
 
     const event = {
       id: row.id,
@@ -34,7 +50,8 @@ export async function GET(
       isPublished: Boolean(row.isPublished),
       expectedAttendance: row.expectedAttendance || 0,
       isFifthLabAttending: Boolean(row.isFifthLabAttending),
-      attendanceManifest: [],
+      confirmedStaffCount: manifest.filter((m: any) => m.status === "Attending").length,
+      attendanceManifest: manifest,
     };
 
     return NextResponse.json({ success: true, data: event });

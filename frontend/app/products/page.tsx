@@ -388,10 +388,15 @@ function DraggableMarquee({
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const isHoveredRef = useRef(false);
-  const isMouseDownRef = useRef(false);
+  const isDraggingRef = useRef(false);
   const startXRef = useRef(0);
+  const startYRef = useRef(0);
   const startPosRef = useRef(0);
   const dragDistanceRef = useRef(0);
+  const isHorizontalDragRef = useRef<boolean | null>(null);
+  const lastTimeRef = useRef(0);
+  const lastXRef = useRef(0);
+  const velocityRef = useRef(0);
   const posRef = useRef(0);
   const singleSetWidthRef = useRef(0);
 
@@ -419,22 +424,34 @@ function DraggableMarquee({
     let animationFrameId: number;
 
     const step = () => {
-      if (!isHoveredRef.current && !isMouseDownRef.current && track) {
-        const setWidth = singleSetWidthRef.current;
-        if (setWidth > 0) {
-          if (direction === "left") {
-            posRef.current -= speed;
-            if (posRef.current <= -setWidth * 2) {
-              posRef.current += setWidth;
-            }
-          } else {
-            posRef.current += speed;
-            if (posRef.current >= 0) {
-              posRef.current -= setWidth;
+      if (!isHoveredRef.current && !isDraggingRef.current && track) {
+        // Apply residual velocity deceleration after a hand flick
+        if (Math.abs(velocityRef.current) > 0.05) {
+          posRef.current += velocityRef.current;
+          velocityRef.current *= 0.94; // smooth inertia decay
+        } else {
+          velocityRef.current = 0;
+          const setWidth = singleSetWidthRef.current;
+          if (setWidth > 0) {
+            if (direction === "left") {
+              posRef.current -= speed;
+            } else {
+              posRef.current += speed;
             }
           }
-          track.style.transform = `translate3d(${posRef.current}px, 0, 0)`;
         }
+
+        const setWidth = singleSetWidthRef.current;
+        if (setWidth > 0) {
+          while (posRef.current <= -setWidth * 2) {
+            posRef.current += setWidth;
+          }
+          while (posRef.current >= 0) {
+            posRef.current -= setWidth;
+          }
+        }
+
+        track.style.transform = `translate3d(${posRef.current}px, 0, 0)`;
       }
       animationFrameId = requestAnimationFrame(step);
     };
@@ -447,19 +464,50 @@ function DraggableMarquee({
     };
   }, [direction, speed, items.length]);
 
-  const handleMouseDown = (e: React.MouseEvent) => {
-    isMouseDownRef.current = true;
-    startXRef.current = e.clientX;
+  // Unified drag initialization
+  const onDragStart = (clientX: number, clientY: number) => {
+    isDraggingRef.current = true;
+    startXRef.current = clientX;
+    startYRef.current = clientY;
+    lastXRef.current = clientX;
+    lastTimeRef.current = performance.now();
     startPosRef.current = posRef.current;
     dragDistanceRef.current = 0;
+    isHorizontalDragRef.current = null;
+    velocityRef.current = 0;
     if (containerRef.current) {
       containerRef.current.style.cursor = "grabbing";
     }
   };
 
-  const handleMouseMove = (e: React.MouseEvent) => {
-    if (!isMouseDownRef.current || !trackRef.current) return;
-    const deltaX = e.clientX - startXRef.current;
+  // Unified drag movement
+  const onDragMove = (clientX: number, clientY: number) => {
+    if (!isDraggingRef.current || !trackRef.current) return;
+
+    const deltaX = clientX - startXRef.current;
+    const deltaY = clientY - startYRef.current;
+
+    // Detect gesture intent: horizontal marquee drag vs vertical page scroll
+    if (isHorizontalDragRef.current === null) {
+      if (Math.abs(deltaX) > 4 || Math.abs(deltaY) > 4) {
+        isHorizontalDragRef.current = Math.abs(deltaX) >= Math.abs(deltaY);
+      }
+    }
+
+    if (isHorizontalDragRef.current === false) {
+      // User is scrolling vertically, allow native page scroll
+      return;
+    }
+
+    const now = performance.now();
+    const dt = now - lastTimeRef.current;
+    if (dt > 0) {
+      const stepDelta = clientX - lastXRef.current;
+      velocityRef.current = (stepDelta / dt) * 16.6; // normalized velocity
+      lastXRef.current = clientX;
+      lastTimeRef.current = now;
+    }
+
     dragDistanceRef.current = Math.abs(deltaX);
     posRef.current = startPosRef.current + deltaX * 1.25;
 
@@ -478,11 +526,71 @@ function DraggableMarquee({
     trackRef.current.style.transform = `translate3d(${posRef.current}px, 0, 0)`;
   };
 
-  const handleMouseUpOrLeave = () => {
-    isMouseDownRef.current = false;
+  // Unified drag completion
+  const onDragEnd = () => {
+    isDraggingRef.current = false;
+    isHorizontalDragRef.current = null;
     if (containerRef.current) {
       containerRef.current.style.cursor = "grab";
     }
+  };
+
+  // Mouse handlers (desktop)
+  const handleMouseDown = (e: React.MouseEvent) => {
+    onDragStart(e.clientX, e.clientY);
+  };
+
+  const handleMouseMove = (e: React.MouseEvent) => {
+    onDragMove(e.clientX, e.clientY);
+  };
+
+  const handleMouseUpOrLeave = () => {
+    if (isDraggingRef.current) {
+      onDragEnd();
+    }
+  };
+
+  // Pointer event handlers (modern touchscreen / stylus / trackpad)
+  const handlePointerDown = (e: React.PointerEvent) => {
+    if (e.button !== 0) return;
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {
+      // ignore
+    }
+    onDragStart(e.clientX, e.clientY);
+  };
+
+  const handlePointerMove = (e: React.PointerEvent) => {
+    onDragMove(e.clientX, e.clientY);
+  };
+
+  const handlePointerUpOrCancel = (e: React.PointerEvent) => {
+    try {
+      if (e.currentTarget.hasPointerCapture(e.pointerId)) {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      }
+    } catch {
+      // ignore
+    }
+    onDragEnd();
+  };
+
+  // Native touch fallback
+  const handleTouchStart = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      onDragStart(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  };
+
+  const handleTouchMove = (e: React.TouchEvent) => {
+    if (e.touches.length === 1) {
+      onDragMove(e.touches[0].clientX, e.touches[0].clientY);
+    }
+  };
+
+  const handleTouchEnd = () => {
+    onDragEnd();
   };
 
   const handleWheel = (e: React.WheelEvent) => {
@@ -524,8 +632,16 @@ function DraggableMarquee({
         onMouseDown={handleMouseDown}
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUpOrLeave}
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUpOrCancel}
+        onPointerCancel={handlePointerUpOrCancel}
+        onTouchStart={handleTouchStart}
+        onTouchMove={handleTouchMove}
+        onTouchEnd={handleTouchEnd}
+        onTouchCancel={handleTouchEnd}
         onWheel={handleWheel}
-        className="overflow-hidden py-3 w-full cursor-grab active:cursor-grabbing"
+        className="overflow-hidden py-3 w-full cursor-grab active:cursor-grabbing touch-pan-y select-none"
       >
         <div
           ref={trackRef}

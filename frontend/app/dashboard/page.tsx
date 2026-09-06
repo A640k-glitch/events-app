@@ -23,8 +23,16 @@ import AddLeadModal from "@/components/modals/AddLeadModal";
 import AddEventModal from "@/components/modals/AddEventModal";
 import { StatsRowSkeleton, TableSkeleton } from "@/components/ui/SkeletonLoaders";
 
+const categoryColorMap: Record<string, { text: string }> = {
+  Conference: { text: "text-[#005B6E]" },
+  Summit: { text: "text-[#4F46E5]" },
+  Workshop: { text: "text-[#D97706]" },
+  Webinar: { text: "text-[#059669]" },
+  Exhibition: { text: "text-[#7C3AED]" },
+};
+
 export default function DashboardOverviewPage() {
-  const { events, leads, pitches, approvePitch, declinePitch, isLoading } = useApp();
+  const { events, leads, pitches, approvePitch, declinePitch, isLoading, stats } = useApp();
   const [isAddLeadOpen, setIsAddLeadOpen] = useState(false);
   const [isAddEventOpen, setIsAddEventOpen] = useState(false);
 
@@ -56,16 +64,16 @@ export default function DashboardOverviewPage() {
         className="space-y-6 font-sans text-left text-slate-900"
       >
         
-        {/* 1. Header Area with Structured Layout & High-Contrast Styling */}
+        {/* 1. Header Area - Compact AWS Enterprise Style */}
         <motion.div 
           variants={itemVariants} 
-          className="bg-white p-4 sm:p-6 rounded-xl sm:rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col md:flex-row md:items-center justify-between gap-3 sm:gap-4"
+          className="bg-gradient-to-r from-[#EAF7F7]/70 via-white to-[#F0F6FF]/70 p-3.5 sm:p-4 rounded-lg border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3"
         >
-          <div className="space-y-1">
-            <h1 className="text-xl sm:text-2xl lg:text-3xl font-bold tracking-tight text-slate-900">
+          <div className="space-y-0.5">
+            <h1 className="text-xl font-bold tracking-tight text-slate-900">
               Dashboard Overview
             </h1>
-            <p className="text-xs sm:text-sm text-slate-600 font-medium max-w-2xl">
+            <p className="text-xs text-slate-600 font-medium max-w-2xl">
               Manage your upcoming events, check booth staff rosters, and follow up with attendees.
             </p>
           </div>
@@ -73,15 +81,15 @@ export default function DashboardOverviewPage() {
           <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0">
             <button
               onClick={() => setIsAddEventOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3 sm:px-4 py-2 sm:py-2.5 rounded-xl border border-slate-200 bg-white hover:bg-slate-50 text-xs font-bold text-slate-800 transition-all cursor-pointer shadow-2xs hover:border-slate-300"
+              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-800 transition-all cursor-pointer"
             >
-              <Plus className="w-3.5 h-3.5 text-[#0090AD]" />
+              <Plus className="w-3.5 h-3.5 text-[#005B6E]" />
               <span>Create Event</span>
             </button>
 
             <button
               onClick={() => setIsAddLeadOpen(true)}
-              className="inline-flex items-center gap-1.5 px-3.5 sm:px-4.5 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-[#0090AD] to-[#229EA6] hover:from-[#007A94] hover:to-[#1E8B92] text-white text-xs font-bold shadow-md shadow-[#0090AD]/20 transition-all cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
+              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md bg-[#005B6E] hover:bg-[#004754] text-white text-xs font-semibold shadow-xs transition-all cursor-pointer"
             >
               <UserPlus className="w-3.5 h-3.5" />
               <span>Add Lead</span>
@@ -89,83 +97,15 @@ export default function DashboardOverviewPage() {
           </div>
         </motion.div>
 
-        {/* 2. Dual Hero Action Cards with Cohesive FifthEvents Palette */}
-        <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
-          
-          {/* Left Hero Card: YOUR TEAM */}
-          <div className="lg:col-span-8 rounded-xl sm:rounded-2xl border border-[#20B2AA]/30 bg-gradient-to-br from-[#F2FAFB] via-white to-[#F6FCFD] p-4 sm:p-6 lg:p-7 flex flex-col justify-between space-y-4 sm:space-y-5 relative overflow-hidden shadow-2xs">
-            <div className="space-y-2 sm:space-y-3">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] sm:text-[11px] font-bold uppercase tracking-wider text-[#00829B] flex items-center gap-1.5">
-                  <Users className="w-3.5 h-3.5" /> TEAM ROSTER
-                </span>
-                <Link
-                  href="/dashboard/team"
-                  className="text-xs font-bold text-[#0090AD] hover:text-[#007A94] flex items-center gap-1 group"
-                >
-                  <span>View Team Directory</span>
-                  <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-                </Link>
-              </div>
-
-              <h2 className="text-base sm:text-lg font-bold text-slate-900 tracking-tight">
-                Staff your booths and sessions
-              </h2>
-
-              <p className="text-xs sm:text-sm text-slate-600 max-w-xl leading-relaxed">
-                Assign engineers and product managers to upcoming events and demo sessions.
-              </p>
-            </div>
-
-            <div className="pt-1 sm:pt-2 flex items-center gap-3">
-              <Link
-                href="/dashboard/team"
-                className="inline-flex items-center justify-center gap-2 px-4 sm:px-5 py-2 sm:py-2.5 rounded-xl bg-gradient-to-r from-[#0090AD] to-[#229EA6] hover:from-[#007A94] hover:to-[#1E8B92] text-white text-xs font-bold shadow-xs transition-all cursor-pointer"
-              >
-                <span>Invite your team</span>
-                <ArrowRight className="w-3.5 h-3.5" />
-              </Link>
-            </div>
-          </div>
-
-          {/* Right Hero Card: HELP CENTER */}
-          <div className="lg:col-span-4 rounded-xl sm:rounded-2xl border border-slate-200/90 bg-white p-4 sm:p-6 lg:p-7 flex flex-col justify-between space-y-3 sm:space-y-4 relative overflow-hidden shadow-2xs">
-            <div className="space-y-2.5">
-              <span className="text-[11px] font-bold uppercase tracking-wider text-slate-500 block">
-                ADMIN GUIDES
-              </span>
-
-              <h3 className="text-base font-bold text-slate-900 leading-snug">
-                Event guides &amp; FAQs
-              </h3>
-
-              <p className="text-xs text-slate-600 leading-relaxed">
-                Quick guides on badge check-in, event setups, and exporting attendee lists.
-              </p>
-            </div>
-
-            <div className="pt-2">
-              <Link
-                href="/dashboard/events"
-                className="text-xs font-bold text-[#0090AD] hover:text-[#007A94] flex items-center gap-1 group"
-              >
-                <span>Read guides</span>
-                <ArrowRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-              </Link>
-            </div>
-          </div>
-
-        </motion.div>
-
-        {/* 3. Pending Proposal Alert Banner (if any) */}
+        {/* 2. Pending Proposal Alert Banner (if any) */}
         {pendingPitches.length > 0 && (
           <motion.div
             variants={itemVariants}
-            className="p-4 rounded-2xl border border-amber-300 bg-amber-50/90 flex flex-col md:flex-row items-start md:items-center justify-between gap-4 shadow-2xs"
+            className="p-3 rounded-lg border border-amber-300 bg-amber-50/90 flex flex-col md:flex-row items-start md:items-center justify-between gap-3 shadow-2xs"
           >
-            <div className="space-y-1 text-left">
+            <div className="space-y-0.5 text-left">
               <span className="text-xs font-bold text-amber-900 uppercase tracking-wider flex items-center gap-1.5">
-                <Inbox className="w-4 h-4 text-amber-700" /> Pending Organizer Proposal ({pendingPitches.length})
+                <Inbox className="w-3.5 h-3.5 text-amber-700" /> Pending Organizer Proposal ({pendingPitches.length})
               </span>
               <p className="text-xs text-amber-950 font-medium">
                 {pendingPitches[0].organizerName} from <strong>{pendingPitches[0].organization}</strong> submitted a proposal for &quot;{pendingPitches[0].eventTitle}&quot; in {pendingPitches[0].proposedCity}.
@@ -175,13 +115,13 @@ export default function DashboardOverviewPage() {
             <div className="flex items-center gap-2 shrink-0">
               <button
                 onClick={() => approvePitch(pendingPitches[0].id, true, "Approved via Admin Center")}
-                className="px-4 py-1.5 rounded-xl bg-[#0090AD] text-white text-xs font-bold hover:bg-[#007A94] transition-colors cursor-pointer shadow-xs"
+                className="h-7 px-3 rounded-md bg-[#005B6E] text-white text-xs font-semibold hover:bg-[#004754] transition-colors cursor-pointer"
               >
                 Approve
               </button>
               <button
                 onClick={() => declinePitch(pendingPitches[0].id, "Declined")}
-                className="px-3.5 py-1.5 rounded-xl border border-amber-300 bg-white text-xs font-semibold text-amber-900 hover:bg-amber-100 transition-colors cursor-pointer"
+                className="h-7 px-2.5 rounded-md border border-amber-300 bg-white text-xs font-semibold text-amber-900 hover:bg-amber-100 transition-colors cursor-pointer"
               >
                 Decline
               </button>
@@ -189,68 +129,70 @@ export default function DashboardOverviewPage() {
           </motion.div>
         )}
 
-        {/* 4. Activity Metrics Row with Clean Contrast & Consistent Accents */}
-        <motion.div variants={itemVariants} className="space-y-3">
+        {/* 3. Live Database Telemetry Metrics - Compact AWS Style */}
+        <motion.div variants={itemVariants} className="space-y-2.5">
           
           <div className="flex items-center justify-between">
-            <span className="text-xs font-bold uppercase tracking-wider text-slate-700">
-              LAST 30 DAYS
+            <span className="text-[11px] font-bold uppercase tracking-wider text-slate-600">
+              LIVE SYSTEM TELEMETRY
             </span>
             <Link
               href="/dashboard/events"
-              className="text-xs font-bold text-[#0090AD] hover:text-[#007A94] flex items-center gap-1"
+              className="text-xs font-semibold text-[#005B6E] hover:underline flex items-center gap-1"
             >
-              View Analytics <ArrowRight className="w-3.5 h-3.5" />
+              View Events <ArrowRight className="w-3.5 h-3.5" />
             </Link>
           </div>
 
           {isLoading ? (
             <StatsRowSkeleton count={3} />
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             
-            {/* Metric 1: Created Events (Kuleanpay Ice-Blue Tint) */}
-            <div className="p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-[#D8E6FA] bg-[#F0F6FF] space-y-1 sm:space-y-1.5 shadow-2xs hover:border-[#2563EB]/40 transition-colors">
-              <span className="text-[11px] sm:text-xs font-semibold text-slate-600 block">Active events</span>
-              <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">
+            {/* Metric 1: Active Events in DB */}
+            <div className="p-3.5 rounded-lg border border-slate-200 bg-white hover:border-slate-300 transition-colors space-y-1">
+              <span className="text-[11px] font-semibold text-slate-500 block">Active Events</span>
+              <div className="text-2xl font-bold text-slate-900 tracking-tight">
                 {events.length}
               </div>
-              <div className="text-[11px] sm:text-xs text-slate-500">
-                Summits and workshops scheduled
+              <div className="text-[11px] text-slate-500">
+                Summits &amp; conferences scheduled
               </div>
-              <div className="pt-0.5 sm:pt-1 flex items-center gap-1 text-[10px] sm:text-[11px] text-[#2563EB] font-semibold">
-                <TrendingUp className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                <span>+12% this month</span>
+              <div className="pt-0.5 flex items-center gap-1 text-[11px] text-[#005B6E] font-semibold">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>{events.filter((e) => e.isFifthLabAttending).length} active exhibitions</span>
               </div>
             </div>
 
-            {/* Metric 2: Inbound Leads (Finedge Aqua-Mint Tint) */}
-            <div className="p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-[#CEEFEF] bg-[#EAF7F7] space-y-1 sm:space-y-1.5 shadow-2xs hover:border-[#0090AD]/40 transition-colors">
-              <span className="text-[11px] sm:text-xs font-semibold text-slate-600 block">Inbound leads</span>
-              <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">
+            {/* Metric 2: Inbound Leads from DB */}
+            <div className="p-3.5 rounded-lg border border-slate-200 bg-white hover:border-slate-300 transition-colors space-y-1">
+              <span className="text-[11px] font-semibold text-slate-500 block">Demo Inquiries &amp; Leads</span>
+              <div className="text-2xl font-bold text-slate-900 tracking-tight">
                 {leads.length}
               </div>
-              <div className="text-[11px] sm:text-xs text-slate-500">
-                Booth inquiries and demo requests
+              <div className="text-[11px] text-slate-500">
+                Prospect inquiries from demo form
               </div>
-              <div className="pt-0.5 sm:pt-1 flex items-center gap-1 text-[#0090AD] font-semibold text-[10px] sm:text-[11px]">
-                <TrendingUp className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                <span>+18.4% conversion</span>
+              <div className="pt-0.5 flex items-center gap-1 text-[#005B6E] font-semibold text-[11px]">
+                <TrendingUp className="w-3.5 h-3.5" />
+                <span>{stats.unreadLeadsCount} unread inquiries</span>
               </div>
             </div>
 
-            {/* Metric 3: Door Check-ins (Bulkwave Periwinkle Tint) */}
-            <div className="p-3.5 sm:p-5 rounded-xl sm:rounded-2xl border border-[#E0E4FB] bg-[#F3F4FD] space-y-1 sm:space-y-1.5 shadow-2xs hover:border-[#4F46E5]/40 transition-colors">
-              <span className="text-[11px] sm:text-xs font-semibold text-slate-600 block">Checked-in rate</span>
-              <div className="text-xl sm:text-2xl lg:text-3xl font-bold text-slate-900 tracking-tight">
-                98.4%
+            {/* Metric 3: Real QR Door Check-ins from DB */}
+            <div className="p-3.5 rounded-lg border border-slate-200 bg-white hover:border-slate-300 transition-colors space-y-1">
+              <span className="text-[11px] font-semibold text-slate-500 block">Verified Check-in Rate</span>
+              <div className="text-2xl font-bold text-slate-900 tracking-tight">
+                {stats.publicRegistrationsCount > 0 
+                  ? `${Math.round(((stats.checkedInCount || 0) / stats.publicRegistrationsCount) * 100)}%` 
+                  : "0%"}
               </div>
-              <div className="text-[11px] sm:text-xs text-slate-500">
-                Attendees verified with digital QR
+              <div className="text-[11px] text-slate-500">
+                {stats.checkedInCount || 0} checked in of {stats.publicRegistrationsCount} registered
               </div>
-              <div className="pt-0.5 sm:pt-1 flex items-center gap-1 text-[#4F46E5] font-semibold text-[10px] sm:text-[11px]">
-                <CheckCircle2 className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
-                <span>Sub-second door scan</span>
+              <div className="pt-0.5 flex items-center gap-1 text-[#005B6E] font-semibold text-[11px]">
+                <CheckCircle2 className="w-3.5 h-3.5" />
+                <span>Real-time digital pass verification</span>
               </div>
             </div>
 
@@ -258,14 +200,14 @@ export default function DashboardOverviewPage() {
         )}
         </motion.div>
 
-        {/* 5. Data Pipelines: High-Contrast CRM Table + Upcoming Summits */}
-        <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-12 gap-4 sm:gap-5">
+        {/* 5. Data Pipelines: Dense AWS CRM Table + Upcoming Summits */}
+        <motion.div variants={itemVariants} className="grid grid-cols-1 lg:grid-cols-12 gap-4">
           
           {/* Left: Leads CRM Table (8 Cols) */}
-          <div className="lg:col-span-8 rounded-xl sm:rounded-2xl border border-slate-200/90 bg-white p-3.5 sm:p-5 space-y-3 sm:space-y-3.5 shadow-2xs text-left">
-            <div className="flex items-center justify-between pb-2.5 border-b border-slate-100">
+          <div className="lg:col-span-8 rounded-lg border border-slate-200 bg-white p-3.5 sm:p-4 space-y-3 text-left">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <div>
-                <h2 className="text-base font-bold text-slate-900">
+                <h2 className="text-sm font-bold text-slate-900">
                   Recent Inbound Inquiries
                 </h2>
                 <p className="text-xs text-slate-500">
@@ -275,7 +217,7 @@ export default function DashboardOverviewPage() {
 
               <Link
                 href="/dashboard/leads"
-                className="text-xs font-bold text-[#0090AD] hover:text-[#007A94] flex items-center gap-1 group"
+                className="text-xs font-semibold text-[#005B6E] hover:underline flex items-center gap-1 group"
               >
                 <span>View all ({leads.length})</span>
                 <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
@@ -285,12 +227,12 @@ export default function DashboardOverviewPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50/80 text-slate-700 uppercase tracking-wider text-[10px] font-bold">
-                    <th className="py-2.5 px-3">Visitor &amp; Contact</th>
-                    <th className="py-2.5 px-3">Company</th>
-                    <th className="py-2.5 px-3">Product</th>
-                    <th className="py-2.5 px-3">Status</th>
-                    <th className="py-2.5 px-3">Assigned To</th>
+                  <tr className="border-b border-slate-200 bg-slate-50 text-slate-500 uppercase tracking-wider text-[10px] font-semibold">
+                    <th className="py-2 px-3">Visitor &amp; Contact</th>
+                    <th className="py-2 px-3">Company</th>
+                    <th className="py-2 px-3">Product</th>
+                    <th className="py-2 px-3">Status</th>
+                    <th className="py-2 px-3">Assigned To</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -302,52 +244,65 @@ export default function DashboardOverviewPage() {
                     </tr>
                   ) : recentLeads.length > 0 ? (
                     recentLeads.map((lead) => (
-                    <tr key={lead.id} className="hover:bg-slate-50/90 transition-colors">
+                    <tr key={lead.id} className="hover:bg-slate-50/70 transition-colors">
                       {/* Visitor */}
-                      <td className="py-2.5 px-3">
-                        <div className="font-semibold text-slate-900 truncate max-w-[140px]">
-                          {lead.visitorName}
-                        </div>
-                        <div className="text-[11px] text-slate-500 truncate max-w-[140px]">
-                          {lead.email}
+                      <td className="py-2 px-3">
+                        <div className="flex items-center gap-2">
+                          <div className="w-6 h-6 rounded-full bg-slate-100 text-slate-700 font-semibold text-[10px] flex items-center justify-center shrink-0 uppercase">
+                            {lead.visitorName ? lead.visitorName.slice(0, 2) : "VI"}
+                          </div>
+                          <div className="min-w-0">
+                            <div className="font-semibold text-slate-900 truncate max-w-[150px]">
+                              {lead.visitorName}
+                            </div>
+                            <div className="text-[10.5px] text-slate-400 truncate max-w-[150px]">
+                              {lead.email}
+                            </div>
+                          </div>
                         </div>
                       </td>
 
                       {/* Company */}
-                      <td className="py-2.5 px-3 font-medium text-slate-700 truncate max-w-[120px]">
+                      <td className="py-2 px-3 font-medium text-slate-700 whitespace-nowrap">
                         {lead.company || "Enterprise Corp"}
                       </td>
 
                       {/* Product */}
-                      <td className="py-2.5 px-3">
-                        <span className="px-2 py-0.5 rounded-md bg-slate-100 text-slate-900 text-[11px] font-medium border border-slate-200/80">
+                      <td className="py-2 px-3 whitespace-nowrap">
+                        <span className="font-medium text-slate-900 text-xs">
                           {lead.productInterested || "Bulkwave"}
                         </span>
                       </td>
 
-                      {/* Status */}
-                      <td className="py-2.5 px-3">
-                        <span className={cn(
-                          "inline-block text-[10px] font-semibold px-2 py-0.5 rounded-full border",
-                          lead.status === "Unread" && "bg-slate-100 text-slate-700 border-slate-200",
-                          lead.status === "Qualified" && "bg-[#E8F8FA] text-[#00829B] border-[#20B2AA]/30",
-                          lead.status === "Converted" && "bg-emerald-50 text-emerald-800 border-emerald-200",
-                          lead.status === "Followed Up" && "bg-amber-50 text-amber-800 border-amber-200",
-                          lead.status === "Closed" && "bg-slate-100 text-slate-500 border-slate-200"
-                        )}>
-                          {lead.status}
+                      {/* Status (Clean indicator dot, no pill) */}
+                      <td className="py-2 px-3 whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-800">
+                          <span className={cn(
+                            "w-1.5 h-1.5 rounded-full shrink-0",
+                            lead.status === "Unread" && "bg-slate-400",
+                            lead.status === "Qualified" && "bg-[#005B6E]",
+                            lead.status === "Converted" && "bg-emerald-500",
+                            lead.status === "Followed Up" && "bg-amber-500",
+                            lead.status === "Closed" && "bg-slate-400"
+                          )} />
+                          <span>{lead.status}</span>
                         </span>
                       </td>
 
-                      {/* Owner */}
-                      <td className="py-2.5 px-3 text-[11px] text-slate-600 font-medium truncate max-w-[100px]">
-                        {lead.assignedProductOwner || "Product Specialist"}
+                      {/* Assigned To */}
+                      <td className="py-2 px-3 whitespace-nowrap">
+                        <div className="flex items-center gap-1.5 text-slate-700 text-xs font-medium">
+                          <div className="w-5 h-5 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold flex items-center justify-center shrink-0 uppercase">
+                            {lead.assignedProductOwner ? lead.assignedProductOwner.charAt(0) : "P"}
+                          </div>
+                          <span>{lead.assignedProductOwner || "Unassigned"}</span>
+                        </div>
                       </td>
                     </tr>
                   ))
                   ) : (
                     <tr>
-                      <td colSpan={5} className="py-8 text-center text-slate-400">
+                      <td colSpan={5} className="py-6 text-center text-slate-400">
                         No inquiries yet.
                       </td>
                     </tr>
@@ -357,46 +312,49 @@ export default function DashboardOverviewPage() {
             </div>
           </div>
 
-          {/* Right: Upcoming Events (4 Cols) */}
-          <div className="lg:col-span-4 rounded-2xl border border-slate-200/90 bg-white p-6 space-y-4 shadow-2xs text-left">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-100">
+          {/* Right: Upcoming Events (4 Cols) - Clean AWS Style (No Asymmetric Borders!) */}
+          <div className="lg:col-span-4 rounded-lg border border-slate-200 bg-white p-3.5 sm:p-4 space-y-3 text-left">
+            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <div>
-                <h2 className="text-base font-bold text-slate-900">
+                <h2 className="text-sm font-bold text-slate-900">
                   Upcoming Events
                 </h2>
-                <p className="text-xs text-slate-500 font-medium">Next events on the calendar</p>
+                <p className="text-xs text-slate-500 font-medium">Next events on calendar</p>
               </div>
 
               <Link
                 href="/dashboard/events"
-                className="text-xs font-bold text-[#0090AD] hover:text-[#007A94] flex items-center gap-1 group"
+                className="text-xs font-semibold text-[#005B6E] hover:underline flex items-center gap-1 group"
               >
                 <span>All events</span>
                 <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
               </Link>
             </div>
 
-            <div className="space-y-3">
-              {upcomingEvents.map((evt) => (
-                <div
-                  key={evt.id}
-                  className="p-4 rounded-xl border border-slate-200 bg-slate-50/70 hover:bg-slate-100/80 transition-colors space-y-2"
-                >
-                  <div className="flex items-start justify-between gap-2">
-                    <span className="text-xs font-bold text-slate-900 line-clamp-1">
-                      {evt.title}
-                    </span>
-                    <span className="text-[10px] px-2 py-0.5 rounded bg-white border border-slate-200 text-slate-700 font-semibold shrink-0">
-                      {evt.category}
-                    </span>
-                  </div>
+            <div className="space-y-2">
+              {upcomingEvents.map((evt) => {
+                const color = categoryColorMap[evt.category] || { border: "border-slate-200", text: "text-slate-600" };
+                return (
+                  <div
+                    key={evt.id}
+                    className="p-2.5 rounded-lg border border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/60 transition-colors space-y-1"
+                  >
+                    <div className="flex items-start justify-between gap-2">
+                      <span className="text-xs font-bold text-slate-900 line-clamp-1">
+                        {evt.title}
+                      </span>
+                      <span className={cn("text-[10px] font-bold uppercase tracking-wider shrink-0", color.text)}>
+                        {evt.category}
+                      </span>
+                    </div>
 
-                  <div className="flex items-center justify-between text-[11px] text-slate-600 font-medium">
-                    <span>{evt.city} • {evt.date}</span>
-                    <span className="text-emerald-700 font-semibold">{evt.time || "Scheduled"}</span>
+                    <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium">
+                      <span>{evt.city} • {evt.date}</span>
+                      <span className="text-emerald-700 font-semibold">{evt.time || "Scheduled"}</span>
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 

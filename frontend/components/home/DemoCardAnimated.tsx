@@ -62,6 +62,22 @@ const CHIPS = [
     height: 180,
     imgClass: "w-[90%] h-[90%] object-contain",
   },
+  {
+    name: "BeetVAS",
+    src: "/brand/beetvaslogo.png",
+    delay: "-14s",
+    width: 200,
+    height: 64,
+    imgClass: "w-[92%] h-auto max-h-[82%] object-contain",
+  },
+  {
+    name: "SmerpGo",
+    src: "/brand/smerpgo-logo.png",
+    delay: "-16s",
+    width: 200,
+    height: 68,
+    imgClass: "w-[92%] h-auto max-h-[82%] object-contain",
+  },
 ];
 
 export function DemoCardAnimated() {
@@ -70,7 +86,7 @@ export function DemoCardAnimated() {
       {/* ──────────────────────────────────────────────────────────────────────────
           1. MOBILE & TABLET (< xl): CONTAINER REMOVED, CAROUSEL FILLS FULL WIDTH
           ────────────────────────────────────────────────────────────────────────── */}
-      <div className="block xl:hidden w-full relative pt-2 pb-6 select-none overflow-hidden text-center">
+      <div className="block xl:hidden w-full relative pt-2 pb-6 select-none overflow-visible text-center">
         <style>{`
           .mobile-chip-orbit {
             position: absolute;
@@ -81,12 +97,12 @@ export function DemoCardAnimated() {
             border-radius: 24px;
             background: #ffffff !important;
             border: 2.5px solid rgba(255, 255, 255, 0.98);
-            box-shadow: 0 16px 36px rgba(21, 15, 69, 0.18);
+            box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45), 0 0 24px rgba(0, 144, 173, 0.12);
             display: flex;
             align-items: center;
             justify-content: center;
             will-change: transform, opacity;
-            animation: orbit-mobile-wide 14s linear infinite;
+            animation: orbit-mobile-wide 18s linear infinite;
           }
 
           @media (min-width: 480px) {
@@ -107,28 +123,28 @@ export function DemoCardAnimated() {
             }
           }
 
-          /* Small Mobile (< 640px) Orbit */
+          /* Small Mobile (< 640px) Orbit — stays safely within viewport borders without shrinking chips */
           @keyframes orbit-mobile-wide {
             0.0% { transform: translate(-50%, -50%) translate(0vw, 28px) scale(1.15); z-index: 35; opacity: 1.0; }
-            5.0% { transform: translate(-50%, -50%) translate(11.7vw, 26.6px) scale(1.14); z-index: 33; opacity: 0.99; }
-            10.0% { transform: translate(-50%, -50%) translate(22.3vw, 22.7px) scale(1.11); z-index: 31; opacity: 0.97; }
-            15.0% { transform: translate(-50%, -50%) translate(30.7vw, 16.5px) scale(1.07); z-index: 28; opacity: 0.93; }
-            20.0% { transform: translate(-50%, -50%) translate(36.1vw, 8.7px) scale(1.02); z-index: 24; opacity: 0.88; }
-            25.0% { transform: translate(-50%, -50%) translate(38.0vw, 0.0px) scale(0.96); z-index: 20; opacity: 0.84; }
-            30.0% { transform: translate(-50%, -50%) translate(36.1vw, -8.7px) scale(0.91); z-index: 17; opacity: 0.79; }
-            35.0% { transform: translate(-50%, -50%) translate(30.7vw, -16.5px) scale(0.86); z-index: 14; opacity: 0.75; }
-            40.0% { transform: translate(-50%, -50%) translate(22.3vw, -22.7px) scale(0.83); z-index: 12; opacity: 0.73; }
-            45.0% { transform: translate(-50%, -50%) translate(11.7vw, -26.6px) scale(0.81); z-index: 11; opacity: 0.72; }
+            5.0% { transform: translate(-50%, -50%) translate(9.3vw, 26.6px) scale(1.14); z-index: 33; opacity: 0.99; }
+            10.0% { transform: translate(-50%, -50%) translate(17.6vw, 22.7px) scale(1.11); z-index: 31; opacity: 0.97; }
+            15.0% { transform: translate(-50%, -50%) translate(24.3vw, 16.5px) scale(1.07); z-index: 28; opacity: 0.93; }
+            20.0% { transform: translate(-50%, -50%) translate(28.5vw, 8.7px) scale(1.02); z-index: 24; opacity: 0.88; }
+            25.0% { transform: translate(-50%, -50%) translate(30.0vw, 0.0px) scale(0.96); z-index: 20; opacity: 0.84; }
+            30.0% { transform: translate(-50%, -50%) translate(28.5vw, -8.7px) scale(0.91); z-index: 17; opacity: 0.79; }
+            35.0% { transform: translate(-50%, -50%) translate(24.3vw, -16.5px) scale(0.86); z-index: 14; opacity: 0.75; }
+            40.0% { transform: translate(-50%, -50%) translate(17.6vw, -22.7px) scale(0.83); z-index: 12; opacity: 0.73; }
+            45.0% { transform: translate(-50%, -50%) translate(9.3vw, -26.6px) scale(0.81); z-index: 11; opacity: 0.72; }
             50.0% { transform: translate(-50%, -50%) translate(0vw, -28px) scale(0.80); z-index: 10; opacity: 0.70; }
-            55.0% { transform: translate(-50%, -50%) translate(-11.7vw, -26.6px) scale(0.81); z-index: 11; opacity: 0.72; }
-            60.0% { transform: translate(-50%, -50%) translate(-22.3vw, -22.7px) scale(0.83); z-index: 12; opacity: 0.73; }
-            65.0% { transform: translate(-50%, -50%) translate(-30.7vw, -16.5px) scale(0.86); z-index: 14; opacity: 0.75; }
-            70.0% { transform: translate(-50%, -50%) translate(-36.1vw, -8.7px) scale(0.91); z-index: 17; opacity: 0.79; }
-            75.0% { transform: translate(-50%, -50%) translate(-38.0vw, 0.0px) scale(0.96); z-index: 20; opacity: 0.84; }
-            80.0% { transform: translate(-50%, -50%) translate(-36.1vw, 8.7px) scale(1.02); z-index: 24; opacity: 0.88; }
-            85.0% { transform: translate(-50%, -50%) translate(-30.7vw, 16.5px) scale(1.07); z-index: 28; opacity: 0.93; }
-            90.0% { transform: translate(-50%, -50%) translate(-22.3vw, 22.7px) scale(1.11); z-index: 31; opacity: 0.97; }
-            95.0% { transform: translate(-50%, -50%) translate(-11.7vw, 26.6px) scale(1.14); z-index: 33; opacity: 0.99; }
+            55.0% { transform: translate(-50%, -50%) translate(-9.3vw, -26.6px) scale(0.81); z-index: 11; opacity: 0.72; }
+            60.0% { transform: translate(-50%, -50%) translate(-17.6vw, -22.7px) scale(0.83); z-index: 12; opacity: 0.73; }
+            65.0% { transform: translate(-50%, -50%) translate(-24.3vw, -16.5px) scale(0.86); z-index: 14; opacity: 0.75; }
+            70.0% { transform: translate(-50%, -50%) translate(-28.5vw, -8.7px) scale(0.91); z-index: 17; opacity: 0.79; }
+            75.0% { transform: translate(-50%, -50%) translate(-30.0vw, 0.0px) scale(0.96); z-index: 20; opacity: 0.84; }
+            80.0% { transform: translate(-50%, -50%) translate(-28.5vw, 8.7px) scale(1.02); z-index: 24; opacity: 0.88; }
+            85.0% { transform: translate(-50%, -50%) translate(-24.3vw, 16.5px) scale(1.07); z-index: 28; opacity: 0.93; }
+            90.0% { transform: translate(-50%, -50%) translate(-17.6vw, 22.7px) scale(1.11); z-index: 31; opacity: 0.97; }
+            95.0% { transform: translate(-50%, -50%) translate(-9.3vw, 26.6px) scale(1.14); z-index: 33; opacity: 0.99; }
             100.0% { transform: translate(-50%, -50%) translate(0vw, 28px) scale(1.15); z-index: 35; opacity: 1.0; }
           }
 
@@ -136,25 +152,25 @@ export function DemoCardAnimated() {
           @media (min-width: 640px) and (max-width: 767px) {
             @keyframes orbit-mobile-wide {
               0.0% { transform: translate(-50%, -50%) translate(0px, 34px) scale(1.15); z-index: 35; opacity: 1.0; }
-              5.0% { transform: translate(-50%, -50%) translate(86px, 32.3px) scale(1.14); z-index: 33; opacity: 0.99; }
-              10.0% { transform: translate(-50%, -50%) translate(164px, 27.5px) scale(1.11); z-index: 31; opacity: 0.97; }
-              15.0% { transform: translate(-50%, -50%) translate(226px, 20.0px) scale(1.07); z-index: 28; opacity: 0.93; }
-              20.0% { transform: translate(-50%, -50%) translate(266px, 10.5px) scale(1.02); z-index: 24; opacity: 0.88; }
-              25.0% { transform: translate(-50%, -50%) translate(280px, 0.0px) scale(0.96); z-index: 20; opacity: 0.84; }
-              30.0% { transform: translate(-50%, -50%) translate(266px, -10.5px) scale(0.91); z-index: 17; opacity: 0.79; }
-              35.0% { transform: translate(-50%, -50%) translate(226px, -20.0px) scale(0.86); z-index: 14; opacity: 0.75; }
-              40.0% { transform: translate(-50%, -50%) translate(164px, -27.5px) scale(0.83); z-index: 12; opacity: 0.73; }
-              45.0% { transform: translate(-50%, -50%) translate(86px, -32.3px) scale(0.81); z-index: 11; opacity: 0.72; }
+              5.0% { transform: translate(-50%, -50%) translate(65px, 32.3px) scale(1.14); z-index: 33; opacity: 0.99; }
+              10.0% { transform: translate(-50%, -50%) translate(123px, 27.5px) scale(1.11); z-index: 31; opacity: 0.97; }
+              15.0% { transform: translate(-50%, -50%) translate(170px, 20.0px) scale(1.07); z-index: 28; opacity: 0.93; }
+              20.0% { transform: translate(-50%, -50%) translate(200px, 10.5px) scale(1.02); z-index: 24; opacity: 0.88; }
+              25.0% { transform: translate(-50%, -50%) translate(210px, 0.0px) scale(0.96); z-index: 20; opacity: 0.84; }
+              30.0% { transform: translate(-50%, -50%) translate(200px, -10.5px) scale(0.91); z-index: 17; opacity: 0.79; }
+              35.0% { transform: translate(-50%, -50%) translate(170px, -20.0px) scale(0.86); z-index: 14; opacity: 0.75; }
+              40.0% { transform: translate(-50%, -50%) translate(123px, -27.5px) scale(0.83); z-index: 12; opacity: 0.73; }
+              45.0% { transform: translate(-50%, -50%) translate(65px, -32.3px) scale(0.81); z-index: 11; opacity: 0.72; }
               50.0% { transform: translate(-50%, -50%) translate(0px, -34px) scale(0.80); z-index: 10; opacity: 0.70; }
-              55.0% { transform: translate(-50%, -50%) translate(-86px, -32.3px) scale(0.81); z-index: 11; opacity: 0.72; }
-              60.0% { transform: translate(-50%, -50%) translate(-164px, -27.5px) scale(0.83); z-index: 12; opacity: 0.73; }
-              65.0% { transform: translate(-50%, -50%) translate(-226px, -20.0px) scale(0.86); z-index: 14; opacity: 0.75; }
-              70.0% { transform: translate(-50%, -50%) translate(-266px, -10.5px) scale(0.91); z-index: 17; opacity: 0.79; }
-              75.0% { transform: translate(-50%, -50%) translate(-280px, 0.0px) scale(0.96); z-index: 20; opacity: 0.84; }
-              80.0% { transform: translate(-50%, -50%) translate(-266px, 10.5px) scale(1.02); z-index: 24; opacity: 0.88; }
-              85.0% { transform: translate(-50%, -50%) translate(-226px, 20.0px) scale(1.07); z-index: 28; opacity: 0.93; }
-              90.0% { transform: translate(-50%, -50%) translate(-164px, 27.5px) scale(1.11); z-index: 31; opacity: 0.97; }
-              95.0% { transform: translate(-50%, -50%) translate(-86px, 32.3px) scale(1.14); z-index: 33; opacity: 0.99; }
+              55.0% { transform: translate(-50%, -50%) translate(-65px, -32.3px) scale(0.81); z-index: 11; opacity: 0.72; }
+              60.0% { transform: translate(-50%, -50%) translate(-123px, -27.5px) scale(0.83); z-index: 12; opacity: 0.73; }
+              65.0% { transform: translate(-50%, -50%) translate(-170px, -20.0px) scale(0.86); z-index: 14; opacity: 0.75; }
+              70.0% { transform: translate(-50%, -50%) translate(-200px, -10.5px) scale(0.91); z-index: 17; opacity: 0.79; }
+              75.0% { transform: translate(-50%, -50%) translate(-210px, 0.0px) scale(0.96); z-index: 20; opacity: 0.84; }
+              80.0% { transform: translate(-50%, -50%) translate(-200px, 10.5px) scale(1.02); z-index: 24; opacity: 0.88; }
+              85.0% { transform: translate(-50%, -50%) translate(-170px, 20.0px) scale(1.07); z-index: 28; opacity: 0.93; }
+              90.0% { transform: translate(-50%, -50%) translate(-123px, 27.5px) scale(1.11); z-index: 31; opacity: 0.97; }
+              95.0% { transform: translate(-50%, -50%) translate(-65px, 32.3px) scale(1.14); z-index: 33; opacity: 0.99; }
               100.0% { transform: translate(-50%, -50%) translate(0px, 34px) scale(1.15); z-index: 35; opacity: 1.0; }
             }
           }
@@ -163,25 +179,25 @@ export function DemoCardAnimated() {
           @media (min-width: 768px) and (max-width: 1023px) {
             @keyframes orbit-mobile-wide {
               0.0% { transform: translate(-50%, -50%) translate(0px, 40px) scale(1.15); z-index: 35; opacity: 1.0; }
-              5.0% { transform: translate(-50%, -50%) translate(117px, 38px) scale(1.14); z-index: 33; opacity: 0.99; }
-              10.0% { transform: translate(-50%, -50%) translate(223px, 32px) scale(1.11); z-index: 31; opacity: 0.97; }
-              15.0% { transform: translate(-50%, -50%) translate(307px, 24px) scale(1.07); z-index: 28; opacity: 0.93; }
-              20.0% { transform: translate(-50%, -50%) translate(361px, 12px) scale(1.02); z-index: 24; opacity: 0.88; }
-              25.0% { transform: translate(-50%, -50%) translate(380px, 0.0px) scale(0.96); z-index: 20; opacity: 0.84; }
-              30.0% { transform: translate(-50%, -50%) translate(361px, -12px) scale(0.91); z-index: 17; opacity: 0.79; }
-              35.0% { transform: translate(-50%, -50%) translate(307px, -24px) scale(0.86); z-index: 14; opacity: 0.75; }
-              40.0% { transform: translate(-50%, -50%) translate(223px, -32px) scale(0.83); z-index: 12; opacity: 0.73; }
-              45.0% { transform: translate(-50%, -50%) translate(117px, -38px) scale(0.81); z-index: 11; opacity: 0.72; }
+              5.0% { transform: translate(-50%, -50%) translate(80px, 38px) scale(1.14); z-index: 33; opacity: 0.99; }
+              10.0% { transform: translate(-50%, -50%) translate(153px, 32px) scale(1.11); z-index: 31; opacity: 0.97; }
+              15.0% { transform: translate(-50%, -50%) translate(210px, 24px) scale(1.07); z-index: 28; opacity: 0.93; }
+              20.0% { transform: translate(-50%, -50%) translate(247px, 12px) scale(1.02); z-index: 24; opacity: 0.88; }
+              25.0% { transform: translate(-50%, -50%) translate(260px, 0.0px) scale(0.96); z-index: 20; opacity: 0.84; }
+              30.0% { transform: translate(-50%, -50%) translate(247px, -12px) scale(0.91); z-index: 17; opacity: 0.79; }
+              35.0% { transform: translate(-50%, -50%) translate(210px, -24px) scale(0.86); z-index: 14; opacity: 0.75; }
+              40.0% { transform: translate(-50%, -50%) translate(153px, -32px) scale(0.83); z-index: 12; opacity: 0.73; }
+              45.0% { transform: translate(-50%, -50%) translate(80px, -38px) scale(0.81); z-index: 11; opacity: 0.72; }
               50.0% { transform: translate(-50%, -50%) translate(0px, -40px) scale(0.80); z-index: 10; opacity: 0.70; }
-              55.0% { transform: translate(-50%, -50%) translate(-117px, -38px) scale(0.81); z-index: 11; opacity: 0.72; }
-              60.0% { transform: translate(-50%, -50%) translate(-223px, -32px) scale(0.83); z-index: 12; opacity: 0.73; }
-              65.0% { transform: translate(-50%, -50%) translate(-307px, -24px) scale(0.86); z-index: 14; opacity: 0.75; }
-              70.0% { transform: translate(-50%, -50%) translate(-361px, -12px) scale(0.91); z-index: 17; opacity: 0.79; }
-              75.0% { transform: translate(-50%, -50%) translate(-380px, 0.0px) scale(0.96); z-index: 20; opacity: 0.84; }
-              80.0% { transform: translate(-50%, -50%) translate(-361px, 12px) scale(1.02); z-index: 24; opacity: 0.88; }
-              85.0% { transform: translate(-50%, -50%) translate(-307px, 24px) scale(1.07); z-index: 28; opacity: 0.93; }
-              90.0% { transform: translate(-50%, -50%) translate(-223px, 32px) scale(1.11); z-index: 31; opacity: 0.97; }
-              95.0% { transform: translate(-50%, -50%) translate(-117px, 38px) scale(1.14); z-index: 33; opacity: 0.99; }
+              55.0% { transform: translate(-50%, -50%) translate(-80px, -38px) scale(0.81); z-index: 11; opacity: 0.72; }
+              60.0% { transform: translate(-50%, -50%) translate(-153px, -32px) scale(0.83); z-index: 12; opacity: 0.73; }
+              65.0% { transform: translate(-50%, -50%) translate(-210px, -24px) scale(0.86); z-index: 14; opacity: 0.75; }
+              70.0% { transform: translate(-50%, -50%) translate(-247px, -12px) scale(0.91); z-index: 17; opacity: 0.79; }
+              75.0% { transform: translate(-50%, -50%) translate(-260px, 0.0px) scale(0.96); z-index: 20; opacity: 0.84; }
+              80.0% { transform: translate(-50%, -50%) translate(-247px, 12px) scale(1.02); z-index: 24; opacity: 0.88; }
+              85.0% { transform: translate(-50%, -50%) translate(-210px, 24px) scale(1.07); z-index: 28; opacity: 0.93; }
+              90.0% { transform: translate(-50%, -50%) translate(-153px, 32px) scale(1.11); z-index: 31; opacity: 0.97; }
+              95.0% { transform: translate(-50%, -50%) translate(-80px, 38px) scale(1.14); z-index: 33; opacity: 0.99; }
               100.0% { transform: translate(-50%, -50%) translate(0px, 40px) scale(1.15); z-index: 35; opacity: 1.0; }
             }
           }
@@ -220,89 +236,28 @@ export function DemoCardAnimated() {
       </div>
 
       {/* ──────────────────────────────────────────────────────────────────────────
-          2. DESKTOP (xl+): ORIGINAL EMBEDDED CARD CONTAINER
+          2. DESKTOP (xl+): EMBEDDED LOGOS ORBIT (CARD BACKGROUND REMOVED, EXPANDED WIDTH)
           ────────────────────────────────────────────────────────────────────────── */}
-      <div className="hidden xl:block relative flex-shrink-0 xl:w-[420px] xl:h-[420px] 2xl:w-[480px] 2xl:h-[480px] select-none">
+      <div className="hidden xl:block relative flex-shrink-0 xl:w-[480px] xl:h-[440px] 2xl:w-[540px] 2xl:h-[480px] select-none overflow-visible">
         <div
-          className="demo-card-root origin-top-left lg:scale-[0.475] xl:scale-[0.55] 2xl:scale-[0.60] transition-shadow duration-300"
+          className="demo-card-root origin-top-left xl:scale-[0.60] 2xl:scale-[0.68] transition-shadow duration-300"
           style={{
             position: "relative",
             width: "800px",
-            height: "800px",
-            background: "#FCEDFF",
-            borderRadius: "40px",
-            overflow: "hidden",
-            boxShadow: "0 24px 50px rgba(21, 15, 69, 0.16)",
+            height: "720px",
+            overflow: "visible",
           }}
         >
           <style>{`
             .demo-card-root {
-              --bg: #FCEDFF;
               --navy: #150F45;
               --teal: #0090AD;
               --teal-hover: #007A94;
             }
 
-            .demo-blob {
-              position: absolute;
-              border-radius: 999px;
-              filter: blur(2px);
-              opacity: 0.55;
-              pointer-events: none;
-            }
-            .demo-blob-teal {
-              width: 260px;
-              height: 130px;
-              background: #24B4AC;
-              top: -50px;
-              right: -70px;
-              transform: rotate(28deg);
-              opacity: 0.32;
-            }
-            .demo-blob-lav {
-              width: 220px;
-              height: 110px;
-              background: #C9B8F2;
-              bottom: -30px;
-              left: -60px;
-              transform: rotate(-20deg);
-              opacity: 0.38;
-            }
-
-            .demo-dotgrid {
-              position: absolute;
-              inset: 0;
-              background-image: radial-gradient(rgba(21,15,69,0.08) 2px, transparent 2px);
-              background-size: 26px 26px;
-              mask-image: radial-gradient(circle at 50% 45%, black 20%, transparent 75%);
-              -webkit-mask-image: radial-gradient(circle at 50% 45%, black 20%, transparent 75%);
-              pointer-events: none;
-            }
-
-            .demo-wordmark {
-              position: absolute;
-              top: 52px;
-              left: 50%;
-              transform: translateX(-50%);
-              font-size: 26px;
-              font-weight: 800;
-              color: #150F45;
-              letter-spacing: 0.02em;
-              opacity: 0.95;
-              white-space: nowrap;
-              z-index: 40;
-              text-decoration: none;
-              display: flex;
-              align-items: center;
-              gap: 10px;
-            }
-            .demo-wordmark span {
-              color: #0090AD;
-            }
-
             .carousel-stage {
               position: absolute;
-              top: 365px;
+              top: 310px;
               left: 50%;
               width: 0;
               height: 0;
@@ -323,41 +278,41 @@ export function DemoCardAnimated() {
               justify-content: center;
               background: #ffffff !important;
               border: 3px solid rgba(255, 255, 255, 0.98);
-              box-shadow: 0 24px 50px rgba(21, 15, 69, 0.20);
+              box-shadow: 0 24px 55px rgba(0, 0, 0, 0.55), 0 0 30px rgba(0, 144, 173, 0.15);
               will-change: transform, opacity;
-              animation: orbit-loop 14s linear infinite;
+              animation: orbit-loop 18s linear infinite;
             }
 
             @keyframes orbit-loop {
-              0.0% { transform: translate(0.0px, 80.0px) scale(1.1); z-index: 30; opacity: 1.0; }
-              5.0% { transform: translate(77.3px, 76.1px) scale(1.09); z-index: 29; opacity: 0.99; }
-              10.0% { transform: translate(146.9px, 64.7px) scale(1.06); z-index: 28; opacity: 0.96; }
-              15.0% { transform: translate(202.3px, 47.0px) scale(1.02); z-index: 25; opacity: 0.91; }
-              20.0% { transform: translate(237.8px, 24.7px) scale(0.97); z-index: 23; opacity: 0.84; }
-              25.0% { transform: translate(250.0px, 0.0px) scale(0.91); z-index: 20; opacity: 0.78; }
-              30.0% { transform: translate(237.8px, -24.7px) scale(0.85); z-index: 16; opacity: 0.71; }
-              35.0% { transform: translate(202.3px, -47.0px) scale(0.8); z-index: 14; opacity: 0.64; }
-              40.0% { transform: translate(146.9px, -64.7px) scale(0.76); z-index: 11; opacity: 0.59; }
-              45.0% { transform: translate(77.3px, -76.1px) scale(0.73); z-index: 10; opacity: 0.56; }
-              50.0% { transform: translate(0.0px, -80.0px) scale(0.72); z-index: 10; opacity: 0.55; }
-              55.0% { transform: translate(-77.3px, -76.1px) scale(0.73); z-index: 10; opacity: 0.56; }
-              60.0% { transform: translate(-146.9px, -64.7px) scale(0.76); z-index: 11; opacity: 0.59; }
-              65.0% { transform: translate(-202.3px, -47.0px) scale(0.8); z-index: 14; opacity: 0.64; }
-              70.0% { transform: translate(-237.8px, -24.7px) scale(0.85); z-index: 16; opacity: 0.71; }
-              75.0% { transform: translate(-250.0px, -0.0px) scale(0.91); z-index: 20; opacity: 0.78; }
-              80.0% { transform: translate(-237.8px, 24.7px) scale(0.97); z-index: 23; opacity: 0.84; }
-              85.0% { transform: translate(-202.3px, 47.0px) scale(1.02); z-index: 25; opacity: 0.91; }
-              90.0% { transform: translate(-146.9px, 64.7px) scale(1.06); z-index: 28; opacity: 0.96; }
-              95.0% { transform: translate(-77.3px, 76.1px) scale(1.09); z-index: 29; opacity: 0.99; }
-              100.0% { transform: translate(-0.0px, 80.0px) scale(1.1); z-index: 30; opacity: 1.0; }
+              0.0% { transform: translate(0.0px, 75.0px) scale(1.1); z-index: 30; opacity: 1.0; }
+              5.0% { transform: translate(102px, 71.3px) scale(1.09); z-index: 29; opacity: 0.99; }
+              10.0% { transform: translate(194px, 60.7px) scale(1.06); z-index: 28; opacity: 0.96; }
+              15.0% { transform: translate(267px, 44.1px) scale(1.02); z-index: 25; opacity: 0.91; }
+              20.0% { transform: translate(314px, 23.2px) scale(0.97); z-index: 23; opacity: 0.84; }
+              25.0% { transform: translate(330.0px, 0.0px) scale(0.91); z-index: 20; opacity: 0.78; }
+              30.0% { transform: translate(314px, -23.2px) scale(0.85); z-index: 16; opacity: 0.71; }
+              35.0% { transform: translate(267px, -44.1px) scale(0.8); z-index: 14; opacity: 0.64; }
+              40.0% { transform: translate(194px, -60.7px) scale(0.76); z-index: 11; opacity: 0.59; }
+              45.0% { transform: translate(102px, -71.3px) scale(0.73); z-index: 10; opacity: 0.56; }
+              50.0% { transform: translate(0.0px, -75.0px) scale(0.72); z-index: 10; opacity: 0.55; }
+              55.0% { transform: translate(-102px, -71.3px) scale(0.73); z-index: 10; opacity: 0.56; }
+              60.0% { transform: translate(-194px, -60.7px) scale(0.76); z-index: 11; opacity: 0.59; }
+              65.0% { transform: translate(-267px, -44.1px) scale(0.8); z-index: 14; opacity: 0.64; }
+              70.0% { transform: translate(-314px, -23.2px) scale(0.85); z-index: 16; opacity: 0.71; }
+              75.0% { transform: translate(-330.0px, -0.0px) scale(0.91); z-index: 20; opacity: 0.78; }
+              80.0% { transform: translate(-314px, 23.2px) scale(0.97); z-index: 23; opacity: 0.84; }
+              85.0% { transform: translate(-267px, 44.1px) scale(1.02); z-index: 25; opacity: 0.91; }
+              90.0% { transform: translate(-194px, 60.7px) scale(1.06); z-index: 28; opacity: 0.96; }
+              95.0% { transform: translate(-102px, 71.3px) scale(1.09); z-index: 29; opacity: 0.99; }
+              100.0% { transform: translate(-0.0px, 75.0px) scale(1.1); z-index: 30; opacity: 1.0; }
             }
 
             .demo-pill-btn {
               position: absolute;
               left: 50%;
-              bottom: 65px;
+              bottom: 30px;
               transform: translateX(-50%);
-              padding: 22px 52px;
+              padding: 20px 48px;
               border-radius: 999px;
               background: #0090AD;
               color: #ffffff !important;
@@ -365,7 +320,7 @@ export function DemoCardAnimated() {
               font-size: 26px;
               letter-spacing: 0.02em;
               white-space: nowrap;
-              box-shadow: 0 16px 36px rgba(0, 144, 173, 0.42);
+              box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
               transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
               cursor: pointer;
               z-index: 50;
@@ -378,16 +333,11 @@ export function DemoCardAnimated() {
             .demo-pill-btn:hover {
               background: #007A94;
               transform: translateX(-50%) scale(1.06);
-              box-shadow: 0 22px 46px rgba(0, 144, 173, 0.58);
+              box-shadow: 0 6px 18px rgba(0, 0, 0, 0.45);
             }
           `}</style>
 
-          {/* Ambient Brand Blobs & Dot Grid */}
-          <div className="demo-dotgrid" />
-          <div className="demo-blob demo-blob-teal" />
-          <div className="demo-blob demo-blob-lav" />
-
-          {/* Center Stage Orbit */}
+          {/* Center Stage Orbit (Card background removed) */}
           <div className="carousel-stage">
             {CHIPS.map((chip) => (
               <div

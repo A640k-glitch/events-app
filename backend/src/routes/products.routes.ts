@@ -173,6 +173,7 @@ const LOGO_MAP: Record<string, string> = {
   bulkwave: "/brand/bulkwave-icon.png",
   finedge: "/brand/finedge-logo.png",
   smerp: "/brand/smerp.png",
+  smerpgo: "/brand/smerpgo-logo.png",
   ucp: "/brand/ucp-logo.png",
   kuleanpay: "/brand/kuleanpay-logo.png",
   beetvas: "/brand/beetvas-logo.png",
@@ -251,6 +252,11 @@ productsRouter.get("/", async (_req: Request, res: Response): Promise<void> => {
           status: true,
           bookingDate: true,
           bookingTime: true,
+          notes: true,
+          assignedProductOwnerId: true,
+          assignedOwner: {
+            select: { id: true, name: true, email: true, role: true },
+          },
           createdAt: true,
         },
         orderBy: { createdAt: "desc" },
@@ -270,15 +276,31 @@ productsRouter.get("/", async (_req: Request, res: Response): Promise<void> => {
       const convertedCount = matchingLeads.filter(
         (l) => l.status === "CONVERTED" || l.status === "QUALIFIED"
       ).length;
-      const conversionRate = leadsCount > 0 ? Math.round((convertedCount / leadsCount) * 100) : 65;
+      const conversionRate = leadsCount > 0 ? Math.round((convertedCount / leadsCount) * 100) : 0;
+      const activeDemos = matchingLeads.filter((l) => l.bookingDate || l.bookingTime).length;
 
       return {
         ...prod,
         logoUrl: LOGO_MAP[prod.slug] || "/favicon.ico",
         tags: TAGS_MAP[prod.slug] || ["Enterprise Solution", "FifthLab Platform"],
+        activeDemosThisMonth: activeDemos || prod.activeDemosThisMonth || 0,
         leadsCount,
         conversionRate,
-        recentLeads: matchingLeads.slice(0, 5),
+        recentLeads: matchingLeads.map((l) => ({
+          id: l.id,
+          visitorName: l.visitorName,
+          company: l.company,
+          email: l.email,
+          phone: l.phone,
+          productInterested: l.productInterested,
+          assignedProductOwner: l.assignedOwner?.name || "Unassigned",
+          assignedProductOwnerId: l.assignedProductOwnerId || null,
+          bookingDate: l.bookingDate ? new Date(l.bookingDate).toISOString().split("T")[0] : "",
+          bookingTime: l.bookingTime || "",
+          status: l.status === "FOLLOWED_UP" ? "Followed Up" : l.status.charAt(0).toUpperCase() + l.status.slice(1).toLowerCase(),
+          notes: l.notes || "",
+          createdAt: l.createdAt ? new Date(l.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "Today",
+        })),
       };
     });
 

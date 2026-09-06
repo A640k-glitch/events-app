@@ -10,6 +10,7 @@ export async function GET() {
     const [staffCount] = await sql`SELECT COUNT(*)::int as count FROM users WHERE role IN ('STAFF', 'ADMIN', 'PRODUCT_OWNER', 'OPS', 'SALES')`;
     const [pitchesCount] = await sql`SELECT COUNT(*)::int as count FROM event_pitches WHERE status = 'SUBMITTED'`;
     const [regsCount] = await sql`SELECT COUNT(*)::int as count FROM event_registrations`;
+    const [checkedInCount] = await sql`SELECT COUNT(*)::int as count FROM event_registrations WHERE "isCheckedIn" = true`;
     const [attendanceSum] = await sql`SELECT COALESCE(SUM("expectedAttendance"), 0)::int as sum FROM events WHERE "isPublished" = true`;
 
     return NextResponse.json({
@@ -21,6 +22,7 @@ export async function GET() {
         activeStaffCount: staffCount?.count || 0,
         pendingPitchesCount: pitchesCount?.count || 0,
         publicRegistrationsCount: regsCount?.count || 0,
+        checkedInCount: checkedInCount?.count || 0,
         totalExpectedAttendance: attendanceSum?.sum || 0,
       },
     });

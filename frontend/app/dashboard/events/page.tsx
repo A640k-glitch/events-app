@@ -10,18 +10,35 @@ import {
   Plus, 
   Search, 
   Trash2, 
-  Edit3,
+  Edit3, 
   Download, 
-  QrCode,
-  Loader2
+  QrCode, 
+  Users, 
+  UserCheck, 
+  UserPlus, 
+  Check, 
+  X,
+  Clock,
+  Calendar
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { api } from "@/lib/api-client";
 import { TableSkeleton } from "@/components/ui/SkeletonLoaders";
-import AppleSpinner from "@/components/ui/AppleSpinner";
 
 export default function EventsPage() {
-  const { events, deleteEvent, pitches, approvePitch, declinePitch, refreshData } = useApp();
+  const { 
+    events, 
+    deleteEvent, 
+    pitches, 
+    approvePitch, 
+    declinePitch, 
+    refreshData, 
+    owners, 
+    user, 
+    toggleAttendance, 
+    removeStaffAttendance 
+  } = useApp();
+
   const [selectedEventId, setSelectedEventId] = useState<string>(events[0]?.id || "");
   const [searchQuery, setSearchQuery] = useState("");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
@@ -36,6 +53,10 @@ export default function EventsPage() {
   const [verifyPassCode, setVerifyPassCode] = useState("");
   const [isVerifying, setIsVerifying] = useState(false);
   const [verifyResult, setVerifyResult] = useState<{ success: boolean; message: string } | null>(null);
+
+  // New staff member assignment state
+  const [selectedStaffToAssign, setSelectedStaffToAssign] = useState("");
+  const [isUpdatingAttendance, setIsUpdatingAttendance] = useState(false);
 
   const pendingPitches = pitches.filter((p) => p.status === "SUBMITTED");
   const selectedEvent = events.find((e) => e.id === selectedEventId) || events[0];
@@ -99,6 +120,37 @@ export default function EventsPage() {
     }
   };
 
+  const handleAssignStaff = async () => {
+    if (!selectedStaffToAssign || !selectedEvent?.id) return;
+    try {
+      setIsUpdatingAttendance(true);
+      await toggleAttendance(selectedEvent.id, "Attending", selectedStaffToAssign);
+      setSelectedStaffToAssign("");
+    } finally {
+      setIsUpdatingAttendance(false);
+    }
+  };
+
+  const handleStaffStatusChange = async (userId: string, newStatus: "Attending" | "Declined" | "Maybe") => {
+    if (!selectedEvent?.id) return;
+    try {
+      setIsUpdatingAttendance(true);
+      await toggleAttendance(selectedEvent.id, newStatus, userId);
+    } finally {
+      setIsUpdatingAttendance(false);
+    }
+  };
+
+  const handleRemoveStaff = async (userId: string) => {
+    if (!selectedEvent?.id) return;
+    try {
+      setIsUpdatingAttendance(true);
+      await removeStaffAttendance(selectedEvent.id, userId);
+    } finally {
+      setIsUpdatingAttendance(false);
+    }
+  };
+
   const exportAttendeesCsv = () => {
     if (!attendeeRoster.length) return;
     const headers = ["Pass Code", "Attendee Name", "Email", "Company", "Ticket Tier", "Checked In", "Registered At"];
@@ -134,35 +186,49 @@ export default function EventsPage() {
     { id: "PITCHES", label: "Organizer Proposals", count: pendingPitches.length, alert: pendingPitches.length > 0 },
   ];
 
+  // Eligible staff members who are not yet in the manifest of the selected event
+  const currentManifestUserIds = new Set((selectedEvent?.attendanceManifest || []).map((m) => m.userId));
+  const availableStaffToAssign = owners.filter((o) => !currentManifestUserIds.has(o.id));
+
+  // Current logged in user's RSVP status for the selected event
+  const currentUserRecord = (selectedEvent?.attendanceManifest || []).find((m) => m.userId === user?.id);
+
   return (
     <DashboardLayout>
       <div className="space-y-6 font-sans text-left text-slate-900">
         
-        {/* Header Title Bar Card */}
-        <div className="bg-white p-6 rounded-2xl border border-slate-200/90 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+        {/* Header Title Bar - Compact AWS Enterprise Style */}
+        <div className="bg-gradient-to-r from-[#EAF7F7]/70 via-white to-[#F0F6FF]/70 p-3.5 sm:p-4 rounded-lg border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
           <div>
-            <h1 className="text-2xl font-medium tracking-tight text-slate-900">
-              Events & Attendance
+            <div className="flex items-center gap-1.5 mb-0.5">
+              <span className="text-[10.5px] font-bold text-[#005B6E] tracking-wider uppercase">
+                Events &amp; Summits
+              </span>
+              <span className="text-slate-300">•</span>
+              <span className="text-[11px] text-slate-500 font-medium">Corporate Attendance &amp; Door Verification</span>
+            </div>
+            <h1 className="text-xl font-bold tracking-tight text-slate-950">
+              Events &amp; Attendance
             </h1>
-            <p className="text-xs text-slate-500 font-medium mt-1">
-              Manage event schedules, view verified attendee check-ins, and review organizer proposals.
+            <p className="text-xs text-slate-600 font-medium">
+              Coordinate team attendance rosters, verify attendee check-ins, and manage event schedules across Africa.
             </p>
           </div>
 
-          <div className="flex items-center gap-2.5">
+          <div className="flex items-center gap-2">
             <button
               onClick={() => setIsAddModalOpen(true)}
-              className="inline-flex items-center gap-2 px-4.5 py-2.5 rounded-xl bg-gradient-to-r from-[#0090AD] to-[#229EA6] hover:from-[#007A94] hover:to-[#1E8B92] text-white text-xs font-bold shadow-md shadow-[#0090AD]/20 transition-all cursor-pointer hover:scale-[1.01] active:scale-[0.99]"
+              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md bg-[#005B6E] hover:bg-[#004754] text-white text-xs font-semibold shadow-xs transition-all cursor-pointer"
             >
               <Plus className="w-3.5 h-3.5" />
-              <span>Create event</span>
+              <span>Create Event</span>
             </button>
           </div>
         </div>
 
-        {/* Sliding View Switcher Tabs & Search Controls */}
-        <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
-          <div className="flex items-center gap-1 p-1.5 rounded-xl bg-slate-200/90 border border-slate-300 overflow-x-auto no-scrollbar shadow-2xs">
+        {/* Compact Sliding View Switcher Tabs & Search (AWS Console Style) */}
+        <div className="bg-white p-2 rounded-lg border border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
+          <div className="flex items-center gap-1 p-0.5 rounded-md bg-slate-100 border border-slate-200 overflow-x-auto no-scrollbar">
             {tabOptions.map((t) => {
               const isActive = viewTab === t.id;
               return (
@@ -170,37 +236,37 @@ export default function EventsPage() {
                   key={t.id}
                   onClick={() => setViewTab(t.id as any)}
                   className={cn(
-                    "px-4 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer flex items-center gap-2 whitespace-nowrap",
+                    "h-7 px-2.5 rounded text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap",
                     isActive
-                      ? "bg-white text-slate-950 shadow-xs ring-1 ring-slate-300"
-                      : "text-slate-700 hover:text-slate-950 hover:bg-white/60"
+                      ? "bg-[#005B6E] text-white font-semibold shadow-xs"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
                   )}
                 >
                   <span>{t.label}</span>
                   <span className={cn(
-                    "text-[10px] px-1.5 py-0.5 rounded-full font-bold",
-                    isActive ? "bg-[#E8F8FA] text-[#0090AD]" : "bg-slate-300 text-slate-800"
+                    "text-[10px] px-1.5 py-0.2 rounded font-mono font-bold",
+                    isActive ? "bg-[#004754] text-white" : "bg-slate-200 text-slate-700"
                   )}>
                     {t.count}
                   </span>
                   {t.alert && (
-                    <span className="w-2 h-2 rounded-full bg-amber-500 animate-pulse" />
+                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
                   )}
                 </button>
               );
             })}
           </div>
 
-          {/* Search Bar */}
+          {/* Search Bar (Compact AWS Style) */}
           {viewTab === "CATALOG" && (
-            <div className="relative">
-              <Search className="w-3.5 h-3.5 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400" />
+            <div className="relative w-full sm:w-64">
+              <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
                 type="text"
                 placeholder="Filter events by city or title..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full sm:w-72 bg-white border border-slate-200 rounded-xl pl-9 pr-4 py-2 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#0090AD] shadow-2xs"
+                className="w-full h-8 pl-8 pr-2.5 rounded-md border border-slate-200 text-xs text-slate-900 bg-white focus:outline-none focus:border-[#005B6E] font-medium"
               />
             </div>
           )}
@@ -208,46 +274,60 @@ export default function EventsPage() {
 
         {/* 1. Catalog View */}
         {viewTab === "CATALOG" && (
-          <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
             
-            {/* Left: Event Cards (7 cols) */}
-            <div className="lg:col-span-7 space-y-3">
+            {/* Left: Event Cards (7 cols) - Clean AWS Enterprise Design (No Asymmetric Colored Borders!) */}
+            <div className="lg:col-span-7 space-y-2.5">
               {filteredEvents.map((evt) => {
                 const isSelected = evt.id === selectedEventId;
+                const attendingStaffCount = (evt.attendanceManifest || []).filter((m) => m.status === "Attending").length;
+
+                const isSummit = evt.category === "Summit";
+                const isExposition = evt.category === "Exposition";
+                const isBriefing = evt.category === "Executive Briefing";
+
                 return (
                   <div
                     key={evt.id}
                     onClick={() => setSelectedEventId(evt.id)}
                     className={cn(
-                      "p-5 rounded-2xl border transition-all cursor-pointer space-y-3 text-left",
+                      "p-3.5 sm:p-4 rounded-lg border transition-all cursor-pointer space-y-2 text-left",
                       isSelected
-                        ? "border-[#0090AD] bg-[#F4FCFD] shadow-sm"
-                        : "border-gray-200 bg-white hover:border-gray-300"
+                        ? "border-[#005B6E] bg-[#F4F9FA] ring-1 ring-[#005B6E]/30"
+                        : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50"
                     )}
                   >
-                    <div className="flex items-start justify-between gap-4">
-                      <div className="space-y-1">
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-[#E8F8FA] text-[#0090AD] border border-[#20B2AA]/20 uppercase">
+                    <div className="flex items-start justify-between gap-3">
+                      <div className="space-y-0.5 min-w-0">
+                        <div className="flex items-center gap-2 text-xs">
+                          {/* Clean Typography Badge (No Pill, No Wedge) */}
+                          <span className={cn(
+                            "text-[10px] font-bold uppercase tracking-wider",
+                            isSummit && "text-[#005B6E]",
+                            isExposition && "text-purple-700",
+                            isBriefing && "text-amber-700",
+                            !isSummit && !isExposition && !isBriefing && "text-blue-700"
+                          )}>
                             {evt.category}
                           </span>
-                          <span className="text-xs text-gray-500">{evt.date} • {evt.time}</span>
+                          <span className="text-slate-300">•</span>
+                          <span className="text-[11px] text-slate-500 font-medium">{evt.date} • {evt.time}</span>
                         </div>
-                        <h3 className="text-base font-bold text-[#111827]">{evt.title}</h3>
-                        <p className="text-xs text-[#6B7280] line-clamp-2">{evt.description}</p>
+                        <h3 className="text-sm font-bold text-slate-900 line-clamp-1">{evt.title}</h3>
+                        <p className="text-xs text-slate-600 line-clamp-2 leading-relaxed">{evt.description}</p>
                       </div>
 
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1 shrink-0">
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
                             setEditingEvent(evt);
                             setIsEditModalOpen(true);
                           }}
-                          title="Edit Event & Carousel Fields"
-                          className="p-1.5 text-gray-400 hover:text-[#0090AD] rounded-lg hover:bg-[#0090AD]/10 transition-colors cursor-pointer"
+                          title="Edit Event"
+                          className="p-1 text-slate-400 hover:text-[#005B6E] rounded hover:bg-slate-100 transition-colors cursor-pointer"
                         >
-                          <Edit3 className="w-4 h-4" />
+                          <Edit3 className="w-3.5 h-3.5" />
                         </button>
 
                         <button
@@ -256,58 +336,175 @@ export default function EventsPage() {
                             deleteEvent(evt.id);
                           }}
                           title="Delete Event"
-                          className="p-1.5 text-gray-400 hover:text-rose-600 rounded-lg hover:bg-rose-50 transition-colors cursor-pointer"
+                          className="p-1 text-slate-400 hover:text-rose-600 rounded hover:bg-rose-50 transition-colors cursor-pointer"
                         >
-                          <Trash2 className="w-4 h-4" />
+                          <Trash2 className="w-3.5 h-3.5" />
                         </button>
                       </div>
                     </div>
 
-                    <div className="pt-2 border-t border-gray-100 flex items-center justify-between text-xs text-[#6B7280]">
-                      <div className="flex items-center gap-1.5">
-                        <MapPin className="w-3.5 h-3.5 text-[#0090AD]" />
-                        <span>{evt.location}, {evt.city}</span>
+                    <div className="pt-2 border-t border-slate-100 flex items-center justify-between text-xs text-slate-600">
+                      <div className="flex items-center gap-1.5 truncate max-w-[240px]">
+                        <MapPin className="w-3.5 h-3.5 text-[#005B6E] shrink-0" />
+                        <span className="truncate">{evt.location}, {evt.city}</span>
                       </div>
-                      <span className="text-emerald-700 font-semibold">
-                        {evt.confirmedStaffCount || evt.attendanceManifest?.length || 0} Staff Attending
-                      </span>
+                      <div className="flex items-center gap-1.5 font-semibold text-emerald-700 shrink-0">
+                        <Users className="w-3.5 h-3.5 text-emerald-600" />
+                        <span>{attendingStaffCount} Staff Attending</span>
+                      </div>
                     </div>
                   </div>
                 );
               })}
             </div>
 
-            {/* Right: Selected Event Control & QR Desk Verification (5 cols) */}
-            <div className="lg:col-span-5 space-y-6">
+            {/* Right: Selected Event Control & Interactive Staff Decision System (5 cols) - AWS Panel Style */}
+            <div className="lg:col-span-5 space-y-4">
               {selectedEvent && (
-                <div className="rounded-2xl border border-gray-200 bg-white p-6 space-y-6 shadow-2xs sticky top-20 text-left">
-                  <div className="space-y-1 pb-3 border-b border-gray-100">
-                    <span className="text-[10px] font-semibold text-[#0090AD] uppercase tracking-wider">
-                      Event Details
+                <div className="rounded-lg border border-slate-200 bg-white p-3.5 sm:p-4 space-y-3.5 sticky top-20 text-left">
+                  
+                  {/* Event Overview */}
+                  <div className="space-y-0.5 pb-2.5 border-b border-slate-100">
+                    <span className="text-[10px] font-bold text-[#005B6E] uppercase tracking-wider">
+                      Event Roster &amp; Decisions
                     </span>
-                    <h3 className="text-lg font-bold text-[#111827] leading-snug">{selectedEvent.title}</h3>
-                    <p className="text-xs text-[#6B7280]">{selectedEvent.city} • {selectedEvent.date}</p>
+                    <h3 className="text-base font-bold text-slate-950 leading-snug">{selectedEvent.title}</h3>
+                    <p className="text-[11px] text-slate-500">{selectedEvent.city} • {selectedEvent.date}</p>
+                  </div>
+
+                  {/* 1. Quick Personal RSVP Decision for Current User */}
+                  <div className="p-2.5 rounded-md bg-[#F0F6FF] border border-[#D8E6FA] space-y-1.5">
+                    <div className="flex items-center justify-between text-xs">
+                      <span className="font-bold text-[#1E3A8A]">Your Event Attendance</span>
+                      <span className="text-[10.5px] font-medium text-slate-600">
+                        Status: <strong className="text-slate-900">{currentUserRecord?.status || "Not Responded"}</strong>
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-1.5 pt-0.5">
+                      <button
+                        type="button"
+                        onClick={() => handleStaffStatusChange(user?.id || "usr_abraham", "Attending")}
+                        className={cn(
+                          "flex-1 h-7 rounded text-xs font-semibold transition-all cursor-pointer text-center",
+                          currentUserRecord?.status === "Attending"
+                            ? "bg-emerald-600 text-white shadow-xs"
+                            : "bg-white text-slate-700 border border-slate-200 hover:bg-emerald-50 hover:text-emerald-700"
+                        )}
+                      >
+                        ✓ Attending
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleStaffStatusChange(user?.id || "usr_abraham", "Declined")}
+                        className={cn(
+                          "flex-1 h-7 rounded text-xs font-semibold transition-all cursor-pointer text-center",
+                          currentUserRecord?.status === "Declined"
+                            ? "bg-rose-600 text-white shadow-xs"
+                            : "bg-white text-slate-700 border border-slate-200 hover:bg-rose-50 hover:text-rose-700"
+                        )}
+                      >
+                        ✕ Decline
+                      </button>
+                    </div>
+                  </div>
+
+                  {/* 2. Interactive Staff Attendance Roster */}
+                  <div className="space-y-2.5">
+                    <div className="flex items-center justify-between text-xs font-bold text-slate-900">
+                      <span>Assigned Staff ({selectedEvent.attendanceManifest?.length || 0})</span>
+                      <span className="text-[11px] font-semibold text-emerald-700">
+                        {(selectedEvent.attendanceManifest || []).filter((m) => m.status === "Attending").length} Confirmed
+                      </span>
+                    </div>
+
+                    {/* Add Staff Selector Dropdown */}
+                    <div className="flex items-center gap-1.5">
+                      <select
+                        value={selectedStaffToAssign}
+                        onChange={(e) => setSelectedStaffToAssign(e.target.value)}
+                        className="flex-1 bg-white border border-slate-300 rounded-md px-2 py-1 text-xs text-slate-900 font-medium focus:outline-none focus:border-[#005B6E] h-7.5"
+                      >
+                        <option value="">+ Select staff to assign...</option>
+                        {availableStaffToAssign.map((s) => (
+                          <option key={s.id} value={s.id}>
+                            {s.name} ({s.role})
+                          </option>
+                        ))}
+                      </select>
+                      <button
+                        type="button"
+                        onClick={handleAssignStaff}
+                        disabled={!selectedStaffToAssign || isUpdatingAttendance}
+                        className="h-7.5 px-3 rounded-md bg-[#005B6E] hover:bg-[#004754] disabled:opacity-40 text-white text-xs font-semibold shadow-xs cursor-pointer whitespace-nowrap transition-colors"
+                      >
+                        Assign
+                      </button>
+                    </div>
+
+                    {/* Staff List with Live Status Dropdown and Remove Button */}
+                    <div className="divide-y divide-slate-100 max-h-52 overflow-y-auto pr-1">
+                      {(selectedEvent.attendanceManifest || []).map((staff) => (
+                        <div key={staff.userId} className="py-2 flex items-center justify-between gap-2 text-xs">
+                          <div className="min-w-0">
+                            <div className="font-semibold text-slate-900 truncate text-xs">{staff.userName}</div>
+                            <div className="text-[10px] text-slate-500">{staff.userRole}</div>
+                          </div>
+
+                          <div className="flex items-center gap-1.5 shrink-0">
+                            <select
+                              value={staff.status}
+                              onChange={(e) => handleStaffStatusChange(staff.userId, e.target.value as any)}
+                              className={cn(
+                                "text-[10.5px] font-semibold px-2 py-0.5 rounded border focus:outline-none cursor-pointer bg-white h-6.5",
+                                staff.status === "Attending" && "text-emerald-800 border-emerald-300 bg-emerald-50/70",
+                                staff.status === "Declined" && "text-rose-800 border-rose-300 bg-rose-50/70",
+                                staff.status === "Maybe" && "text-amber-800 border-amber-300 bg-amber-50/70"
+                              )}
+                            >
+                              <option value="Attending">Attending</option>
+                              <option value="Declined">Declined</option>
+                              <option value="Maybe">Maybe</option>
+                            </select>
+
+                            <button
+                              type="button"
+                              onClick={() => handleRemoveStaff(staff.userId)}
+                              title="Remove from event"
+                              className="p-1 text-slate-400 hover:text-rose-600 rounded transition-colors cursor-pointer"
+                            >
+                              <Trash2 className="w-3.5 h-3.5" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                      {(selectedEvent.attendanceManifest || []).length === 0 && (
+                        <div className="py-3 text-center text-xs text-slate-400">
+                          No corporate personnel assigned yet.
+                        </div>
+                      )}
+                    </div>
                   </div>
 
                   {/* QR Desk Check-In Scanner Form */}
-                  <form onSubmit={handleVerifyPass} className="p-4 rounded-xl bg-gray-50 border border-gray-200 space-y-3">
-                    <div className="flex items-center gap-2 text-xs font-bold text-[#111827]">
-                      <QrCode className="w-4 h-4 text-[#0090AD]" />
-                      <span>Check In Attendee</span>
+                  <form onSubmit={handleVerifyPass} className="p-3 rounded-md bg-slate-50 border border-slate-200 space-y-2">
+                    <div className="flex items-center gap-2 text-xs font-bold text-slate-900">
+                      <QrCode className="w-3.5 h-3.5 text-[#005B6E]" />
+                      <span>Door Pass Verification</span>
                     </div>
                     
-                    <div className="flex gap-2">
+                    <div className="flex gap-1.5">
                       <input
                         type="text"
                         placeholder="Pass Code (e.g. FL-5821)..."
                         value={verifyPassCode}
                         onChange={(e) => setVerifyPassCode(e.target.value)}
-                        className="flex-1 bg-white border border-gray-200 rounded-xl px-3 py-1.5 text-xs text-[#111827] placeholder:text-gray-400 focus:outline-none focus:border-[#0090AD]"
+                        className="flex-1 bg-white border border-slate-300 rounded-md px-2.5 py-1 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#005B6E] h-7.5"
                       />
                       <button
                         type="submit"
                         disabled={isVerifying}
-                        className="px-4 py-1.5 bg-[#0090AD] hover:bg-[#007A94] text-white rounded-xl text-xs font-semibold transition-colors cursor-pointer"
+                        className="h-7.5 px-3 bg-[#005B6E] hover:bg-[#004754] text-white rounded-md text-xs font-semibold transition-colors cursor-pointer"
                       >
                         {isVerifying ? "..." : "Verify"}
                       </button>
@@ -315,7 +512,7 @@ export default function EventsPage() {
 
                     {verifyResult && (
                       <div className={cn(
-                        "p-2.5 rounded-xl text-xs font-medium",
+                        "p-2 rounded-md text-xs font-medium",
                         verifyResult.success ? "bg-emerald-50 text-emerald-800 border border-emerald-200" : "bg-rose-50 text-rose-800 border border-rose-200"
                       )}>
                         {verifyResult.message}
@@ -323,29 +520,6 @@ export default function EventsPage() {
                     )}
                   </form>
 
-                  {/* Staff Attendance Manifest */}
-                  <div className="space-y-3">
-                    <div className="flex items-center justify-between text-xs font-bold text-[#111827]">
-                      <span>Assigned Staff ({selectedEvent.attendanceManifest?.length || 0})</span>
-                    </div>
-
-                    <div className="divide-y divide-gray-100 max-h-56 overflow-y-auto pr-1">
-                      {(selectedEvent.attendanceManifest || []).map((staff, idx) => (
-                        <div key={idx} className="py-2.5 flex items-center justify-between text-xs">
-                          <div>
-                            <div className="font-semibold text-[#111827]">{staff.userName}</div>
-                            <div className="text-[10px] text-gray-500">{staff.userRole}</div>
-                          </div>
-                          <span className={cn(
-                            "text-[10px] px-2 py-0.5 rounded-md",
-                            staff.status === "Attending" ? "bg-emerald-50 text-emerald-800 border border-emerald-200 font-semibold" : "bg-amber-50 text-amber-800 border border-amber-200"
-                          )}>
-                            {staff.status}
-                          </span>
-                        </div>
-                      ))}
-                    </div>
-                  </div>
                 </div>
               )}
             </div>
@@ -353,20 +527,20 @@ export default function EventsPage() {
           </div>
         )}
 
-        {/* 2. Public Attendees View */}
+        {/* 2. Public Attendees View - AWS Style Data Table */}
         {viewTab === "ATTENDEES_ROSTER" && (
-          <div className="rounded-2xl border border-gray-200 bg-white p-6 space-y-4 shadow-2xs text-left">
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gray-100">
+          <div className="rounded-lg border border-slate-200 bg-white shadow-none text-left overflow-hidden">
+            <div className="p-3.5 border-b border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50/50">
               <div>
-                <h3 className="text-base font-bold text-[#111827]">Registered Attendees ({attendeeRoster.length})</h3>
-                <p className="text-xs text-[#6B7280]">List of attendees registered for this event.</p>
+                <h3 className="text-sm font-bold text-slate-950">Registered Attendees ({attendeeRoster.length})</h3>
+                <p className="text-xs text-slate-500">List of verified ticketed attendees registered for this event.</p>
               </div>
 
               <button
                 onClick={exportAttendeesCsv}
-                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-xl border border-gray-200 bg-gray-50 hover:bg-gray-100 text-xs font-semibold text-[#111827] transition-all cursor-pointer"
+                className="inline-flex items-center gap-1.5 h-7.5 px-3 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-700 transition-all cursor-pointer"
               >
-                <Download className="w-3.5 h-3.5 text-[#0090AD]" />
+                <Download className="w-3.5 h-3.5 text-[#005B6E]" />
                 <span>Export Attendees CSV</span>
               </button>
             </div>
@@ -374,13 +548,13 @@ export default function EventsPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs">
                 <thead>
-                  <tr className="border-b border-slate-200 bg-slate-100/90 text-slate-800 uppercase text-[10.5px] font-bold">
-                    <th className="py-3 px-4">Pass Code</th>
-                    <th className="py-3 px-4">Attendee Name</th>
-                    <th className="py-3 px-4">Organization</th>
-                    <th className="py-3 px-4">Email</th>
-                    <th className="py-3 px-4">Tier</th>
-                    <th className="py-3 px-4">Check-in Status</th>
+                  <tr className="border-b border-slate-200 bg-slate-50 text-slate-500 uppercase text-[10px] font-semibold tracking-wider">
+                    <th className="py-2 px-3">Pass Code</th>
+                    <th className="py-2 px-3">Attendee Name</th>
+                    <th className="py-2 px-3">Organization</th>
+                    <th className="py-2 px-3">Email</th>
+                    <th className="py-2 px-3">Tier</th>
+                    <th className="py-2 px-3">Check-in Status</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-slate-100">
@@ -392,29 +566,27 @@ export default function EventsPage() {
                     </tr>
                   ) : attendeeRoster.length > 0 ? (
                     attendeeRoster.map((a) => (
-                      <tr key={a.id} className="hover:bg-gray-50 transition-colors">
-                        <td className="py-3.5 px-4 font-semibold text-[#0090AD]">{a.qrPassCode}</td>
-                        <td className="py-3.5 px-4 font-semibold text-[#111827]">{a.visitorName}</td>
-                        <td className="py-3.5 px-4 text-[#4B5563]">{a.company}</td>
-                        <td className="py-3.5 px-4 text-gray-500">{a.email}</td>
-                        <td className="py-3.5 px-4">
-                          <span className="px-2 py-0.5 rounded bg-gray-100 text-gray-800 text-[10px]">
-                            {a.ticketTier}
-                          </span>
+                      <tr key={a.id} className="hover:bg-slate-50/70 transition-colors">
+                        <td className="py-2 px-3 font-mono font-semibold text-[#005B6E]">{a.qrPassCode}</td>
+                        <td className="py-2 px-3 font-semibold text-slate-900">{a.visitorName}</td>
+                        <td className="py-2 px-3 text-slate-700">{a.company}</td>
+                        <td className="py-2 px-3 text-slate-500">{a.email}</td>
+                        <td className="py-2 px-3 font-medium text-slate-700">
+                          {a.ticketTier}
                         </td>
-                        <td className="py-3.5 px-4">
+                        <td className="py-2 px-3">
                           <span className={cn(
-                            "px-2.5 py-0.5 rounded-full text-[10px] font-semibold",
-                            a.isCheckedIn ? "bg-emerald-50 text-emerald-800 border border-emerald-200" : "bg-gray-100 text-gray-600"
+                            "font-semibold text-xs",
+                            a.isCheckedIn ? "text-emerald-700" : "text-slate-500"
                           )}>
-                            {a.isCheckedIn ? "Checked In" : "Pending Door Scan"}
+                            {a.isCheckedIn ? "● Checked In" : "○ Pending Door Scan"}
                           </span>
                         </td>
                       </tr>
                     ))
                   ) : (
                     <tr>
-                      <td colSpan={6} className="py-8 text-center text-gray-400">
+                      <td colSpan={6} className="py-8 text-center text-slate-400">
                         No attendee registrations for this event yet.
                       </td>
                     </tr>
@@ -425,49 +597,49 @@ export default function EventsPage() {
           </div>
         )}
 
-        {/* 3. Organizer Proposals */}
+        {/* 3. Organizer Proposals - AWS Style */}
         {viewTab === "PITCHES" && (
-          <div className="rounded-2xl border border-gray-200 bg-white p-6 space-y-4 shadow-2xs text-left">
-            <div className="pb-3 border-b border-gray-100">
-              <h3 className="text-base font-bold text-[#111827]">Organizer Proposals</h3>
-              <p className="text-xs text-[#6B7280]">Proposals submitted by organizers for co-hosted summits.</p>
+          <div className="rounded-lg border border-slate-200 bg-white p-4 space-y-3 text-left">
+            <div className="pb-2.5 border-b border-slate-100">
+              <h3 className="text-sm font-bold text-slate-950">Organizer Proposals</h3>
+              <p className="text-xs text-slate-500">Proposals submitted by external organizers for co-hosted summits.</p>
             </div>
 
-            <div className="space-y-4">
+            <div className="space-y-3">
               {pendingPitches.length > 0 ? (
                 pendingPitches.map((p) => (
-                  <div key={p.id} className="p-5 rounded-xl border border-gray-200 bg-gray-50/60 space-y-3">
-                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div key={p.id} className="p-3.5 rounded-lg border border-slate-200 bg-slate-50/60 space-y-2.5">
+                    <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2.5">
                       <div>
-                        <h4 className="text-sm font-bold text-[#111827]">{p.eventTitle}</h4>
-                        <p className="text-xs text-[#6B7280]">
-                          Proposed by <strong className="text-[#111827]">{p.organizerName}</strong> ({p.organization}) • {p.proposedCity}
+                        <h4 className="text-xs font-bold text-slate-950">{p.eventTitle}</h4>
+                        <p className="text-[11px] text-slate-600">
+                          Proposed by <strong className="text-slate-950">{p.organizerName}</strong> ({p.organization}) • {p.proposedCity}
                         </p>
                       </div>
 
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-1.5">
                         <button
                           onClick={() => approvePitch(p.id, true, "Approved")}
-                          className="px-4 py-1.5 rounded-lg bg-[#0090AD] text-white text-xs font-semibold hover:bg-[#007A94] transition-colors cursor-pointer"
+                          className="h-7 px-3 rounded-md bg-[#005B6E] text-white text-xs font-semibold hover:bg-[#004754] transition-colors cursor-pointer"
                         >
-                          Approve Proposal
+                          Approve
                         </button>
                         <button
                           onClick={() => declinePitch(p.id, "Declined")}
-                          className="px-3 py-1.5 rounded-lg border border-gray-300 text-gray-700 text-xs font-medium hover:bg-white transition-colors cursor-pointer"
+                          className="h-7 px-2.5 rounded-md border border-slate-300 text-slate-700 text-xs font-medium hover:bg-white transition-colors cursor-pointer"
                         >
                           Decline
                         </button>
                       </div>
                     </div>
 
-                    <p className="text-xs text-[#374151] leading-relaxed bg-white p-3 rounded-lg border border-gray-100">
+                    <p className="text-xs text-slate-700 leading-relaxed bg-white p-2.5 rounded-md border border-slate-200">
                       {p.pitchDescription}
                     </p>
                   </div>
                 ))
               ) : (
-                <div className="py-8 text-center text-gray-400">
+                <div className="py-8 text-center text-slate-400">
                   No pending organizer proposals to review.
                 </div>
               )}

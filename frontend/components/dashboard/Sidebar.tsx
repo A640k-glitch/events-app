@@ -151,7 +151,7 @@ export default function Sidebar({ isOpen, onClose }: SidebarProps) {
                         className={cn(
                           "w-full flex items-center justify-between px-2.5 py-2 rounded-lg text-[11.5px] font-medium transition-all group",
                           isActive
-                            ? "bg-gradient-to-r from-[#0090AD] to-[#229EA6] text-white font-bold shadow-md shadow-[#0090AD]/25"
+                            ? "bg-gradient-to-r from-[#005B6E] to-[#007A94] text-white font-semibold shadow-xs"
                             : "text-slate-400 hover:text-white hover:bg-white/[0.07]"
                         )}
                       >

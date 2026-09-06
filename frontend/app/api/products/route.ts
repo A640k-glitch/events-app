@@ -4,26 +4,78 @@ import { sql } from "@/lib/db";
 // GET /api/products
 export async function GET() {
   try {
-    const rows = await sql`
-      SELECT p.*, u.name as "ownerName"
-      FROM products p
-      LEFT JOIN users u ON p."ownerId" = u.id
-      ORDER BY p.name ASC
-    `;
+    const [rows, leadsRows] = await Promise.all([
+      sql`
+        SELECT p.*, u.name as "ownerName"
+        FROM products p
+        LEFT JOIN users u ON p."ownerId" = u.id
+        ORDER BY p.name ASC
+      `,
+      sql`
+        SELECT l.*, u.name as "assignedOwnerName"
+        FROM leads l
+        LEFT JOIN users u ON l."assignedProductOwnerId" = u.id
+        ORDER BY l."createdAt" DESC
+      `,
+    ]);
 
-    const data = rows.map((p: any) => ({
-      id: p.id,
-      slug: p.slug,
-      name: p.name,
-      tagline: p.tagline,
-      description: p.description,
-      ownerId: p.ownerId || "",
-      ownerName: p.ownerName || "Specialist Architect",
-      iconName: p.iconName || "Briefcase",
-      bgColor: p.bgColor || "#F4F4FF",
-      activeDemosThisMonth: p.activeDemosThisMonth || 0,
-      availableSlots: p.availableSlots || ["09:00 AM", "11:00 AM", "02:00 PM", "04:00 PM"],
-    }));
+    const data = rows.map((p: any) => {
+      const pSlug = (p.slug || "").toLowerCase();
+      const pName = (p.name || "").toLowerCase();
+
+      // Flexible product matching for leads
+      const matchingLeads = leadsRows.filter((l: any) => {
+        const interest = (l.productInterested || "").toLowerCase();
+        return (
+          interest.includes(pSlug) ||
+          pSlug.includes(interest) ||
+          interest.includes(pName) ||
+          pName.includes(interest)
+        );
+      });
+
+      const leadsCount = matchingLeads.length;
+      const convertedCount = matchingLeads.filter(
+        (l: any) => l.status === "CONVERTED" || l.status === "QUALIFIED"
+      ).length;
+      const conversionRate = leadsCount > 0 ? Math.round((convertedCount / leadsCount) * 100) : 0;
+
+      // Real active demos count from database
+      const activeDemos = matchingLeads.filter((l: any) => l.bookingDate || l.bookingTime).length;
+
+      const recentLeads = matchingLeads.map((l: any) => ({
+        id: l.id,
+        visitorName: l.visitorName,
+        company: l.company || "Independent",
+        email: l.email,
+        phone: l.phone || "",
+        productInterested: l.productInterested,
+        assignedProductOwner: l.assignedOwnerName || "Unassigned",
+        assignedProductOwnerId: l.assignedProductOwnerId || null,
+        bookingDate: l.bookingDate ? new Date(l.bookingDate).toISOString().split("T")[0] : "",
+        bookingTime: l.bookingTime || "",
+        status: l.status === "FOLLOWED_UP" ? "Followed Up" : l.status.charAt(0).toUpperCase() + l.status.slice(1).toLowerCase(),
+        notes: l.notes || "",
+        createdAt: l.createdAt ? new Date(l.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "Today",
+      }));
+
+      return {
+        id: p.id,
+        slug: p.slug,
+        name: p.name,
+        tagline: p.tagline,
+        description: p.description,
+        ownerId: p.ownerId || "",
+        ownerName: p.ownerName || "Unassigned",
+        iconName: p.iconName || "Briefcase",
+        bgColor: p.bgColor || "#F4F4FF",
+        activeDemosThisMonth: activeDemos || (p.activeDemosThisMonth || 0),
+        availableSlots: p.availableSlots || ["09:00 AM", "11:00 AM", "02:00 PM", "04:00 PM"],
+        leadsCount,
+        conversionRate,
+        recentLeads,
+      };
+    });
 
     return NextResponse.json({ success: true, count: data.length, data });
   } catch (error: any) {

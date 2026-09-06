@@ -3,6 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
 import { 
   ArrowRight, 
   Check, 
@@ -14,6 +15,7 @@ import {
   Calendar
 } from "lucide-react";
 import CwgLogo from "@/components/brand/CwgLogo";
+import FifthEventsWordmark from "@/components/brand/FifthEventsWordmark";
 import { useApp } from "@/context/AppContext";
 import RegisterPassModal from "@/components/modals/RegisterPassModal";
 import PitchProposalModal from "@/components/modals/PitchProposalModal";
@@ -25,11 +27,14 @@ import IPhoneMockup from "@/components/home/IPhoneMockup";
 
 export default function Home() {
   const { events } = useApp();
-  const [openFaq, setOpenFaq] = useState<number | null>(0);
+  const [openFaq, setOpenFaq] = useState<number | null>(null);
 
   // Scroll reveal trigger for About section cards and buttons
   const aboutRef = useRef<HTMLElement>(null);
   const [aboutInView, setAboutInView] = useState(false);
+
+  // Reference for FAQ section to auto-close accordions when scrolled away
+  const faqSectionRef = useRef<HTMLElement>(null);
 
   useEffect(() => {
     const el = aboutRef.current;
@@ -44,6 +49,26 @@ export default function Home() {
         });
       },
       { threshold: 0.12 }
+    );
+
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
+
+  // Auto-close open FAQ when user scrolls away from the FAQ section
+  useEffect(() => {
+    const el = faqSectionRef.current;
+    if (!el) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) {
+            setOpenFaq(null);
+          }
+        });
+      },
+      { threshold: 0.05 }
     );
 
     observer.observe(el);
@@ -93,13 +118,8 @@ export default function Home() {
         <div className="max-w-6xl mx-auto relative z-10">
           <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16 pb-14">
 
-            {/* Left — iPhone 16 Mockup (desktop only) */}
-            <div className="flex-shrink-0">
-              <IPhoneMockup />
-            </div>
-
-            {/* Right — Hero Copy with Enhanced Mobile Readability & Contrast */}
-            <div className="flex-1 flex flex-col gap-6 text-center lg:text-left">
+            {/* Hero Copy (Top on Mobile, Right on Desktop) */}
+            <div className="flex-1 flex flex-col gap-6 text-center lg:text-left order-1 lg:order-2">
               <h1
                 className="font-bold tracking-tight text-slate-950"
                 style={{ fontSize: "clamp(34px, 5vw, 60px)", fontWeight: 700, lineHeight: 1.14 }}
@@ -113,31 +133,88 @@ export default function Home() {
                 Track tech summits across Africa, get entry passes in seconds, and book live product demos from <span className="tracking-tight text-slate-950 font-semibold"><strong className="font-bold">fifth</strong><span className="font-normal">lab</span></span> and <strong className="text-slate-950 font-bold">CWG</strong>.
               </p>
 
-              <div className="flex flex-col sm:flex-row items-stretch sm:items-center lg:items-start justify-center lg:justify-start gap-2.5 sm:gap-3 pt-2 w-full sm:w-auto">
+              <motion.div 
+                initial={{ opacity: 0, y: 18 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{ duration: 0.55, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
+                className="flex flex-col sm:flex-row items-stretch sm:items-center lg:items-start justify-center lg:justify-start gap-2.5 sm:gap-3 pt-2 w-full sm:w-auto"
+              >
                 <Link
                   href="/events"
-                  className="inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 rounded-full bg-[#0090AD] hover:bg-[#007A94] text-white font-semibold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all hover:scale-[1.01] active:scale-[0.99] whitespace-nowrap"
+                  className="group relative inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 rounded-full bg-[#0090AD] hover:bg-[#007A94] text-white font-semibold text-xs sm:text-sm shadow-md hover:shadow-lg transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap overflow-hidden"
                 >
-                  <span>Explore Events</span>
-                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+                  <span className="relative z-10">Explore Events</span>
+                  <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4 relative z-10 transition-transform duration-300 group-hover:translate-x-1" />
+                  <span className="absolute inset-0 -translate-x-full group-hover:translate-x-full transition-transform duration-700 bg-gradient-to-r from-transparent via-white/20 to-transparent pointer-events-none" />
                 </Link>
 
                 <Link
                   href="/demo"
-                  className="inline-flex items-center justify-center px-5 py-2.5 sm:px-6 sm:py-3 rounded-full bg-slate-900 hover:bg-black text-white font-semibold text-xs sm:text-sm transition-all hover:scale-[1.01] active:scale-[0.99] whitespace-nowrap"
+                  className="group inline-flex items-center justify-center gap-2 px-5 py-2.5 sm:px-6 sm:py-3 rounded-full bg-slate-900 hover:bg-black text-white font-semibold text-xs sm:text-sm transition-all hover:scale-[1.02] active:scale-[0.98] whitespace-nowrap"
                 >
-                  Book a Demo &rarr;
+                  <span>Book a Demo</span>
+                  <ArrowRight className="w-3.5 h-3.5 transition-transform duration-300 group-hover:translate-x-1 text-slate-400 group-hover:text-slate-200" />
                 </Link>
-              </div>
+              </motion.div>
+            </div>
+
+            {/* iPhone 16 Mockup:
+                - Mobile (< 640px): Visible, order-2 (flows vertically directly under CTAs), centered
+                - Tablets (640px-1023px, sm & md): Hidden (avoids cramming on tablets)
+                - Desktop (>= 1024px, lg): Visible, order-1 (sits on the left)
+            */}
+            <div className="flex-shrink-0 order-2 lg:order-1 flex sm:hidden lg:flex justify-center w-full lg:w-auto">
+              <IPhoneMockup />
             </div>
           </div>
         </div>
+      </section>
 
-        {/* Dynamic Spotlight Carousel with Screen-Edge Fixed Hand Anchor */}
-        <div className="w-full relative z-10 pt-2 overflow-hidden">
+      {/* 1.5. Hero Spotlight & Partner Logos Section — Option 2: Executive Obsidian & Cyan Aurora */}
+      <section 
+        className="relative w-full py-12 sm:py-16 px-4 sm:px-6 lg:px-8 overflow-hidden z-10"
+        style={{
+          backgroundColor: "#05080E",
+          backgroundImage: "linear-gradient(145deg, #04060B 0%, #070D18 45%, #05080E 100%)",
+          borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+          borderBottom: "1px solid rgba(255, 255, 255, 0.08)",
+        }}
+      >
+        {/* Luminous Top & Bottom Accent Rules */}
+        <div className="absolute top-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#0090AD]/40 to-transparent pointer-events-none" />
+        <div className="absolute bottom-0 left-0 right-0 h-[1px] bg-gradient-to-r from-transparent via-[#0090AD]/25 to-transparent pointer-events-none" />
+
+        {/* Micro-Texture: Subtle Cyber Dot-Matrix Grid */}
+        <div 
+          className="absolute inset-0 opacity-20 pointer-events-none"
+          style={{
+            backgroundImage: "radial-gradient(rgba(255, 255, 255, 0.15) 1px, transparent 1px)",
+            backgroundSize: "24px 24px",
+          }}
+        />
+
+        {/* Ambient Auroral Glows (CWG Navy + FifthLab Electric Cyan) */}
+        <div 
+          className="absolute -top-32 -left-32 w-[520px] h-[520px] rounded-full pointer-events-none blur-[120px]"
+          style={{ background: "radial-gradient(circle, rgba(21, 15, 69, 0.45) 0%, transparent 70%)" }}
+        />
+        <div 
+          className="absolute -bottom-28 right-0 w-[600px] h-[500px] rounded-full pointer-events-none blur-[130px]"
+          style={{ background: "radial-gradient(circle, rgba(0, 144, 173, 0.18) 0%, rgba(32, 178, 170, 0.08) 50%, transparent 70%)" }}
+        />
+
+        {/* Faint Big Fingerprint Ridges to the Left of the Section */}
+        <FingerprintPattern 
+          size={780} 
+          opacity={0.16} 
+          strokeWidth={1.3}
+          className="absolute -left-32 -top-20 text-[#0090AD] -rotate-12 pointer-events-none select-none" 
+        />
+
+        {/* Dynamic Spotlight Carousel & Partner Orbit Stage */}
+        <div className="max-w-7xl mx-auto relative z-10">
           <HeroSpotlightCarousel />
         </div>
-
       </section>
 
       {/* 2. Customer-Facing Dynamic Live Events Carousel */}
@@ -215,8 +292,8 @@ export default function Home() {
               <div className="space-y-4">
                 <div className="relative h-40 w-full rounded-2xl overflow-hidden bg-slate-900 border border-white/10">
                   <Image
-                    src="/images/auth/real_lagos_keynote.jpg"
-                    alt="Event Discovery"
+                    src="/images/auth/speaker_lineup.jpg"
+                    alt="Schedules & Speaker Lineups"
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -256,8 +333,8 @@ export default function Home() {
               <div className="space-y-4">
                 <div className="relative h-40 w-full rounded-2xl overflow-hidden bg-slate-900 border border-white/10">
                   <Image
-                    src="/images/auth/developer.jpg"
-                    alt="Product Demos"
+                    src="/images/auth/live_product_demo.jpg"
+                    alt="Live Product Demos"
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -297,8 +374,8 @@ export default function Home() {
               <div className="space-y-4">
                 <div className="relative h-40 w-full rounded-2xl overflow-hidden bg-slate-900 border border-white/10">
                   <Image
-                    src="/images/qr_registration.jpg"
-                    alt="QR Passes"
+                    src="/images/auth/digital_pass_scan.jpg"
+                    alt="Digital Entry Passes"
                     fill
                     sizes="(max-width: 768px) 100vw, 33vw"
                     className="object-cover group-hover:scale-105 transition-transform duration-500"
@@ -348,22 +425,22 @@ export default function Home() {
         />
 
         <div className="max-w-6xl mx-auto relative z-10">
+          {/* Section Head on its own line */}
+          <div 
+            className={cn(
+              "text-left mb-6 sm:mb-8 transition-all duration-700 ease-out",
+              aboutInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
+            )}
+          >
+            <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight uppercase text-[#0090AD] leading-tight m-0">
+              ABOUT <span className="text-slate-950 font-black">FIFTH</span><span className="font-light text-slate-900">EVENTS</span>
+            </h3>
+          </div>
+
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-start">
             
-            {/* Left Column: Section Header Above Image to Fill White Space + Photo Card */}
-            <div className="lg:col-span-5 relative space-y-4 sm:space-y-5">
-              {/* Left-Justified Typography Section Header — Prominent, Bold & Commanding */}
-              <div 
-                className={cn(
-                  "text-left pt-1 sm:pt-2 transition-all duration-700 ease-out",
-                  aboutInView ? "opacity-100 translate-y-0" : "opacity-0 translate-y-4"
-                )}
-              >
-                <h3 className="text-2xl sm:text-3xl lg:text-4xl font-black tracking-tight uppercase text-[#0090AD] leading-tight m-0">
-                  ABOUT <span className="text-slate-950 font-black">FIFTH</span><span className="font-light text-slate-900">EVENTS</span>
-                </h3>
-              </div>
-
+            {/* Left Column: Photo Card */}
+            <div className="lg:col-span-5 relative">
               <div 
                 className={cn(
                   "relative mx-auto max-w-md lg:max-w-none transition-all duration-700 ease-out",
@@ -391,7 +468,7 @@ export default function Home() {
             </div>
 
             {/* Right Column: Narrative & Value Pillars */}
-            <div className="lg:col-span-7 space-y-6 text-left lg:pt-1">
+            <div className="lg:col-span-7 space-y-6 text-left">
               <div 
                 className={cn(
                   "space-y-3 transition-all duration-700 ease-out",
@@ -402,7 +479,7 @@ export default function Home() {
                   Built for the events that actually matter in African tech.
                 </h2>
                 <p className="text-sm sm:text-base text-slate-600 leading-relaxed pt-1">
-                  <span className="tracking-tight text-slate-900"><strong className="font-bold">fifth</strong><span className="font-light">lab</span></span> and <strong>CWG PLC</strong> run fintech conferences, banking expos, and developer summits across Nigeria and West Africa. We built <span className="tracking-tight text-slate-900"><strong className="font-bold">fifth</strong><span className="font-light">Events</span></span> so attendees can easily discover upcoming conferences, get tickets, and explore live solutions on site.
+                  <span className="tracking-tight text-slate-900"><strong className="font-bold">fifth</strong><span className="font-light">lab</span></span> and <strong>CWG PLC</strong> run fintech conferences, banking expos, and developer summits across Nigeria and West Africa. We built <FifthEventsWordmark theme="light" className="text-sm sm:text-base" /> so attendees can easily discover upcoming conferences, get tickets, and explore live solutions on site.
                 </p>
               </div>
 
@@ -660,15 +737,28 @@ export default function Home() {
         </div>
       </section>
 
-      {/* 5. Frequently Asked Questions */}
-      <section className="py-20 px-4 sm:px-6 lg:px-8 bg-transparent border-t border-slate-200/60 relative z-10">
-        <div className="max-w-4xl mx-auto space-y-8 text-left">
+      {/* 5. Frequently Asked Questions — Rich Dark Section Background */}
+      <section 
+        id="faq"
+        ref={faqSectionRef}
+        className="py-20 px-4 sm:px-6 lg:px-8 relative overflow-hidden text-white z-10"
+        style={{
+          backgroundColor: "#060910",
+          background: "linear-gradient(180deg, #090E1A 0%, #060910 50%, #04060B 100%)",
+          borderTop: "1px solid rgba(255, 255, 255, 0.08)",
+        }}
+      >
+        {/* Ambient subtle cyan/teal background glow */}
+        <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[300px] bg-[#0090AD]/10 rounded-full blur-3xl pointer-events-none -z-0" />
+
+        <div className="max-w-4xl mx-auto space-y-8 text-left relative z-10">
           <div className="space-y-2">
-            <span className="text-xs font-bold text-[#0090AD] uppercase tracking-widest">
+            <span className="text-xs font-bold text-[#30B5C1] uppercase tracking-widest font-mono">
               FREQUENTLY ASKED QUESTIONS
             </span>
-            <h2 className="text-2xl sm:text-4xl font-medium text-slate-900 tracking-tight">
-              Everything you need to know about <span className="tracking-tight"><span className="font-bold">fifth</span><span className="font-light">Events</span></span>
+            <h2 className="text-2xl sm:text-4xl font-medium text-white tracking-tight">
+              Everything you need to know about{" "}
+              <FifthEventsWordmark theme="dark" className="text-2xl sm:text-4xl" />
             </h2>
           </div>
 
@@ -676,31 +766,63 @@ export default function Home() {
             {faqs.map((faq, idx) => {
               const isOpen = openFaq === idx;
               return (
-                <div
+                <motion.div
                   key={idx}
+                  initial={{ opacity: 0, y: 22 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true, amount: 0.15 }}
+                  transition={{
+                    duration: 0.5,
+                    delay: idx * 0.08,
+                    ease: [0.16, 1, 0.3, 1],
+                  }}
                   className={cn(
-                    "rounded-2xl border transition-all duration-200 overflow-hidden shadow-sm",
+                    "rounded-none border transition-all duration-200 overflow-hidden group",
                     isOpen
-                      ? "bg-[#0F172A] border-slate-700 shadow-md ring-1 ring-slate-700/50"
-                      : "bg-[#0F172A] hover:bg-[#141E34] border-slate-800 hover:border-slate-700"
+                      ? "bg-[#0D1526] border-slate-700 shadow-2xl shadow-black/60 shadow-[inset_0_1px_0_rgba(255,255,255,0.08)]"
+                      : "bg-[#080D1A]/95 hover:bg-[#0B1222] border-slate-800/90 hover:border-slate-700/90 shadow-[inset_0_1px_0_rgba(255,255,255,0.03)]"
                   )}
                 >
                   <button
                     onClick={() => setOpenFaq(isOpen ? null : idx)}
-                    className="w-full p-5 flex items-center justify-between gap-4 text-left font-semibold text-sm text-white hover:text-[#30B5C1] transition-colors cursor-pointer"
+                    className="w-full p-5 sm:p-6 flex items-center justify-between gap-4 text-left transition-colors cursor-pointer"
                   >
-                    <span>{faq.q}</span>
-                    <ChevronDown className={cn(
-                      "w-4 h-4 shrink-0 transition-transform duration-200",
-                      isOpen ? "rotate-180 text-[#30B5C1]" : "text-slate-400"
-                    )} />
-                  </button>
-                  {isOpen && (
-                    <div className="px-5 pb-5 pt-3.5 text-xs text-slate-200 leading-relaxed border-t border-slate-800 bg-[#090E1A]">
-                      {faq.a}
+                    <div className="flex items-center gap-3.5 sm:gap-4 flex-1 pr-2">
+                      <span className="font-mono text-[11px] sm:text-xs font-semibold tracking-wider text-slate-500 shrink-0 select-none">
+                        0{idx + 1}
+                      </span>
+                      <span className={cn(
+                        "font-semibold text-sm sm:text-base tracking-tight transition-colors",
+                        isOpen ? "text-white" : "text-slate-200 group-hover:text-white"
+                      )}>
+                        {faq.q}
+                      </span>
                     </div>
-                  )}
-                </div>
+                    <ChevronDown
+                      className={cn(
+                        "w-4 h-4 shrink-0 transition-transform duration-300",
+                        isOpen ? "rotate-180 text-white" : "text-slate-400 group-hover:text-slate-200"
+                      )}
+                    />
+                  </button>
+
+                  <AnimatePresence initial={false}>
+                    {isOpen && (
+                      <motion.div
+                        key="content"
+                        initial={{ height: 0, opacity: 0 }}
+                        animate={{ height: "auto", opacity: 1 }}
+                        exit={{ height: 0, opacity: 0 }}
+                        transition={{ duration: 0.28, ease: [0.16, 1, 0.3, 1] }}
+                        className="overflow-hidden"
+                      >
+                        <div className="px-5 sm:px-6 pb-6 pt-4 text-xs sm:text-sm text-slate-300 leading-relaxed border-t border-slate-800/80 font-normal sm:pl-14">
+                          {faq.a}
+                        </div>
+                      </motion.div>
+                    )}
+                  </AnimatePresence>
+                </motion.div>
               );
             })}
           </div>

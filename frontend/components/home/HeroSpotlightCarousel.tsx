@@ -104,12 +104,12 @@ export default function HeroSpotlightCarousel() {
   const slide = slides[currentSlide % total] || slides[0];
 
   return (
-    <div className="relative w-full py-4">
+    <div className="relative w-full py-2">
       <div className="w-full flex flex-col xl:flex-row items-center justify-between gap-6 xl:gap-8">
         
-        {/* Spotlight Card - Responsive sizing without squishing text */}
+        {/* Spotlight Card - Responsive sizing with rich contrast against obsidian stage (border removed) */}
         <div 
-          className="relative w-full xl:w-[calc(100%-460px)] 2xl:w-[calc(100%-500px)] max-w-4xl xl:max-w-[860px] h-auto md:h-[360px] xl:h-[420px] 2xl:h-[460px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-xl border border-slate-200/90 bg-white font-sans text-left z-10 mx-auto xl:mx-0 xl:ml-8 mr-auto"
+          className="relative w-full xl:w-[calc(100%-510px)] 2xl:w-[calc(100%-570px)] max-w-4xl xl:max-w-[840px] h-auto md:h-[360px] xl:h-[420px] 2xl:h-[460px] rounded-2xl sm:rounded-3xl overflow-hidden shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] bg-white font-sans text-left z-10 mx-auto xl:mx-0 xl:ml-2 mr-auto"
           onMouseEnter={() => setIsPaused(true)}
           onMouseLeave={() => setIsPaused(false)}
         >
@@ -219,7 +219,7 @@ export default function HeroSpotlightCarousel() {
         </div>
 
         {/* Animated FifthEvents Demo Card - visible on both mobile and desktop */}
-        <div className="w-full xl:w-auto flex items-center justify-center flex-shrink-0 mx-auto xl:mx-0 xl:mr-8 z-20">
+        <div className="w-full xl:w-auto flex items-center justify-center flex-shrink-0 mx-auto xl:mx-0 xl:mr-8 z-20 overflow-visible">
           <DemoCardAnimated />
         </div>
 

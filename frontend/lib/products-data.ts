@@ -4,7 +4,7 @@ export const PRODUCT_LOGO_MAP: Record<string, string> = {
   bulkwave: "/brand/bulkwave-icon.png",
   finedge: "/brand/finedge-logo.png",
   smerp: "/brand/smerp-icon.png",
-  smerpgo: "/brand/smerp-icon.png",
+  smerpgo: "/brand/smerpgo-logo.png",
   ucp: "/brand/ucp-emblem.png",
   kuleanpay: "/brand/kuleanpay-icon.png",
   beetvas: "/brand/beetvaslogo.png",
@@ -37,6 +37,7 @@ export function resolveProductLogo(identifier?: string, currentLogoUrl?: string)
   // Name keyword heuristics
   if (cleanKey.includes("bulk") || cleanKey.includes("wave")) return "/brand/bulkwave-icon.png";
   if (cleanKey.includes("fin") || cleanKey.includes("edge")) return "/brand/finedge-logo.png";
+  if (cleanKey.includes("smerpgo")) return "/brand/smerpgo-logo.png";
   if (cleanKey.includes("smerp")) return "/brand/smerp-icon.png";
   if (cleanKey.includes("coop") || cleanKey.includes("ucp")) return "/brand/ucp-emblem.png";
   if (cleanKey.includes("pay") || cleanKey.includes("kulean")) return "/brand/kuleanpay-icon.png";
@@ -50,6 +51,103 @@ export function resolveProductLogo(identifier?: string, currentLogoUrl?: string)
   if (cleanKey.includes("train") || cleanKey.includes("academy")) return "/brand/cwg/training.svg";
 
   return "/brand/bulkwave-icon.png";
+}
+
+export interface ProductTheme {
+  accentColor: string;
+  bgColor: string;
+  cardBorder: string;
+}
+
+export const PRODUCT_THEMES: Record<string, ProductTheme> = {
+  bulkwave: {
+    accentColor: "#4F46E5",
+    bgColor: "#F3F4FD",
+    cardBorder: "#E0E4FB",
+  },
+  finedge: {
+    accentColor: "#0090AD",
+    bgColor: "#EAF7F7",
+    cardBorder: "#CEEFEF",
+  },
+  smerp: {
+    accentColor: "#D97706",
+    bgColor: "#FAF2F7",
+    cardBorder: "#F6DFEC",
+  },
+  ucp: {
+    accentColor: "#7C3AED",
+    bgColor: "#F5F3FF",
+    cardBorder: "#E4DEFD",
+  },
+  kuleanpay: {
+    accentColor: "#1E3A8A",
+    bgColor: "#F0F6FF",
+    cardBorder: "#D8E6FA",
+  },
+  beetvas: {
+    accentColor: "#DC2626",
+    bgColor: "#FFF5F5",
+    cardBorder: "#FED7D7",
+  },
+  "cwg-cloud": {
+    accentColor: "#0369A1",
+    bgColor: "#F0F9FF",
+    cardBorder: "#BAE6FD",
+  },
+  "cwg-managed": {
+    accentColor: "#475569",
+    bgColor: "#F8FAFC",
+    cardBorder: "#E2E8F0",
+  },
+  "cwg-managed-services": {
+    accentColor: "#475569",
+    bgColor: "#F8FAFC",
+    cardBorder: "#E2E8F0",
+  },
+  "cwg-payments": {
+    accentColor: "#0284C7",
+    bgColor: "#F0F9FF",
+    cardBorder: "#BAE6FD",
+  },
+  "cwg-infra": {
+    accentColor: "#0F766E",
+    bgColor: "#F0FDFA",
+    cardBorder: "#CCFBF1",
+  },
+  "cwg-infrastructure": {
+    accentColor: "#0F766E",
+    bgColor: "#F0FDFA",
+    cardBorder: "#CCFBF1",
+  },
+  "cwg-software": {
+    accentColor: "#7C3AED",
+    bgColor: "#FAF5FF",
+    cardBorder: "#F3E8FF",
+  },
+  "cwg-training": {
+    accentColor: "#16A34A",
+    bgColor: "#F0FDF4",
+    cardBorder: "#DCFCE7",
+  },
+  "cwg-atm": {
+    accentColor: "#4B5563",
+    bgColor: "#F8FAFC",
+    cardBorder: "#E2E8F0",
+  },
+};
+
+export function resolveProductTheme(identifier?: string): ProductTheme {
+  if (!identifier) {
+    return { accentColor: "#0090AD", bgColor: "#F8FAFC", cardBorder: "#E2E8F0" };
+  }
+  const cleanKey = identifier.toLowerCase().replace(/[^a-z0-9-]/g, "");
+  for (const [key, theme] of Object.entries(PRODUCT_THEMES)) {
+    if (cleanKey.includes(key) || key.includes(cleanKey)) {
+      return theme;
+    }
+  }
+  return { accentColor: "#0090AD", bgColor: "#F8FAFC", cardBorder: "#E2E8F0" };
 }
 
 export const CANONICAL_FALLBACK_PRODUCTS: FifthLabProduct[] = [

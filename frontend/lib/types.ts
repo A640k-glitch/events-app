@@ -45,6 +45,7 @@ export interface Lead {
   phone: string;
   productInterested: string;
   assignedProductOwner: string;
+  assignedProductOwnerId?: string | null;
   bookingDate: string;
   bookingTime: string;
   status: LeadStatus;
@@ -73,6 +74,8 @@ export interface FifthLabProduct {
   ownerName?: string;
   iconName: string;
   bgColor?: string;
+  accentColor?: string;
+  cardBorder?: string;
   logoUrl?: string;
   tags?: string[];
   activeDemosThisMonth: number;
@@ -86,8 +89,11 @@ export interface FifthLabProduct {
     email: string;
     phone: string;
     status: string;
+    assignedProductOwner?: string;
+    assignedProductOwnerId?: string | null;
     bookingDate?: string;
     bookingTime?: string;
+    notes?: string;
     createdAt?: string;
   }>;
 }
