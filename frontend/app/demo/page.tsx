@@ -410,6 +410,10 @@ function DemoBookingContent() {
                           <img
                             src={prod.logoUrl}
                             alt={prod.name}
+                            width={32}
+                            height={32}
+                            loading="eager"
+                            decoding="async"
                             className="w-full h-full object-contain"
                           />
                         </div>
