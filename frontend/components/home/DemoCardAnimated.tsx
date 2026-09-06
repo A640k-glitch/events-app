@@ -223,14 +223,14 @@ export function DemoCardAnimated() {
           ))}
         </div>
 
-        {/* Preserved Button at Bottom — Responsive, slightly lowered without expanding section height */}
-        <div className="pt-0 z-30 relative translate-y-2">
+        {/* Preserved Button at Bottom — Lowered on mobile to clear front chips with vibrant desktop-matching cyan */}
+        <div className="pt-0 z-30 relative translate-y-4">
           <Link
             href="/products"
-            className="inline-flex items-center gap-1.5 sm:gap-2 px-5 py-2 sm:px-6 sm:py-2.5 md:px-7 md:py-3 rounded-full bg-[#0090AD] hover:bg-[#007A94] text-white text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all hover:scale-105 active:scale-95 cursor-pointer"
+            className="inline-flex items-center gap-1.5 sm:gap-2 px-6 py-2.5 sm:px-7 sm:py-3 rounded-full bg-[#0090AD] hover:bg-[#007A94] text-white text-xs sm:text-sm font-extrabold tracking-wide shadow-[0_4px_16px_rgba(0,144,173,0.35)] hover:shadow-[0_6px_20px_rgba(0,144,173,0.45)] transition-all hover:scale-105 active:scale-95 cursor-pointer"
           >
             <span>Book Now</span>
-            <ArrowRight className="w-3.5 h-3.5 sm:w-4 sm:h-4" />
+            <ArrowRight className="w-4 h-4" />
           </Link>
         </div>
       </div>
@@ -321,7 +321,7 @@ export function DemoCardAnimated() {
               font-size: 26px;
               letter-spacing: 0.02em;
               white-space: nowrap;
-              box-shadow: 0 4px 14px rgba(0, 0, 0, 0.35);
+              box-shadow: 0 4px 20px rgba(0, 144, 173, 0.4), 0 2px 8px rgba(0, 0, 0, 0.35);
               transition: all 0.3s cubic-bezier(0.22, 1, 0.36, 1);
               cursor: pointer;
               z-index: 50;
