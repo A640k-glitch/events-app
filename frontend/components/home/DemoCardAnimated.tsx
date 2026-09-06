@@ -223,8 +223,8 @@ export function DemoCardAnimated() {
           ))}
         </div>
 
-        {/* Preserved Button at Bottom — Responsive, not oversized on mobile */}
-        <div className="pt-1 z-30 relative">
+        {/* Preserved Button at Bottom — Responsive, slightly lowered without expanding section height */}
+        <div className="pt-0 z-30 relative translate-y-2">
           <Link
             href="/products"
             className="inline-flex items-center gap-1.5 sm:gap-2 px-5 py-2 sm:px-6 sm:py-2.5 md:px-7 md:py-3 rounded-full bg-[#0090AD] hover:bg-[#007A94] text-white text-xs sm:text-sm font-bold shadow-md hover:shadow-lg transition-all hover:scale-105 active:scale-95 cursor-pointer"
@@ -311,7 +311,7 @@ export function DemoCardAnimated() {
             .demo-pill-btn {
               position: absolute;
               left: 50%;
-              bottom: 30px;
+              bottom: 8px;
               transform: translateX(-50%);
               padding: 20px 48px;
               border-radius: 999px;
