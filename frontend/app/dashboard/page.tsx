@@ -129,12 +129,12 @@ export default function DashboardOverviewPage() {
           </motion.div>
         )}
 
-        {/* 3. Live Database Telemetry Metrics - Colored Brand Cards with Top Accent Borders */}
+        {/* 3. System Overview Metrics */}
         <motion.div variants={itemVariants} className="space-y-2.5">
           
           <div className="flex items-center justify-between">
             <span className="text-[11px] font-bold uppercase tracking-wider text-slate-600">
-              LIVE SYSTEM TELEMETRY
+              System Overview
             </span>
             <Link
               href="/dashboard/events"
@@ -333,24 +333,25 @@ export default function DashboardOverviewPage() {
 
             <div className="space-y-2">
               {upcomingEvents.map((evt) => {
-                const color = categoryColorMap[evt.category] || { border: "border-slate-200", text: "text-slate-600" };
                 return (
                   <div
                     key={evt.id}
-                    className="p-2.5 rounded-lg border border-slate-200 bg-gradient-to-r from-[#EAF7F7]/30 to-white hover:border-[#005B6E]/40 hover:bg-[#EAF7F7]/50 transition-all space-y-1"
+                    className="p-2.5 sm:p-3 rounded-lg border border-[#005B6E]/30 bg-[#005B6E]/[0.06] backdrop-blur-md hover:bg-[#005B6E]/[0.10] hover:border-[#005B6E]/50 transition-all space-y-1.5"
                   >
                     <div className="flex items-start justify-between gap-2">
-                      <span className="text-xs font-bold text-slate-900 line-clamp-1">
+                      <span className="text-xs font-bold text-slate-950 line-clamp-1">
                         {evt.title}
                       </span>
-                      <span className={cn("text-[10px] font-bold uppercase tracking-wider shrink-0", color.text)}>
+                      <span className="text-[10px] font-bold text-[#005B6E] uppercase tracking-wider shrink-0">
                         {evt.category}
                       </span>
                     </div>
 
                     <div className="flex items-center justify-between text-[11px] text-slate-600 font-medium">
-                      <span>{evt.city} • {evt.date}</span>
-                      <span className="text-emerald-700 font-semibold">{evt.time || "Scheduled"}</span>
+                      <span className="text-slate-600">{evt.city} • {evt.date}</span>
+                      <span className="text-[#005B6E] font-bold font-mono text-[10.5px]">
+                        {evt.time || "09:00 AM - 05:00 PM WAT"}
+                      </span>
                     </div>
                   </div>
                 );

@@ -259,13 +259,13 @@ function LeadsContent() {
           <table className="w-full text-left text-xs border-collapse">
             <thead>
               <tr className="border-b border-slate-300 bg-slate-100/90 text-slate-800 uppercase tracking-wider text-[10px] font-bold">
-                <th className="py-2.5 px-3">Customer &amp; Contact</th>
-                <th className="py-2.5 px-3">Company</th>
-                <th className="py-2.5 px-3">Product</th>
-                <th className="py-2.5 px-3">Type &amp; Scheduled Demo</th>
-                <th className="py-2.5 px-3">Pipeline Status</th>
-                <th className="py-2.5 px-3">Assigned Specialist</th>
-                <th className="py-2.5 px-3 text-right">Actions</th>
+                <th className="py-2 px-2.5">Customer &amp; Contact</th>
+                <th className="py-2 px-2.5">Company</th>
+                <th className="py-2 px-2.5">Product</th>
+                <th className="py-2 px-2.5 whitespace-nowrap">Scheduled Demo</th>
+                <th className="py-2 px-2.5 whitespace-nowrap">Pipeline Status</th>
+                <th className="py-2 px-2.5 whitespace-nowrap">Assigned Specialist</th>
+                <th className="py-2 px-2.5 text-right whitespace-nowrap">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-200">
@@ -285,51 +285,51 @@ function LeadsContent() {
                       className="hover:bg-slate-50 transition-colors cursor-pointer group"
                     >
                       {/* Visitor & Contact */}
-                      <td className="py-2.5 px-3">
-                        <div className="font-semibold text-slate-950">
+                      <td className="py-2 px-2.5 max-w-[180px]">
+                        <div className="font-semibold text-slate-950 truncate">
                           {lead.visitorName}
                         </div>
-                        <div className="text-[10.5px] text-slate-600">
-                          {lead.email} {lead.phone ? `• ${lead.phone}` : ""}
+                        <div className="text-[10px] text-slate-500 truncate">
+                          {lead.email}
                         </div>
                       </td>
 
                       {/* Company */}
-                      <td className="py-2.5 px-3 font-semibold text-slate-800 whitespace-nowrap">
+                      <td className="py-2 px-2.5 font-semibold text-slate-800 whitespace-nowrap max-w-[140px] truncate">
                         {lead.company || "Enterprise Corp"}
                       </td>
 
                       {/* Product Interest */}
-                      <td className="py-2.5 px-3 whitespace-nowrap font-bold text-[#005B6E] text-xs">
+                      <td className="py-2 px-2.5 whitespace-nowrap font-bold text-[#005B6E] text-xs">
                         {lead.productInterested || "Bulkwave"}
                       </td>
 
                       {/* Demo Schedule / Record Type */}
-                      <td className="py-2.5 px-3 whitespace-nowrap">
+                      <td className="py-2 px-2.5 whitespace-nowrap">
                         {isBooking ? (
                           <div className="space-y-0.5">
-                            <div className="flex items-center gap-1 text-xs font-bold text-slate-950">
-                              <Calendar className="w-3.5 h-3.5 text-[#005B6E] shrink-0" />
-                              <span>{lead.bookingDate || "Date Pending"}</span>
+                            <div className="flex items-center gap-1 text-[11px] font-bold text-slate-950">
+                              <Calendar className="w-3 h-3 text-[#005B6E] shrink-0" />
+                              <span>{lead.bookingDate}</span>
                             </div>
-                            <div className="flex items-center gap-1 text-[10.5px] text-slate-600 font-medium">
-                              <Clock className="w-3 h-3 text-slate-500 shrink-0" />
-                              <span>{lead.bookingTime || "Time Pending"}</span>
+                            <div className="flex items-center gap-1 text-[10px] text-slate-500 font-medium">
+                              <Clock className="w-2.5 h-2.5 text-slate-400 shrink-0" />
+                              <span>{lead.bookingTime}</span>
                             </div>
                           </div>
                         ) : (
-                          <span className="text-[11px] font-medium text-slate-500 italic flex items-center gap-1">
+                          <span className="text-[10.5px] font-medium text-slate-400 italic flex items-center gap-1">
                             <span className="w-1.5 h-1.5 rounded-full bg-slate-300 shrink-0" />
-                            Inbound Lead (Unscheduled)
+                            Unscheduled Lead
                           </span>
                         )}
                       </td>
 
                       {/* Status Dropdown with indicator dot */}
-                      <td className="py-2.5 px-3 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                      <td className="py-2 px-2.5 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                         <div className="flex items-center gap-1.5">
                           <span className={cn(
-                            "w-2 h-2 rounded-full shrink-0",
+                            "w-1.5 h-1.5 rounded-full shrink-0",
                             lead.status === "Unread" && "bg-slate-400",
                             lead.status === "Followed Up" && "bg-amber-500",
                             lead.status === "Qualified" && "bg-[#005B6E]",
@@ -339,7 +339,7 @@ function LeadsContent() {
                           <select
                             value={lead.status}
                             onChange={(e) => updateLeadStatus(lead.id, e.target.value as LeadStatus)}
-                            className="text-[10.5px] font-bold text-slate-800 bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:border-[#005B6E] focus:outline-none cursor-pointer h-6.5"
+                            className="text-[10px] font-semibold text-slate-800 bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:border-[#005B6E] focus:outline-none cursor-pointer h-6 w-auto"
                           >
                             {statusOptions.map((opt) => (
                               <option key={opt} value={opt}>{opt}</option>
@@ -349,7 +349,7 @@ function LeadsContent() {
                       </td>
 
                       {/* Assigned Specialist */}
-                      <td className="py-2.5 px-3 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
+                      <td className="py-2 px-2.5 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                         <select
                           value={lead.assignedProductOwnerId || "unassigned"}
                           onChange={async (e) => {
@@ -360,7 +360,7 @@ function LeadsContent() {
                               assignedProductOwner: targetOwner ? targetOwner.name : "Unassigned",
                             });
                           }}
-                          className="text-[10.5px] font-semibold text-slate-800 bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:border-[#005B6E] focus:outline-none cursor-pointer h-6.5"
+                          className="text-[10px] font-medium text-slate-800 bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:border-[#005B6E] focus:outline-none cursor-pointer h-6 max-w-[150px] truncate"
                         >
                           <option value="unassigned">Unassigned</option>
                           {owners.map((owner) => (
@@ -372,11 +372,11 @@ function LeadsContent() {
                       </td>
 
                       {/* Actions */}
-                      <td className="py-2.5 px-3 text-right" onClick={(e) => e.stopPropagation()}>
+                      <td className="py-2 px-2.5 text-right whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
                         <button
                           onClick={() => deleteLead(lead.id)}
+                          className="p-1 text-slate-400 hover:text-rose-600 rounded transition-colors cursor-pointer"
                           title="Delete Lead"
-                          className="p-1 text-slate-400 hover:text-rose-600 rounded hover:bg-rose-50 transition-colors cursor-pointer"
                         >
                           <Trash2 className="w-3.5 h-3.5" />
                         </button>
@@ -386,8 +386,8 @@ function LeadsContent() {
                 })
               ) : (
                 <tr>
-                  <td colSpan={7} className="py-8 text-center text-slate-400">
-                    No records match the selected filter.
+                  <td colSpan={7} className="py-8 text-center text-slate-400 text-xs">
+                    No leads or demo bookings matching your filter.
                   </td>
                 </tr>
               )}

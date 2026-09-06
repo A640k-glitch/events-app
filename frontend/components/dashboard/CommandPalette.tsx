@@ -131,7 +131,7 @@ export default function CommandPalette() {
                       </div>
                       <div>
                         <div className="text-xs font-bold text-slate-900">Dashboard Overview</div>
-                        <div className="text-[10.5px] text-slate-500 font-normal">Telemetry &amp; summary</div>
+                        <div className="text-[10.5px] text-slate-500 font-normal">Metrics &amp; summary</div>
                       </div>
                     </div>
                     <ArrowRight className="w-3.5 h-3.5 text-slate-400 group-hover:text-[#005B6E] group-hover:translate-x-0.5 transition-all" />
