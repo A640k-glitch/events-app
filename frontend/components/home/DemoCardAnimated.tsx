@@ -92,9 +92,9 @@ export function DemoCardAnimated() {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 118px;
-            height: 118px;
-            border-radius: 26px;
+            width: 106px;
+            height: 106px;
+            border-radius: 24px;
             background: #ffffff !important;
             border: 2.5px solid rgba(255, 255, 255, 0.98);
             box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45), 0 0 24px rgba(0, 144, 173, 0.12);
@@ -107,45 +107,45 @@ export function DemoCardAnimated() {
 
           @media (min-width: 480px) {
             .mobile-chip-orbit {
-              width: 140px;
-              height: 140px;
-              border-radius: 30px;
+              width: 130px;
+              height: 130px;
+              border-radius: 28px;
               box-shadow: 0 20px 42px rgba(21, 15, 69, 0.20);
             }
           }
 
           @media (min-width: 768px) {
             .mobile-chip-orbit {
-              width: 168px;
-              height: 168px;
-              border-radius: 36px;
+              width: 160px;
+              height: 160px;
+              border-radius: 34px;
               box-shadow: 0 24px 50px rgba(21, 15, 69, 0.22);
             }
           }
 
-          /* Small Mobile (< 640px) Orbit — stays safely within viewport borders without shrinking chips */
+          /* Small Mobile (< 640px) Orbit — wider horizontal spread (34vw), flatter vertical height (22px) */
           @keyframes orbit-mobile-wide {
-            0.0% { transform: translate(-50%, -50%) translate(0vw, 28px) scale(1.15); z-index: 35; opacity: 1.0; }
-            5.0% { transform: translate(-50%, -50%) translate(9.3vw, 26.6px) scale(1.14); z-index: 33; opacity: 0.99; }
-            10.0% { transform: translate(-50%, -50%) translate(17.6vw, 22.7px) scale(1.11); z-index: 31; opacity: 0.97; }
-            15.0% { transform: translate(-50%, -50%) translate(24.3vw, 16.5px) scale(1.07); z-index: 28; opacity: 0.93; }
-            20.0% { transform: translate(-50%, -50%) translate(28.5vw, 8.7px) scale(1.02); z-index: 24; opacity: 0.88; }
-            25.0% { transform: translate(-50%, -50%) translate(30.0vw, 0.0px) scale(0.96); z-index: 20; opacity: 0.84; }
-            30.0% { transform: translate(-50%, -50%) translate(28.5vw, -8.7px) scale(0.91); z-index: 17; opacity: 0.79; }
-            35.0% { transform: translate(-50%, -50%) translate(24.3vw, -16.5px) scale(0.86); z-index: 14; opacity: 0.75; }
-            40.0% { transform: translate(-50%, -50%) translate(17.6vw, -22.7px) scale(0.83); z-index: 12; opacity: 0.73; }
-            45.0% { transform: translate(-50%, -50%) translate(9.3vw, -26.6px) scale(0.81); z-index: 11; opacity: 0.72; }
-            50.0% { transform: translate(-50%, -50%) translate(0vw, -28px) scale(0.80); z-index: 10; opacity: 0.70; }
-            55.0% { transform: translate(-50%, -50%) translate(-9.3vw, -26.6px) scale(0.81); z-index: 11; opacity: 0.72; }
-            60.0% { transform: translate(-50%, -50%) translate(-17.6vw, -22.7px) scale(0.83); z-index: 12; opacity: 0.73; }
-            65.0% { transform: translate(-50%, -50%) translate(-24.3vw, -16.5px) scale(0.86); z-index: 14; opacity: 0.75; }
-            70.0% { transform: translate(-50%, -50%) translate(-28.5vw, -8.7px) scale(0.91); z-index: 17; opacity: 0.79; }
-            75.0% { transform: translate(-50%, -50%) translate(-30.0vw, 0.0px) scale(0.96); z-index: 20; opacity: 0.84; }
-            80.0% { transform: translate(-50%, -50%) translate(-28.5vw, 8.7px) scale(1.02); z-index: 24; opacity: 0.88; }
-            85.0% { transform: translate(-50%, -50%) translate(-24.3vw, 16.5px) scale(1.07); z-index: 28; opacity: 0.93; }
-            90.0% { transform: translate(-50%, -50%) translate(-17.6vw, 22.7px) scale(1.11); z-index: 31; opacity: 0.97; }
-            95.0% { transform: translate(-50%, -50%) translate(-9.3vw, 26.6px) scale(1.14); z-index: 33; opacity: 0.99; }
-            100.0% { transform: translate(-50%, -50%) translate(0vw, 28px) scale(1.15); z-index: 35; opacity: 1.0; }
+            0.0% { transform: translate(-50%, -50%) translate(0vw, 22px) scale(1.12); z-index: 35; opacity: 1.0; }
+            5.0% { transform: translate(-50%, -50%) translate(10.5vw, 20.9px) scale(1.11); z-index: 33; opacity: 0.99; }
+            10.0% { transform: translate(-50%, -50%) translate(20.0vw, 17.8px) scale(1.08); z-index: 31; opacity: 0.97; }
+            15.0% { transform: translate(-50%, -50%) translate(27.5vw, 12.9px) scale(1.04); z-index: 28; opacity: 0.93; }
+            20.0% { transform: translate(-50%, -50%) translate(32.3vw, 6.8px) scale(0.99); z-index: 24; opacity: 0.88; }
+            25.0% { transform: translate(-50%, -50%) translate(34.0vw, 0.0px) scale(0.94); z-index: 20; opacity: 0.84; }
+            30.0% { transform: translate(-50%, -50%) translate(32.3vw, -6.8px) scale(0.89); z-index: 17; opacity: 0.79; }
+            35.0% { transform: translate(-50%, -50%) translate(27.5vw, -12.9px) scale(0.84); z-index: 14; opacity: 0.75; }
+            40.0% { transform: translate(-50%, -50%) translate(20.0vw, -17.8px) scale(0.81); z-index: 12; opacity: 0.73; }
+            45.0% { transform: translate(-50%, -50%) translate(10.5vw, -20.9px) scale(0.79); z-index: 11; opacity: 0.72; }
+            50.0% { transform: translate(-50%, -50%) translate(0vw, -22px) scale(0.78); z-index: 10; opacity: 0.70; }
+            55.0% { transform: translate(-50%, -50%) translate(-10.5vw, -20.9px) scale(0.79); z-index: 11; opacity: 0.72; }
+            60.0% { transform: translate(-50%, -50%) translate(-20.0vw, -17.8px) scale(0.81); z-index: 12; opacity: 0.73; }
+            65.0% { transform: translate(-50%, -50%) translate(-27.5vw, -12.9px) scale(0.84); z-index: 14; opacity: 0.75; }
+            70.0% { transform: translate(-50%, -50%) translate(-32.3vw, -6.8px) scale(0.89); z-index: 17; opacity: 0.79; }
+            75.0% { transform: translate(-50%, -50%) translate(-34.0vw, 0.0px) scale(0.94); z-index: 20; opacity: 0.84; }
+            80.0% { transform: translate(-50%, -50%) translate(-32.3vw, 6.8px) scale(0.99); z-index: 24; opacity: 0.88; }
+            85.0% { transform: translate(-50%, -50%) translate(-27.5vw, 12.9px) scale(1.04); z-index: 28; opacity: 0.93; }
+            90.0% { transform: translate(-50%, -50%) translate(-20.0vw, 17.8px) scale(1.08); z-index: 31; opacity: 0.97; }
+            95.0% { transform: translate(-50%, -50%) translate(-10.5vw, 20.9px) scale(1.11); z-index: 33; opacity: 0.99; }
+            100.0% { transform: translate(-50%, -50%) translate(0vw, 22px) scale(1.12); z-index: 35; opacity: 1.0; }
           }
 
           /* Medium Screens / Small Tablets (640px to 767px) */
@@ -203,8 +203,8 @@ export function DemoCardAnimated() {
           }
         `}</style>
 
-        {/* Wide Center Orbit Stage — Sized to fit large cards without dead whitespace */}
-        <div className="relative w-full h-[180px] sm:h-[210px] md:h-[240px] my-1 flex items-center justify-center overflow-visible pointer-events-none">
+        {/* Wide Center Orbit Stage — Sized to fit cards with natural breathing room */}
+        <div className="relative w-full h-[195px] sm:h-[215px] md:h-[240px] my-1 flex items-center justify-center overflow-visible pointer-events-none">
           {CHIPS.map((chip) => (
             <div
               key={chip.name}
@@ -223,8 +223,8 @@ export function DemoCardAnimated() {
           ))}
         </div>
 
-        {/* Preserved Button at Bottom — Lowered on mobile to clear front chips with vibrant desktop-matching cyan */}
-        <div className="pt-0 z-30 relative translate-y-4">
+        {/* Preserved Button at Bottom — Positioned cleanly with dedicated breathing room */}
+        <div className="pt-2 z-30 relative">
           <Link
             href="/products"
             className="inline-flex items-center gap-1.5 sm:gap-2 px-6 py-2.5 sm:px-7 sm:py-3 rounded-full bg-[#0090AD] hover:bg-[#007A94] text-white text-xs sm:text-sm font-extrabold tracking-wide shadow-[0_4px_16px_rgba(0,144,173,0.35)] hover:shadow-[0_6px_20px_rgba(0,144,173,0.45)] transition-all hover:scale-105 active:scale-95 cursor-pointer"

@@ -173,7 +173,7 @@ export default function Home() {
 
       {/* 1.5. Hero Spotlight & Partner Logos Section — Executive Obsidian & Cyan Aurora */}
       <section 
-        className="relative w-full py-5 sm:py-6 px-4 sm:px-6 lg:px-8 overflow-hidden z-10"
+        className="relative w-full py-8 sm:py-8 xl:py-5 px-4 sm:px-6 lg:px-8 overflow-hidden z-10"
         style={{
           backgroundColor: "#05080E",
           backgroundImage: "linear-gradient(145deg, #04060B 0%, #070D18 45%, #05080E 100%)",
