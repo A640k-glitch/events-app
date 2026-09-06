@@ -132,7 +132,7 @@ leadsRouter.get("/", requireAuth, async (req: Request, res: Response): Promise<v
 leadsRouter.patch("/:id", requireAuth, async (req: Request, res: Response): Promise<void> => {
   try {
     const id = getParam(req.params.id);
-    const { status, notes, assignedProductOwnerId } = req.body;
+    const { status, notes, assignedProductOwnerId, bookingDate, bookingTime } = req.body;
 
     const normalizedStatus =
       typeof status === "string" ? status.toUpperCase().replace(/\s+/g, "_") : undefined;
@@ -146,6 +146,8 @@ leadsRouter.patch("/:id", requireAuth, async (req: Request, res: Response): Prom
         ...(statusUpdate ? { status: statusUpdate } : {}),
         ...(notes !== undefined ? { notes } : {}),
         ...(assignedProductOwnerId !== undefined ? { assignedProductOwnerId } : {}),
+        ...(bookingDate !== undefined ? { bookingDate: bookingDate ? new Date(bookingDate) : null } : {}),
+        ...(bookingTime !== undefined ? { bookingTime: bookingTime || null } : {}),
       },
       include: {
         assignedOwner: true,

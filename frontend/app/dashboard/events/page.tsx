@@ -215,10 +215,10 @@ export default function EventsPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => setIsAddModalOpen(true)}
-              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md bg-[#005B6E] hover:bg-[#004754] text-white text-xs font-semibold shadow-xs transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-md bg-[#005B6E] hover:bg-[#004754] text-white text-xs font-semibold shadow-xs transition-all cursor-pointer whitespace-nowrap shrink-0"
             >
               <Plus className="w-3.5 h-3.5" />
               <span>Create Event</span>
@@ -226,9 +226,9 @@ export default function EventsPage() {
           </div>
         </div>
 
-        {/* Compact Sliding View Switcher Tabs & Search (AWS Console Style) */}
+        {/* Compact Sliding View Switcher Tabs & Search (Image 1 Style) */}
         <div className="bg-white p-2 rounded-lg border border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
-          <div className="flex items-center gap-1 p-0.5 rounded-md bg-slate-100 border border-slate-200 overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
             {tabOptions.map((t) => {
               const isActive = viewTab === t.id;
               return (
@@ -236,16 +236,16 @@ export default function EventsPage() {
                   key={t.id}
                   onClick={() => setViewTab(t.id as any)}
                   className={cn(
-                    "h-7 px-2.5 rounded text-xs font-medium transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap",
+                    "h-7.5 px-3 rounded-md text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap shrink-0",
                     isActive
-                      ? "bg-[#005B6E] text-white font-semibold shadow-xs"
-                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
+                      ? "bg-slate-950 text-white font-bold shadow-xs"
+                      : "bg-[#F0F4F8] text-slate-700 hover:bg-slate-200/80 hover:text-slate-900"
                   )}
                 >
                   <span>{t.label}</span>
                   <span className={cn(
                     "text-[10px] px-1.5 py-0.2 rounded font-mono font-bold",
-                    isActive ? "bg-[#004754] text-white" : "bg-slate-200 text-slate-700"
+                    isActive ? "bg-slate-800 text-white" : "bg-slate-200 text-slate-700"
                   )}>
                     {t.count}
                   </span>

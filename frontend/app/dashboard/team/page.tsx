@@ -138,9 +138,9 @@ export default function TeamPage() {
           </button>
         </div>
 
-        {/* Compact Search & Filter Bar (AWS Console Style) */}
+        {/* Compact Search & Filter Bar (Image 1 Style) */}
         <div className="bg-white p-2 rounded-lg border border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
-          <div className="flex items-center gap-1 p-0.5 rounded-md bg-slate-100 border border-slate-200 overflow-x-auto no-scrollbar">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
             {[
               { key: "ALL", label: "All Roles" },
               { key: "ADMIN", label: "Admin" },
@@ -151,10 +151,10 @@ export default function TeamPage() {
                 key={r.key}
                 onClick={() => setRoleFilter(r.key)}
                 className={cn(
-                  "h-7 px-2.5 rounded text-xs font-medium transition-all cursor-pointer whitespace-nowrap",
+                  "h-7.5 px-3 rounded-md text-xs font-semibold transition-all cursor-pointer whitespace-nowrap shrink-0",
                   roleFilter === r.key
-                    ? "bg-[#005B6E] text-white font-semibold shadow-xs"
-                    : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
+                    ? "bg-slate-950 text-white font-bold shadow-xs"
+                    : "bg-[#F0F4F8] text-slate-700 hover:bg-slate-200/80 hover:text-slate-900"
                 )}
               >
                 {r.label}

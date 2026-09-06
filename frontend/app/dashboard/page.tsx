@@ -78,20 +78,20 @@ export default function DashboardOverviewPage() {
             </p>
           </div>
 
-          <div className="flex flex-wrap sm:flex-nowrap items-center gap-2 shrink-0">
+          <div className="flex items-center gap-2 shrink-0">
             <button
               onClick={() => setIsAddEventOpen(true)}
-              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-800 transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-800 transition-all cursor-pointer shadow-2xs whitespace-nowrap shrink-0"
             >
-              <Plus className="w-3.5 h-3.5 text-[#005B6E]" />
+              <Plus className="w-3.5 h-3.5 text-[#005B6E] shrink-0" />
               <span>Create Event</span>
             </button>
 
             <button
               onClick={() => setIsAddLeadOpen(true)}
-              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md bg-[#005B6E] hover:bg-[#004754] text-white text-xs font-semibold shadow-xs transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-md bg-[#005B6E] hover:bg-[#004754] text-white text-xs font-semibold shadow-xs transition-all cursor-pointer whitespace-nowrap shrink-0"
             >
-              <UserPlus className="w-3.5 h-3.5" />
+              <UserPlus className="w-3.5 h-3.5 shrink-0" />
               <span>Add Lead</span>
             </button>
           </div>
@@ -129,7 +129,7 @@ export default function DashboardOverviewPage() {
           </motion.div>
         )}
 
-        {/* 3. Live Database Telemetry Metrics - Compact AWS Style */}
+        {/* 3. Live Database Telemetry Metrics - Colored Brand Cards with Top Accent Borders */}
         <motion.div variants={itemVariants} className="space-y-2.5">
           
           <div className="flex items-center justify-between">
@@ -150,47 +150,47 @@ export default function DashboardOverviewPage() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             
             {/* Metric 1: Active Events in DB */}
-            <div className="p-3.5 rounded-lg border border-slate-200 bg-white hover:border-slate-300 transition-colors space-y-1">
-              <span className="text-[11px] font-semibold text-slate-500 block">Active Events</span>
-              <div className="text-2xl font-bold text-slate-900 tracking-tight">
+            <div className="p-3.5 rounded-lg border border-slate-200 bg-white shadow-2xs space-y-1">
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Active Events</span>
+              <div className="text-2xl font-bold text-slate-950 tracking-tight">
                 {events.length}
               </div>
-              <div className="text-[11px] text-slate-500">
+              <div className="text-[11px] text-slate-500 font-medium">
                 Summits &amp; conferences scheduled
               </div>
-              <div className="pt-0.5 flex items-center gap-1 text-[11px] text-[#005B6E] font-semibold">
+              <div className="pt-0.5 flex items-center gap-1 text-[11px] text-[#005B6E] font-medium">
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>{events.filter((e) => e.isFifthLabAttending).length} active exhibitions</span>
               </div>
             </div>
 
             {/* Metric 2: Inbound Leads from DB */}
-            <div className="p-3.5 rounded-lg border border-slate-200 bg-white hover:border-slate-300 transition-colors space-y-1">
-              <span className="text-[11px] font-semibold text-slate-500 block">Demo Inquiries &amp; Leads</span>
-              <div className="text-2xl font-bold text-slate-900 tracking-tight">
+            <div className="p-3.5 rounded-lg border border-slate-200 bg-white shadow-2xs space-y-1">
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Demo Inquiries &amp; Leads</span>
+              <div className="text-2xl font-bold text-slate-950 tracking-tight">
                 {leads.length}
               </div>
-              <div className="text-[11px] text-slate-500">
+              <div className="text-[11px] text-slate-500 font-medium">
                 Prospect inquiries from demo form
               </div>
-              <div className="pt-0.5 flex items-center gap-1 text-[#005B6E] font-semibold text-[11px]">
+              <div className="pt-0.5 flex items-center gap-1 text-[#005B6E] font-medium text-[11px]">
                 <TrendingUp className="w-3.5 h-3.5" />
                 <span>{stats.unreadLeadsCount} unread inquiries</span>
               </div>
             </div>
 
             {/* Metric 3: Real QR Door Check-ins from DB */}
-            <div className="p-3.5 rounded-lg border border-slate-200 bg-white hover:border-slate-300 transition-colors space-y-1">
-              <span className="text-[11px] font-semibold text-slate-500 block">Verified Check-in Rate</span>
-              <div className="text-2xl font-bold text-slate-900 tracking-tight">
+            <div className="p-3.5 rounded-lg border border-slate-200 bg-white shadow-2xs space-y-1">
+              <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Verified Check-in Rate</span>
+              <div className="text-2xl font-bold text-slate-950 tracking-tight">
                 {stats.publicRegistrationsCount > 0 
                   ? `${Math.round(((stats.checkedInCount || 0) / stats.publicRegistrationsCount) * 100)}%` 
                   : "0%"}
               </div>
-              <div className="text-[11px] text-slate-500">
+              <div className="text-[11px] text-slate-500 font-medium">
                 {stats.checkedInCount || 0} checked in of {stats.publicRegistrationsCount} registered
               </div>
-              <div className="pt-0.5 flex items-center gap-1 text-[#005B6E] font-semibold text-[11px]">
+              <div className="pt-0.5 flex items-center gap-1 text-emerald-600 font-medium text-[11px]">
                 <CheckCircle2 className="w-3.5 h-3.5" />
                 <span>Real-time digital pass verification</span>
               </div>
@@ -227,15 +227,15 @@ export default function DashboardOverviewPage() {
             <div className="overflow-x-auto">
               <table className="w-full text-left text-xs border-collapse">
                 <thead>
-                  <tr className="border-b border-slate-200 bg-slate-50 text-slate-500 uppercase tracking-wider text-[10px] font-semibold">
-                    <th className="py-2 px-3">Visitor &amp; Contact</th>
-                    <th className="py-2 px-3">Company</th>
-                    <th className="py-2 px-3">Product</th>
-                    <th className="py-2 px-3">Status</th>
-                    <th className="py-2 px-3">Assigned To</th>
+                  <tr className="border-b border-slate-300 bg-slate-100/90 text-slate-800 uppercase tracking-wider text-[10px] font-bold">
+                    <th className="py-2.5 px-3">Visitor &amp; Contact</th>
+                    <th className="py-2.5 px-3">Company</th>
+                    <th className="py-2.5 px-3">Product</th>
+                    <th className="py-2.5 px-3">Status</th>
+                    <th className="py-2.5 px-3">Assigned To</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-slate-100">
+                <tbody className="divide-y divide-slate-200">
                   {isLoading ? (
                     <tr>
                       <td colSpan={5} className="p-0">
@@ -244,18 +244,18 @@ export default function DashboardOverviewPage() {
                     </tr>
                   ) : recentLeads.length > 0 ? (
                     recentLeads.map((lead) => (
-                    <tr key={lead.id} className="hover:bg-slate-50/70 transition-colors">
+                    <tr key={lead.id} className="hover:bg-slate-50 transition-colors">
                       {/* Visitor */}
-                      <td className="py-2 px-3">
+                      <td className="py-2.5 px-3">
                         <div className="flex items-center gap-2">
-                          <div className="w-6 h-6 rounded-full bg-slate-100 text-slate-700 font-semibold text-[10px] flex items-center justify-center shrink-0 uppercase">
+                          <div className="w-6 h-6 rounded-full bg-slate-100 border border-slate-300 text-slate-800 font-bold text-[10px] flex items-center justify-center shrink-0 uppercase">
                             {lead.visitorName ? lead.visitorName.slice(0, 2) : "VI"}
                           </div>
                           <div className="min-w-0">
                             <div className="font-semibold text-slate-900 truncate max-w-[150px]">
                               {lead.visitorName}
                             </div>
-                            <div className="text-[10.5px] text-slate-400 truncate max-w-[150px]">
+                            <div className="text-[10.5px] text-slate-500 truncate max-w-[150px]">
                               {lead.email}
                             </div>
                           </div>
@@ -263,36 +263,36 @@ export default function DashboardOverviewPage() {
                       </td>
 
                       {/* Company */}
-                      <td className="py-2 px-3 font-medium text-slate-700 whitespace-nowrap">
+                      <td className="py-2.5 px-3 font-semibold text-slate-800 whitespace-nowrap">
                         {lead.company || "Enterprise Corp"}
                       </td>
 
                       {/* Product */}
-                      <td className="py-2 px-3 whitespace-nowrap">
-                        <span className="font-medium text-slate-900 text-xs">
+                      <td className="py-2.5 px-3 whitespace-nowrap">
+                        <span className="font-bold text-[#005B6E] text-xs">
                           {lead.productInterested || "Bulkwave"}
                         </span>
                       </td>
 
                       {/* Status (Clean indicator dot, no pill) */}
-                      <td className="py-2 px-3 whitespace-nowrap">
-                        <span className="inline-flex items-center gap-1.5 text-xs font-medium text-slate-800">
+                      <td className="py-2.5 px-3 whitespace-nowrap">
+                        <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-800">
                           <span className={cn(
-                            "w-1.5 h-1.5 rounded-full shrink-0",
+                            "w-2 h-2 rounded-full shrink-0",
                             lead.status === "Unread" && "bg-slate-400",
                             lead.status === "Qualified" && "bg-[#005B6E]",
-                            lead.status === "Converted" && "bg-emerald-500",
+                            lead.status === "Converted" && "bg-emerald-600",
                             lead.status === "Followed Up" && "bg-amber-500",
-                            lead.status === "Closed" && "bg-slate-400"
+                            lead.status === "Closed" && "bg-slate-500"
                           )} />
                           <span>{lead.status}</span>
                         </span>
                       </td>
 
                       {/* Assigned To */}
-                      <td className="py-2 px-3 whitespace-nowrap">
-                        <div className="flex items-center gap-1.5 text-slate-700 text-xs font-medium">
-                          <div className="w-5 h-5 rounded-full bg-slate-100 text-slate-500 text-[10px] font-bold flex items-center justify-center shrink-0 uppercase">
+                      <td className="py-2.5 px-3 whitespace-nowrap">
+                        <div className="flex items-center gap-1.5 text-slate-700 text-xs font-semibold">
+                          <div className="w-5 h-5 rounded-full bg-slate-100 border border-slate-300 text-slate-700 text-[10px] font-bold flex items-center justify-center shrink-0 uppercase">
                             {lead.assignedProductOwner ? lead.assignedProductOwner.charAt(0) : "P"}
                           </div>
                           <span>{lead.assignedProductOwner || "Unassigned"}</span>
@@ -312,7 +312,7 @@ export default function DashboardOverviewPage() {
             </div>
           </div>
 
-          {/* Right: Upcoming Events (4 Cols) - Clean AWS Style (No Asymmetric Borders!) */}
+          {/* Right: Upcoming Events (4 Cols) - Clean AWS Style with Subtle Brand Accents */}
           <div className="lg:col-span-4 rounded-lg border border-slate-200 bg-white p-3.5 sm:p-4 space-y-3 text-left">
             <div className="flex items-center justify-between pb-2 border-b border-slate-100">
               <div>
@@ -337,7 +337,7 @@ export default function DashboardOverviewPage() {
                 return (
                   <div
                     key={evt.id}
-                    className="p-2.5 rounded-lg border border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/60 transition-colors space-y-1"
+                    className="p-2.5 rounded-lg border border-slate-200 bg-gradient-to-r from-[#EAF7F7]/30 to-white hover:border-[#005B6E]/40 hover:bg-[#EAF7F7]/50 transition-all space-y-1"
                   >
                     <div className="flex items-start justify-between gap-2">
                       <span className="text-xs font-bold text-slate-900 line-clamp-1">
@@ -348,7 +348,7 @@ export default function DashboardOverviewPage() {
                       </span>
                     </div>
 
-                    <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium">
+                    <div className="flex items-center justify-between text-[11px] text-slate-600 font-medium">
                       <span>{evt.city} • {evt.date}</span>
                       <span className="text-emerald-700 font-semibold">{evt.time || "Scheduled"}</span>
                     </div>

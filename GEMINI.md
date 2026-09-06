@@ -23,3 +23,8 @@ Whenever the user asks to push or deploy updates:
    git checkout frontend/core
    ```
 Always keep `main`, `backend/core`, and `frontend/core` in sync when pushing.
+
+## Card Design System Rules
+- **NEVER use cards with top colored accent borders** (e.g. `border-t-4`, `border-t-[color]`, top accent colored bars, or top wedge lines).
+- **NEVER use asymmetric thick colored top borders** or tinted gradient card headers on KPI/metric/dashboard cards.
+- Cards must use a clean, uniform, professional enterprise style with consistent borders (`border border-slate-200`), clean white background (`bg-white`), subtle shadow (`shadow-2xs` or `shadow-none`), and balanced typography.

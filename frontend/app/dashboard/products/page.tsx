@@ -32,6 +32,7 @@ export default function ProductsPage() {
   const [selectedProduct, setSelectedProduct] = useState<FifthLabProduct | null>(null);
   const [activeFilter, setActiveFilter] = useState<"ALL" | "FIFTHLAB" | "CWG">("ALL");
   const [searchQuery, setSearchQuery] = useState("");
+  const [modalLeadFilter, setModalLeadFilter] = useState<"ALL" | "BOOKINGS" | "INBOUND">("ALL");
 
   // Live matched leads from global state for the selected product
   const activeProductLeads = selectedProduct
@@ -53,6 +54,13 @@ export default function ProductsPage() {
     : (selectedProduct?.recentLeads || []);
 
   const totalDemosForSelected = displayLeads.filter((l: any) => l.bookingDate || l.bookingTime).length;
+  const bookedLeadsForSelected = displayLeads.filter((l: any) => l.bookingDate || l.bookingTime);
+  const inboundLeadsForSelected = displayLeads.filter((l: any) => !l.bookingDate && !l.bookingTime);
+  const visibleModalLeads = modalLeadFilter === "BOOKINGS"
+    ? bookedLeadsForSelected
+    : modalLeadFilter === "INBOUND"
+    ? inboundLeadsForSelected
+    : displayLeads;
   const convertedForSelected = displayLeads.filter((l: any) => l.status === "Converted" || l.status === "Qualified").length;
   const followedUpForSelected = displayLeads.filter((l: any) => l.status === "Followed Up").length;
   const unreadForSelected = displayLeads.filter((l: any) => l.status === "Unread").length;
@@ -141,76 +149,76 @@ export default function ProductsPage() {
             </p>
           </div>
 
-          <div className="flex items-center gap-2">
+          <div className="flex items-center gap-2 shrink-0">
             <Link
               href="/demo"
               target="_blank"
-              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md border border-slate-200 bg-white hover:bg-slate-50 text-slate-700 text-xs font-semibold shadow-2xs transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-slate-800 text-xs font-semibold shadow-2xs transition-all cursor-pointer whitespace-nowrap shrink-0"
             >
               <span>Test Demo Booking</span>
-              <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+              <ExternalLink className="w-3.5 h-3.5 text-slate-500 shrink-0" />
             </Link>
 
             <button
               onClick={() => setIsAddModalOpen(true)}
-              className="inline-flex items-center gap-1.5 h-8 px-3 rounded-md bg-[#005B6E] hover:bg-[#004754] text-white text-xs font-semibold shadow-xs transition-all cursor-pointer"
+              className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-md bg-[#005B6E] hover:bg-[#004754] text-white text-xs font-semibold shadow-xs transition-all cursor-pointer whitespace-nowrap shrink-0"
             >
-              <Plus className="w-3.5 h-3.5" />
+              <Plus className="w-3.5 h-3.5 shrink-0" />
               <span>Add Product</span>
             </button>
           </div>
         </div>
 
-        {/* Aggregate KPI Strip - Compact AWS Enterprise Cards */}
+        {/* Aggregate KPI Strip - Clean Enterprise Style */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
-          <div className="bg-[#F0F6FF] p-3 rounded-lg border border-[#D8E6FA] space-y-0.5">
-            <span className="text-[10px] font-bold text-[#1E3A8A] uppercase tracking-wider">Ecosystem Solutions</span>
+          <div className="bg-white p-3 rounded-lg border border-slate-200 space-y-0.5 shadow-2xs">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Ecosystem Solutions</span>
             <div className="text-xl font-bold text-slate-950 flex items-baseline gap-2">
               <span>{products.length}</span>
-              <span className="text-xs font-semibold text-[#2563EB]">Active in DB</span>
+              <span className="text-xs font-semibold text-slate-600">Active in DB</span>
             </div>
-            <span className="text-[10.5px] text-slate-600">FifthLab Core + CWG Infra</span>
+            <span className="text-[10.5px] text-slate-500 font-medium">FifthLab Core + CWG Infra</span>
           </div>
 
-          <div className="bg-[#EAF7F7] p-3 rounded-lg border border-[#CEEFEF] space-y-0.5">
-            <span className="text-[10px] font-bold text-[#005B6E] uppercase tracking-wider">Total Scheduled Demos</span>
-            <div className="text-xl font-bold text-[#005B6E] flex items-baseline gap-2">
+          <div className="bg-white p-3 rounded-lg border border-slate-200 space-y-0.5 shadow-2xs">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Total Scheduled Demos</span>
+            <div className="text-xl font-bold text-slate-950 flex items-baseline gap-2">
               <span>{totalDemosScheduled}</span>
               <span className="text-xs font-semibold text-slate-600">active bookings</span>
             </div>
-            <span className="text-[10.5px] text-slate-600">Max 11 executive bookings</span>
+            <span className="text-[10.5px] text-slate-500 font-medium">Max 11 executive bookings</span>
           </div>
 
-          <div className="bg-[#FAF2F7] p-3 rounded-lg border border-[#F6DFEC] space-y-0.5">
-            <span className="text-[10px] font-bold text-[#9D174D] uppercase tracking-wider">Prospect Inquiries</span>
+          <div className="bg-white p-3 rounded-lg border border-slate-200 space-y-0.5 shadow-2xs">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Prospect Inquiries</span>
             <div className="text-xl font-bold text-slate-950 flex items-baseline gap-2">
               <span>{totalLeadsCaptured}</span>
-              <span className="text-xs font-semibold text-[#BE185D]">leads routed</span>
+              <span className="text-xs font-semibold text-slate-600">leads routed</span>
             </div>
-            <span className="text-[10.5px] text-slate-600">Recorded from summits &amp; demos</span>
+            <span className="text-[10.5px] text-slate-500 font-medium">Recorded from summits &amp; demos</span>
           </div>
 
-          <div className="bg-[#ECFDF5] p-3 rounded-lg border border-[#A7F3D0] space-y-0.5">
-            <span className="text-[10px] font-bold text-[#047857] uppercase tracking-wider">Conversion Velocity</span>
-            <div className="text-xl font-bold text-emerald-700 flex items-baseline gap-2">
+          <div className="bg-white p-3 rounded-lg border border-slate-200 space-y-0.5 shadow-2xs">
+            <span className="text-[10px] font-bold text-slate-500 uppercase tracking-wider block">Conversion Velocity</span>
+            <div className="text-xl font-bold text-slate-950 flex items-baseline gap-2">
               <span>{avgConversion}%</span>
-              <span className="text-xs font-semibold text-emerald-600">qualified</span>
+              <span className="text-xs font-semibold text-slate-600">qualified</span>
             </div>
-            <span className="text-[10.5px] text-slate-600">Qualified &amp; converted prospects</span>
+            <span className="text-[10.5px] text-slate-500 font-medium">Qualified &amp; converted prospects</span>
           </div>
         </div>
 
         {/* Compact Filter & Search Toolbar (AWS Console Style) */}
         <div className="bg-white p-2 rounded-lg border border-slate-200 flex flex-col sm:flex-row items-center justify-between gap-2">
-          {/* Compact Segmented Filter Tabs */}
-          <div className="flex items-center gap-1 p-0.5 bg-slate-100 rounded-md w-full sm:w-auto border border-slate-200">
+          {/* Compact Segmented Filter Tabs - Image 1 Design */}
+          <div className="flex items-center gap-1.5 w-full sm:w-auto overflow-x-auto no-scrollbar">
             <button
               onClick={() => setActiveFilter("ALL")}
               className={cn(
-                "flex-1 sm:flex-none h-7 px-2.5 rounded text-xs font-medium transition-all cursor-pointer",
+                "h-7.5 px-3 rounded-md text-xs font-semibold transition-all cursor-pointer whitespace-nowrap",
                 activeFilter === "ALL"
-                  ? "bg-[#005B6E] text-white font-semibold shadow-xs"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
+                  ? "bg-slate-950 text-white font-bold shadow-xs"
+                  : "bg-[#F0F4F8] text-slate-700 hover:bg-slate-200/80 hover:text-slate-900"
               )}
             >
               All ({products.length})
@@ -218,10 +226,10 @@ export default function ProductsPage() {
             <button
               onClick={() => setActiveFilter("FIFTHLAB")}
               className={cn(
-                "flex-1 sm:flex-none h-7 px-2.5 rounded text-xs font-medium transition-all cursor-pointer",
+                "h-7.5 px-3 rounded-md text-xs font-semibold transition-all cursor-pointer whitespace-nowrap",
                 activeFilter === "FIFTHLAB"
-                  ? "bg-[#005B6E] text-white font-semibold shadow-xs"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
+                  ? "bg-slate-950 text-white font-bold shadow-xs"
+                  : "bg-[#F0F4F8] text-slate-700 hover:bg-slate-200/80 hover:text-slate-900"
               )}
             >
               FifthLab ({products.filter((p) => !(p.slug || "").startsWith("cwg-")).length})
@@ -229,10 +237,10 @@ export default function ProductsPage() {
             <button
               onClick={() => setActiveFilter("CWG")}
               className={cn(
-                "flex-1 sm:flex-none h-7 px-2.5 rounded text-xs font-medium transition-all cursor-pointer",
+                "h-7.5 px-3 rounded-md text-xs font-semibold transition-all cursor-pointer whitespace-nowrap",
                 activeFilter === "CWG"
-                  ? "bg-[#005B6E] text-white font-semibold shadow-xs"
-                  : "text-slate-600 hover:text-slate-900 hover:bg-slate-200/50"
+                  ? "bg-slate-950 text-white font-bold shadow-xs"
+                  : "bg-[#F0F4F8] text-slate-700 hover:bg-slate-200/80 hover:text-slate-900"
               )}
             >
               CWG Infra ({products.filter((p) => (p.slug || "").startsWith("cwg-")).length})
@@ -314,7 +322,7 @@ export default function ProductsPage() {
                           />
                         </div>
 
-                        <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 bg-white/90 border border-black/[0.06] text-slate-400 group-hover:text-slate-900 group-hover:bg-white transition-colors">
+                        <div className="w-7 h-7 rounded-full flex items-center justify-center shrink-0 bg-white/90 border border-black/[0.08] text-slate-500 group-hover:bg-slate-950 group-hover:text-white group-hover:border-slate-950 transition-all duration-200 shadow-2xs">
                           <ArrowUpRight className="w-3.5 h-3.5 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
                         </div>
                       </div>
@@ -335,32 +343,28 @@ export default function ProductsPage() {
                       </p>
                     </div>
 
-                    {/* Bottom Metrics Row */}
-                    <div className="pt-2.5 border-t border-black/[0.06] flex items-center justify-between text-xs">
+                    {/* Bottom Metrics Row - Spacious and clean without Inspect button */}
+                    <div className="pt-2.5 border-t border-black/[0.06] grid grid-cols-2 gap-3 text-xs">
                       <div className="space-y-0.5">
-                        <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Scheduled Demos</span>
+                        <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">
+                          Scheduled Demos
+                        </span>
                         <div 
-                          className="font-bold flex items-center gap-1 text-xs"
-                          style={{ color: theme.accentColor }}
+                          className="font-bold flex items-center gap-1.5 text-xs text-slate-950"
                         >
-                          <Calendar className="w-3.5 h-3.5 shrink-0" />
+                          <Calendar className="w-3.5 h-3.5 shrink-0 text-[#005B6E]" />
                           <span>{liveDemoCount} Bookings</span>
                         </div>
                       </div>
 
-                      <div className="flex items-center gap-2.5">
-                        <div className="text-right space-y-0.5">
-                          <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider">Leads</span>
-                          <div className="font-bold text-slate-900 flex items-center justify-end gap-1 text-xs">
-                            <Users className="w-3.5 h-3.5 text-slate-500 shrink-0" />
-                            <span>{liveLeadCount}</span>
-                          </div>
-                        </div>
-
-                        <span className="inline-flex items-center gap-1 px-2.5 py-1 rounded-md bg-[#005B6E] text-white text-[11px] font-semibold group-hover:bg-[#004754] transition-all whitespace-nowrap">
-                          <span>Inspect</span>
-                          <ArrowUpRight className="w-3 h-3" />
+                      <div className="space-y-0.5 text-right">
+                        <span className="text-[10px] text-slate-500 font-bold uppercase tracking-wider block">
+                          Total Leads
                         </span>
+                        <div className="font-bold text-slate-950 flex items-center justify-end gap-1.5 text-xs">
+                          <Users className="w-3.5 h-3.5 text-slate-500 shrink-0" />
+                          <span>{liveLeadCount} Inquiries</span>
+                        </div>
                       </div>
                     </div>
 
@@ -504,37 +508,75 @@ export default function ProductsPage() {
                   </Link>
                 </div>
 
-                {displayLeads.length > 0 ? (
-                  <div className="border border-slate-200 rounded-lg overflow-hidden bg-white shadow-none">
+                {/* Sub-filter Tabs for Modal - Image 1 Design */}
+                <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+                  <button
+                    onClick={() => setModalLeadFilter("ALL")}
+                    className={cn(
+                      "h-7.5 px-3 rounded-md text-xs font-semibold transition-all cursor-pointer whitespace-nowrap",
+                      modalLeadFilter === "ALL"
+                        ? "bg-slate-950 text-white font-bold shadow-xs"
+                        : "bg-[#F0F4F8] text-slate-700 hover:bg-slate-200/80 hover:text-slate-900"
+                    )}
+                  >
+                    All Contacts ({displayLeads.length})
+                  </button>
+                  <button
+                    onClick={() => setModalLeadFilter("BOOKINGS")}
+                    className={cn(
+                      "h-7.5 px-3 rounded-md text-xs font-semibold transition-all cursor-pointer flex items-center gap-1.5 whitespace-nowrap",
+                      modalLeadFilter === "BOOKINGS"
+                        ? "bg-slate-950 text-white font-bold shadow-xs"
+                        : "bg-[#F0F4F8] text-slate-700 hover:bg-slate-200/80 hover:text-slate-900"
+                    )}
+                  >
+                    <Calendar className="w-3.5 h-3.5" />
+                    <span>Confirmed Bookings ({bookedLeadsForSelected.length})</span>
+                  </button>
+                  <button
+                    onClick={() => setModalLeadFilter("INBOUND")}
+                    className={cn(
+                      "h-7.5 px-3 rounded-md text-xs font-semibold transition-all cursor-pointer whitespace-nowrap",
+                      modalLeadFilter === "INBOUND"
+                        ? "bg-slate-950 text-white font-bold shadow-xs"
+                        : "bg-[#F0F4F8] text-slate-700 hover:bg-slate-200/80 hover:text-slate-900"
+                    )}
+                  >
+                    Inbound Inquiries ({inboundLeadsForSelected.length})
+                  </button>
+                </div>
+
+                {visibleModalLeads.length > 0 ? (
+                  <div className="border border-slate-300 rounded-lg overflow-hidden bg-white shadow-none">
                     <div className="overflow-x-auto">
                       <table className="w-full text-left text-xs border-collapse">
                         <thead>
-                          <tr className="border-b border-slate-200 bg-slate-50 text-slate-500 uppercase tracking-wider text-[10px] font-semibold">
-                            <th className="py-2 px-3">Customer &amp; Contact</th>
-                            <th className="py-2 px-3">Company / Bank</th>
-                            <th className="py-2 px-3">Scheduled Demo</th>
-                            <th className="py-2 px-3">Status</th>
-                            <th className="py-2 px-3">Assigned Specialist</th>
+                          <tr className="border-b border-slate-300 bg-slate-100/90 text-slate-800 uppercase tracking-wider text-[10px] font-bold">
+                            <th className="py-2.5 px-3">Customer &amp; Contact</th>
+                            <th className="py-2.5 px-3">Company / Bank</th>
+                            <th className="py-2.5 px-3">Scheduled Demo</th>
+                            <th className="py-2.5 px-3">Status</th>
+                            <th className="py-2.5 px-3">Assigned Specialist</th>
                           </tr>
                         </thead>
-                        <tbody className="divide-y divide-slate-100">
-                          {displayLeads.map((lead) => (
-                            <tr key={lead.id} className="hover:bg-slate-50/70 transition-colors">
+                        <tbody className="divide-y divide-slate-200">
+                          {visibleModalLeads.map((lead) => (
+                            <tr key={lead.id} className="hover:bg-slate-50 transition-colors">
                               {/* Customer Contact */}
-                              <td className="py-2 px-3">
+                              <td className="py-2.5 px-3">
                                 <div className="flex items-center gap-2">
-                                  <div className="w-6 h-6 rounded-full bg-[#EAF7F7] border border-[#CEEFEF] text-[#005B6E] font-bold text-[10px] flex items-center justify-center shrink-0 uppercase">
+                                  <div className="w-6 h-6 rounded-full bg-slate-100 border border-slate-300 text-slate-800 font-bold text-[10px] flex items-center justify-center shrink-0 uppercase">
                                     {lead.visitorName ? lead.visitorName.slice(0, 2) : "CU"}
                                   </div>
                                   <div className="min-w-0">
-                                    <div className="font-semibold text-slate-950 truncate max-w-[140px]">
+                                    <div className="font-semibold text-slate-950 truncate max-w-[150px]">
                                       {lead.visitorName}
                                     </div>
-                                    <div className="text-[10.5px] text-slate-500 truncate max-w-[140px]">
+                                    <div className="text-[10.5px] text-slate-600 truncate max-w-[150px]">
                                       {lead.email}
                                     </div>
                                     {lead.phone && (
-                                      <div className="text-[10px] text-slate-400 font-mono">
+                                      <div className="text-[10px] text-slate-500 font-mono">
                                         {lead.phone}
                                       </div>
                                     )}
@@ -543,63 +585,62 @@ export default function ProductsPage() {
                               </td>
 
                               {/* Company */}
-                              <td className="py-2 px-3 font-medium text-slate-800 whitespace-nowrap">
+                              <td className="py-2.5 px-3 font-semibold text-slate-900 whitespace-nowrap">
                                 {lead.company || "Enterprise Corp"}
                               </td>
 
                               {/* Scheduled Demo Time */}
-                              <td className="py-2 px-3 whitespace-nowrap">
+                              <td className="py-2.5 px-3 whitespace-nowrap">
                                 {lead.bookingDate || lead.bookingTime ? (
                                   <div className="space-y-0.5">
-                                    <div className="flex items-center gap-1 text-xs font-semibold text-slate-900">
-                                      <Calendar className="w-3 h-3 text-[#005B6E]" />
+                                    <div className="flex items-center gap-1 text-xs font-bold text-slate-950">
+                                      <Calendar className="w-3.5 h-3.5 text-[#005B6E] shrink-0" />
                                       <span>{lead.bookingDate || "Date Pending"}</span>
                                     </div>
-                                    <div className="flex items-center gap-1 text-[10.5px] text-slate-500">
-                                      <Clock className="w-3 h-3 text-slate-400" />
+                                    <div className="flex items-center gap-1 text-[10.5px] text-slate-600 font-medium">
+                                      <Clock className="w-3 h-3 text-slate-500 shrink-0" />
                                       <span>{lead.bookingTime || "Time Pending"}</span>
                                     </div>
                                   </div>
                                 ) : (
-                                  <span className="text-[11px] text-slate-400 italic">
-                                    General Inbound
+                                  <span className="text-[11px] font-medium text-slate-500 italic flex items-center gap-1">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-slate-300 shrink-0" />
+                                    Inbound (Unscheduled)
                                   </span>
                                 )}
                               </td>
 
-                              {/* Status Dropdown */}
-                              <td className="py-2 px-3 whitespace-nowrap">
-                                <select
-                                  value={lead.status}
-                                  onChange={(e) => handleLeadStatusChange(lead.id, e.target.value as any)}
-                                  className={cn(
-                                    "text-[10.5px] font-semibold px-2 py-0.5 rounded border focus:outline-none cursor-pointer bg-white h-6.5",
-                                    lead.status === "Unread" && "text-slate-700 border-slate-300",
-                                    lead.status === "Qualified" && "text-[#005B6E] border-[#CEEFEF] bg-[#EAF7F7]",
-                                    lead.status === "Converted" && "text-emerald-800 border-emerald-300 bg-emerald-50",
-                                    lead.status === "Followed Up" && "text-amber-800 border-amber-300 bg-amber-50",
-                                    lead.status === "Closed" && "text-slate-500 border-slate-200 bg-slate-100"
-                                  )}
-                                >
-                                  <option value="Unread">Unread</option>
-                                  <option value="Followed Up">Followed Up</option>
-                                  <option value="Qualified">Qualified</option>
-                                  <option value="Converted">Converted</option>
-                                  <option value="Closed">Closed</option>
-                                </select>
+                              {/* Status Dropdown with indicator dot */}
+                              <td className="py-2.5 px-3 whitespace-nowrap">
+                                <div className="flex items-center gap-1.5">
+                                  <span className={cn(
+                                    "w-2 h-2 rounded-full shrink-0",
+                                    lead.status === "Unread" && "bg-slate-400",
+                                    lead.status === "Followed Up" && "bg-amber-500",
+                                    lead.status === "Qualified" && "bg-[#005B6E]",
+                                    lead.status === "Converted" && "bg-emerald-600",
+                                    lead.status === "Closed" && "bg-slate-500"
+                                  )} />
+                                  <select
+                                    value={lead.status}
+                                    onChange={(e) => handleLeadStatusChange(lead.id, e.target.value as any)}
+                                    className="text-[10.5px] font-bold text-slate-800 bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:border-[#005B6E] focus:outline-none cursor-pointer h-6.5"
+                                  >
+                                    <option value="Unread">Unread</option>
+                                    <option value="Followed Up">Followed Up</option>
+                                    <option value="Qualified">Qualified</option>
+                                    <option value="Converted">Converted</option>
+                                    <option value="Closed">Closed</option>
+                                  </select>
+                                </div>
                               </td>
 
                               {/* Handled / Assigned By Dropdown */}
-                              <td className="py-2 px-3 whitespace-nowrap">
+                              <td className="py-2.5 px-3 whitespace-nowrap">
                                 <select
                                   value={lead.assignedProductOwnerId || "unassigned"}
                                   onChange={(e) => handleLeadOwnerChange(lead.id, e.target.value)}
-                                  className={cn(
-                                    "text-[10.5px] font-medium px-2 py-0.5 rounded border focus:outline-none cursor-pointer bg-white h-6.5",
-                                    lead.assignedProductOwner && lead.assignedProductOwner !== "Unassigned"
-                                      ? "border-[#D8E6FA] text-[#1E3A8A] font-semibold bg-[#F0F6FF]"
-                                      : "border-slate-300 text-slate-600"
-                                  )}
+                                  className="text-[10.5px] font-semibold text-slate-800 bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:border-[#005B6E] focus:outline-none cursor-pointer h-6.5"
                                 >
                                   <option value="unassigned">Unassigned</option>
                                   {owners.map((owner) => (

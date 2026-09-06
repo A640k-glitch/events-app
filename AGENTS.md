@@ -30,3 +30,8 @@ Whenever the user asks to "push", "push updates", or deploy changes:
    ```
 
 **Never push only `frontend/core` without also merging and pushing to `main` and `backend/core`.**
+
+## Card Design System Rules
+- **NEVER use cards with top colored accent borders** (e.g. `border-t-4`, `border-t-[color]`, top colored accent lines or wedges).
+- **NEVER use asymmetric thick colored top borders** or garish tinted gradient headers on KPI / metric cards.
+- Cards must use a clean, uniform enterprise style: consistent borders (`border border-slate-200`), clean white background (`bg-white`), subtle shadow (`shadow-2xs` or `shadow-none`), and crisp typography.
