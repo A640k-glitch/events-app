@@ -4,7 +4,6 @@ import React, { createContext, useContext, useState, useEffect, useCallback } fr
 import { FifthLabEvent, Lead, FifthLabProduct, ProductOwner, LeadStatus, EventCategory, EventPriority, AttendanceRecord } from "@/lib/types";
 import { api, setAuthToken, clearAuthToken } from "@/lib/api-client";
 import { resolveProductLogo, resolveProductTheme, CANONICAL_FALLBACK_PRODUCTS } from "@/lib/products-data";
-import { useRouter } from "next/navigation";
 
 export interface SystemNotification {
   id: string;
@@ -220,7 +219,6 @@ function mapPrismaProduct(p: any): FifthLabProduct {
 }
 
 export function AppProvider({ children }: { children: React.ReactNode }) {
-  const router = useRouter();
   const [events, setEvents] = useState<FifthLabEvent[]>([]);
   const [leads, setLeads] = useState<Lead[]>([]);
   const [products, setProducts] = useState<FifthLabProduct[]>(CANONICAL_FALLBACK_PRODUCTS);
@@ -519,7 +517,9 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     clearAuthToken();
     setUser(null);
     localStorage.removeItem("fifthlab_user");
-    router.push("/");
+    if (typeof window !== "undefined") {
+      window.location.href = "/";
+    }
   };
 
   const updateUserProfile = async (profileData: { name?: string; timezone?: string; workingHours?: string; avatarUrl?: string; role?: string }) => {

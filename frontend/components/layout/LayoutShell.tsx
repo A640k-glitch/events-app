@@ -34,7 +34,9 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
   if (isAuth) {
     return (
       <div className="fixed inset-0 h-[100dvh] w-full overflow-hidden m-0 p-0 bg-white overscroll-none">
-        {children}
+        <React.Suspense fallback={null}>
+          {children}
+        </React.Suspense>
       </div>
     );
   }
@@ -42,7 +44,9 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
   if (isDashboard) {
     return (
       <div className="min-h-[100dvh] bg-[#0B0D13] text-[#F5F5F7] overscroll-none">
-        {children}
+        <React.Suspense fallback={null}>
+          {children}
+        </React.Suspense>
       </div>
     );
   }
@@ -63,7 +67,9 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
           isDarkHeroPage ? "pt-0" : "pt-16"
         )}
       >
-        {children}
+        <React.Suspense fallback={null}>
+          {children}
+        </React.Suspense>
       </main>
       <Footer />
     </div>

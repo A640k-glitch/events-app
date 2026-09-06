@@ -41,6 +41,10 @@ export default function ScrollLogoBackground() {
   const secondaryScale = useTransform(smoothProgress, [0, 0.5, 1], [0.85, 1.1, 0.78]);
   const secondaryOpacity = useTransform(smoothProgress, [0, 0.4, 0.8, 1], [0.22, 0.35, 0.28, 0.2]);
 
+  if (!mounted) {
+    return null;
+  }
+
   return (
     <div 
       ref={containerRef}
