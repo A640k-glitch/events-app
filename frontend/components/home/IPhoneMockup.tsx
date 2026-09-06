@@ -24,7 +24,7 @@ export default function IPhoneMockup() {
       className="relative flex sm:hidden lg:flex items-center justify-center flex-shrink-0 select-none"
       style={{ width: CARD_W, height: VISIBLE_PHONE_H }}
     >
-      {/* ── Rounded Corner Backdrop Card: short height, sitting behind phone, clean light purple ── */}
+      {/* ── Rounded Corner Backdrop Card: top rounded corners, flat bottom so curves at the end never show ── */}
       <div
         aria-hidden
         style={{
@@ -33,9 +33,13 @@ export default function IPhoneMockup() {
           left: 0,
           width: CARD_W,
           height: CARD_H,
-          borderRadius: 28,
+          borderTopLeftRadius: 28,
+          borderTopRightRadius: 28,
+          borderBottomLeftRadius: 0,
+          borderBottomRightRadius: 0,
           background: "linear-gradient(165deg, #ECE5FA 0%, #E2DAF7 100%)",
           border: "1.5px solid rgba(56, 44, 132, 0.16)",
+          borderBottom: "none",
           zIndex: 1,
         }}
       />

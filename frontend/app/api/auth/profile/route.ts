@@ -3,13 +3,12 @@ import { sql } from "@/lib/db";
 
 function extractUserId(token: string): string | null {
   if (!token) return null;
-  // Format is jwt-${userId}-${timestamp}
   const match = token.match(/^jwt-(.+)-(\d+)$/);
   if (match) return match[1];
   return token.replace(/^jwt-/, "");
 }
 
-// GET /api/auth/me
+// GET /api/auth/profile
 export async function GET(request: NextRequest) {
   try {
     const authHeader = request.headers.get("Authorization");
@@ -40,7 +39,7 @@ export async function GET(request: NextRequest) {
   }
 }
 
-// PATCH /api/auth/me
+// PATCH /api/auth/profile
 export async function PATCH(request: NextRequest) {
   try {
     const authHeader = request.headers.get("Authorization");
@@ -58,7 +57,6 @@ export async function PATCH(request: NextRequest) {
     const body = await request.json();
     const { name, timezone, workingHours, avatarUrl, role } = body;
 
-    // Validate role if provided
     const validRoles = ["ADMIN", "STAFF", "SALES", "OPS", "PRODUCT_OWNER", "VISITOR"];
     if (role && !validRoles.includes(role)) {
       return NextResponse.json({ success: false, error: "Invalid role specified" }, { status: 400 });
@@ -81,9 +79,8 @@ export async function PATCH(request: NextRequest) {
       return NextResponse.json({ success: false, error: "User record not found" }, { status: 404 });
     }
 
-    return NextResponse.json({ success: true, message: "Profile and roles updated", data: updatedUser });
+    return NextResponse.json({ success: true, message: "Profile updated successfully", data: updatedUser });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }
 }
-

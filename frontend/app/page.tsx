@@ -110,16 +110,16 @@ export default function Home() {
     <div className="min-h-screen bg-transparent text-[#111827] flex flex-col justify-between selection:bg-[#00B4D8] selection:text-white font-sans">
       
       {/* 1. Hero Section — Two-column: Phone mockup left, text right */}
-      <section className="relative pt-20 sm:pt-28 pb-12 px-4 sm:px-6 lg:px-8 bg-transparent overflow-hidden">
+      <section className="relative pt-16 sm:pt-24 pb-0 px-4 sm:px-6 lg:px-8 bg-transparent overflow-visible z-20">
 
         {/* Subtle grid pattern background */}
         <div className="absolute inset-0 bg-[radial-gradient(#e2e8f0_1px,transparent_1px)] [background-size:24px_24px] opacity-40 -z-10 pointer-events-none" />
 
         <div className="max-w-6xl mx-auto relative z-10">
-          <div className="flex flex-col lg:flex-row items-center gap-10 lg:gap-16 pb-14">
+          <div className="flex flex-col lg:flex-row items-center gap-8 lg:gap-16 pb-0">
 
             {/* Hero Copy (Top on Mobile, Right on Desktop) */}
-            <div className="flex-1 flex flex-col gap-6 text-center lg:text-left order-1 lg:order-2">
+            <div className="flex-1 flex flex-col gap-6 text-center lg:text-left order-1 lg:order-2 pb-6 lg:pb-12">
               <h1
                 className="font-bold tracking-tight text-slate-950"
                 style={{ fontSize: "clamp(34px, 5vw, 60px)", fontWeight: 700, lineHeight: 1.14 }}
@@ -159,20 +159,21 @@ export default function Home() {
             </div>
 
             {/* iPhone 16 Mockup:
+                - Sits perfectly on top of the dark section border without intruding into it
                 - Mobile (< 640px): Visible, order-2 (flows vertically directly under CTAs), centered
                 - Tablets (640px-1023px, sm & md): Hidden (avoids cramming on tablets)
                 - Desktop (>= 1024px, lg): Visible, order-1 (sits on the left)
             */}
-            <div className="flex-shrink-0 order-2 lg:order-1 flex sm:hidden lg:flex justify-center w-full lg:w-auto">
+            <div className="flex-shrink-0 order-2 lg:order-1 flex sm:hidden lg:flex justify-center w-full lg:w-auto mb-0 z-30">
               <IPhoneMockup />
             </div>
           </div>
         </div>
       </section>
 
-      {/* 1.5. Hero Spotlight & Partner Logos Section — Option 2: Executive Obsidian & Cyan Aurora */}
+      {/* 1.5. Hero Spotlight & Partner Logos Section — Executive Obsidian & Cyan Aurora */}
       <section 
-        className="relative w-full py-12 sm:py-16 px-4 sm:px-6 lg:px-8 overflow-hidden z-10"
+        className="relative w-full py-5 sm:py-6 px-4 sm:px-6 lg:px-8 overflow-hidden z-10"
         style={{
           backgroundColor: "#05080E",
           backgroundImage: "linear-gradient(145deg, #04060B 0%, #070D18 45%, #05080E 100%)",

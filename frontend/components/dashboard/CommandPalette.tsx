@@ -1,23 +1,43 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { createPortal } from "react-dom";
 import { useRouter } from "next/navigation";
 import { useApp } from "@/context/AppContext";
-import { Search, CalendarDays, Users, Layers, X, ArrowRight, CornerDownLeft, Sparkles } from "lucide-react";
+import { Search, CalendarDays, Calendar, Users, Layers, X, ArrowRight, CornerDownLeft, Sparkles, Compass } from "lucide-react";
 import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 import { resolveProductLogo } from "@/lib/products-data";
 import { cn } from "@/lib/utils";
 
 export default function CommandPalette() {
   const { isCommandPaletteOpen, setCommandPaletteOpen, events, leads, products } = useApp();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Lock background scroll when command palette is open
   useBodyScrollLock(isCommandPaletteOpen);
 
+  // Close command palette when pressing Escape anywhere
+  useEffect(() => {
+    if (!isCommandPaletteOpen) return;
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") {
+        e.preventDefault();
+        setCommandPaletteOpen(false);
+        setQuery("");
+      }
+    };
+    window.addEventListener("keydown", handleKeyDown);
+    return () => window.removeEventListener("keydown", handleKeyDown);
+  }, [isCommandPaletteOpen, setCommandPaletteOpen]);
+
   const [query, setQuery] = useState("");
   const router = useRouter();
 
-  if (!isCommandPaletteOpen) return null;
+  if (!isCommandPaletteOpen || !mounted) return null;
 
   const trimmedQuery = query.trim().toLowerCase();
   const hasQuery = trimmedQuery.length > 0;
@@ -65,7 +85,7 @@ export default function CommandPalette() {
     router.push(url);
   };
 
-  return (
+  return createPortal(
     <div 
       className="fixed inset-0 z-50 bg-slate-950/60 backdrop-blur-xs flex items-start justify-center pt-16 sm:pt-24 px-4 animate-in fade-in duration-150"
       onClick={() => {
@@ -86,25 +106,40 @@ export default function CommandPalette() {
             placeholder="Search products, attendee leads, events, or type to navigate..."
             value={query}
             onChange={(e) => setQuery(e.target.value)}
+            onKeyDown={(e) => {
+              if (e.key === "Escape") {
+                e.preventDefault();
+                setCommandPaletteOpen(false);
+                setQuery("");
+              }
+            }}
             className="w-full bg-transparent text-slate-900 text-sm font-medium placeholder-slate-400 outline-none"
           />
           {query && (
             <button
               onClick={() => setQuery("")}
-              className="text-xs text-slate-400 hover:text-slate-600 font-semibold px-1.5 py-0.5"
+              className="text-xs text-slate-400 hover:text-slate-600 font-semibold px-1.5 py-0.5 cursor-pointer"
             >
               Clear
             </button>
           )}
-          <kbd className="hidden sm:inline-flex items-center gap-1 text-[10px] font-mono bg-slate-100 border border-slate-300 px-1.5 py-0.5 rounded text-slate-600 font-bold shrink-0">
+          <button
+            type="button"
+            onClick={() => {
+              setCommandPaletteOpen(false);
+              setQuery("");
+            }}
+            title="Close (ESC)"
+            className="hidden sm:inline-flex items-center gap-1 text-[10px] font-mono bg-slate-100 hover:bg-slate-200 border border-slate-300 px-1.5 py-0.5 rounded text-slate-600 font-bold shrink-0 transition-colors cursor-pointer"
+          >
             ESC
-          </kbd>
+          </button>
           <button
             onClick={() => {
               setCommandPaletteOpen(false);
               setQuery("");
             }}
-            className="p-1 text-slate-400 hover:text-slate-700 rounded-md hover:bg-slate-100 sm:hidden"
+            className="p-1 text-slate-400 hover:text-slate-700 rounded-md hover:bg-slate-100 sm:hidden cursor-pointer"
           >
             <X className="w-4 h-4" />
           </button>
@@ -123,11 +158,11 @@ export default function CommandPalette() {
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                   <button
                     onClick={() => handleNavigate("/dashboard")}
-                    className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 hover:bg-[#EAF7F7] border border-slate-200/80 hover:border-[#005B6E]/30 text-left text-slate-800 font-semibold group transition-all"
+                    className="flex items-center justify-between p-2.5 rounded-lg bg-slate-50 hover:bg-[#EAF7F7] border border-slate-200/80 hover:border-[#005B6E]/30 text-left text-slate-800 font-semibold group transition-all cursor-pointer"
                   >
                     <div className="flex items-center gap-2.5">
                       <div className="w-7 h-7 rounded-md bg-white border border-slate-200 flex items-center justify-center text-[#005B6E]">
-                        📊
+                        <Compass className="w-4 h-4" />
                       </div>
                       <div>
                         <div className="text-xs font-bold text-slate-900">Dashboard Overview</div>
@@ -269,21 +304,22 @@ export default function CommandPalette() {
                           ({l.company})
                         </span>
                       </div>
-                      <div className="text-[10.5px] text-slate-500 truncate">
-                        {l.productInterested} • {l.bookingDate ? `📅 ${l.bookingDate}` : "Unscheduled"}
+                      <div className="text-[10.5px] text-slate-500 truncate flex items-center gap-1">
+                        <span>{l.productInterested}</span>
+                        <span>•</span>
+                        {l.bookingDate ? (
+                          <span className="inline-flex items-center gap-1 text-slate-600 font-medium">
+                            <Calendar className="w-3 h-3 text-slate-400 shrink-0" />
+                            <span>{l.bookingDate}</span>
+                          </span>
+                        ) : (
+                          <span>Unscheduled</span>
+                        )}
                       </div>
                     </div>
                   </div>
-                  <span className="text-[10.5px] font-bold text-slate-700 flex items-center gap-1.5 shrink-0 ml-2">
-                    <span className={cn(
-                      "w-1.5 h-1.5 rounded-full shrink-0",
-                      l.status === "Unread" && "bg-slate-400",
-                      l.status === "Qualified" && "bg-[#005B6E]",
-                      l.status === "Converted" && "bg-emerald-600",
-                      l.status === "Followed Up" && "bg-amber-500",
-                      l.status === "Closed" && "bg-slate-400"
-                    )} />
-                    <span>{l.status}</span>
+                  <span className="text-[10.5px] font-bold text-slate-700 shrink-0 ml-2">
+                    {l.status}
                   </span>
                 </button>
               ))}
@@ -350,6 +386,7 @@ export default function CommandPalette() {
         </div>
 
       </div>
-    </div>
+    </div>,
+    document.body
   );
 }

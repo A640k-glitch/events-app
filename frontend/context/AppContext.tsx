@@ -50,6 +50,9 @@ interface AppUser {
   role: string;
   provider?: string;
   token?: string;
+  timezone?: string;
+  workingHours?: string;
+  avatarUrl?: string;
 }
 
 interface AppContextType {
@@ -72,7 +75,7 @@ interface AppContextType {
   loginAs: (name?: string, email?: string, provider?: string) => Promise<void>;
   requestOtp: (email: string, name?: string) => Promise<{ success: boolean; message: string }>;
   verifyOtpAndLogin: (email: string, otp: string) => Promise<{ isFirstTime: boolean }>;
-  updateUserProfile: (profileData: { name?: string; timezone?: string; workingHours?: string; avatarUrl?: string }) => Promise<void>;
+  updateUserProfile: (profileData: { name?: string; timezone?: string; workingHours?: string; avatarUrl?: string; role?: string }) => Promise<void>;
   logout: () => void;
   refreshData: () => Promise<void>;
   
@@ -311,6 +314,32 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
           // ignore
         }
       }
+
+      // Dynamically sync user session and role directly from PostgreSQL database
+      const token = typeof window !== "undefined" ? localStorage.getItem("fifthlab_jwt_token") : null;
+      if (token) {
+        try {
+          const meRes = await api.getMe();
+          if (meRes && meRes.success && meRes.data) {
+            const liveUser: AppUser = {
+              id: meRes.data.id,
+              name: meRes.data.name,
+              email: meRes.data.email,
+              role: meRes.data.role,
+              timezone: meRes.data.timezone || "WAT",
+              workingHours: meRes.data.workingHours || "9:00 AM - 5:00 PM",
+              avatarUrl: meRes.data.avatarUrl,
+              token: token,
+              provider: "FifthLab Verified Auth",
+            };
+            setUser(liveUser);
+            localStorage.setItem("fifthlab_user", JSON.stringify(liveUser));
+          }
+        } catch (e) {
+          console.warn("Could not sync live session from database:", e);
+        }
+      }
+
       setAuthInitialized(true);
       await refreshData(false);
     }
@@ -485,21 +514,31 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     router.push("/");
   };
 
-  const updateUserProfile = async (profileData: { name?: string; timezone?: string; workingHours?: string; avatarUrl?: string }) => {
+  const updateUserProfile = async (profileData: { name?: string; timezone?: string; workingHours?: string; avatarUrl?: string; role?: string }) => {
     try {
+      const res = await api.updateProfile(profileData);
+      const updatedData = res?.data;
+
       if (user) {
         const updatedUser: AppUser = {
           ...user,
           ...(profileData.name ? { name: profileData.name.trim() } : {}),
+          ...(profileData.role ? { role: profileData.role } : {}),
+          ...(updatedData ? {
+            name: updatedData.name || user.name,
+            role: updatedData.role || user.role,
+            timezone: updatedData.timezone || user.timezone,
+            workingHours: updatedData.workingHours || user.workingHours,
+          } : {}),
         };
         setUser(updatedUser);
         localStorage.setItem("fifthlab_user", JSON.stringify(updatedUser));
       }
 
-      await api.updateProfile(profileData);
       await refreshData();
     } catch (e) {
       console.error("Failed to update user profile:", e);
+      throw e;
     }
   };
 

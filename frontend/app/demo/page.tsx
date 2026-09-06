@@ -14,7 +14,8 @@ import {
   ArrowLeft, 
   CheckCircle2, 
   ShieldCheck,
-  ChevronRight
+  ChevronRight,
+  Check
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { BrandButton } from "@/components/ui/BrandButtons";
@@ -419,8 +420,8 @@ function DemoBookingContent() {
                               {prod.name}
                             </span>
                             {isSelected && (
-                              <span className="w-4 h-4 rounded-full bg-[#0090AD] text-white flex items-center justify-center text-[10px] shrink-0 font-bold">
-                                ✓
+                              <span className="w-4 h-4 rounded-full bg-[#0090AD] text-white flex items-center justify-center shrink-0">
+                                <Check className="w-2.5 h-2.5 stroke-[3]" />
                               </span>
                             )}
                           </div>

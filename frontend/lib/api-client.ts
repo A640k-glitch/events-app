@@ -96,7 +96,7 @@ export const api = {
     });
   },
 
-  updateProfile: async (profileData: { name?: string; timezone?: string; workingHours?: string; avatarUrl?: string }) => {
+  updateProfile: async (profileData: { name?: string; timezone?: string; workingHours?: string; avatarUrl?: string; role?: string }) => {
     return request<{ success: boolean; data: any }>("/auth/profile", {
       method: "PATCH",
       body: JSON.stringify(profileData),

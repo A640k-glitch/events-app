@@ -92,9 +92,9 @@ export function DemoCardAnimated() {
             position: absolute;
             top: 50%;
             left: 50%;
-            width: 106px;
-            height: 106px;
-            border-radius: 24px;
+            width: 118px;
+            height: 118px;
+            border-radius: 26px;
             background: #ffffff !important;
             border: 2.5px solid rgba(255, 255, 255, 0.98);
             box-shadow: 0 16px 36px rgba(0, 0, 0, 0.45), 0 0 24px rgba(0, 144, 173, 0.12);
@@ -107,18 +107,18 @@ export function DemoCardAnimated() {
 
           @media (min-width: 480px) {
             .mobile-chip-orbit {
-              width: 126px;
-              height: 126px;
-              border-radius: 28px;
+              width: 140px;
+              height: 140px;
+              border-radius: 30px;
               box-shadow: 0 20px 42px rgba(21, 15, 69, 0.20);
             }
           }
 
           @media (min-width: 768px) {
             .mobile-chip-orbit {
-              width: 152px;
-              height: 152px;
-              border-radius: 34px;
+              width: 168px;
+              height: 168px;
+              border-radius: 36px;
               box-shadow: 0 24px 50px rgba(21, 15, 69, 0.22);
             }
           }
@@ -236,15 +236,15 @@ export function DemoCardAnimated() {
       </div>
 
       {/* ──────────────────────────────────────────────────────────────────────────
-          2. DESKTOP (xl+): EMBEDDED LOGOS ORBIT (CARD BACKGROUND REMOVED, EXPANDED WIDTH)
+          2. DESKTOP (xl+): EMBEDDED LOGOS ORBIT (WIDER HORIZONTAL SPREAD, TIGHTER VERTICAL)
           ────────────────────────────────────────────────────────────────────────── */}
-      <div className="hidden xl:block relative flex-shrink-0 xl:w-[480px] xl:h-[440px] 2xl:w-[540px] 2xl:h-[480px] select-none overflow-visible">
+      <div className="hidden xl:block relative flex-shrink-0 xl:w-[680px] xl:h-[360px] 2xl:w-[780px] 2xl:h-[400px] select-none overflow-visible">
         <div
-          className="demo-card-root origin-top-left xl:scale-[0.60] 2xl:scale-[0.68] transition-shadow duration-300"
+          className="demo-card-root origin-top-left xl:scale-[0.68] 2xl:scale-[0.78] transition-shadow duration-300"
           style={{
             position: "relative",
-            width: "800px",
-            height: "720px",
+            width: "1000px",
+            height: "520px",
             overflow: "visible",
           }}
         >
@@ -257,7 +257,7 @@ export function DemoCardAnimated() {
 
             .carousel-stage {
               position: absolute;
-              top: 310px;
+              top: 220px;
               left: 50%;
               width: 0;
               height: 0;
@@ -268,11 +268,11 @@ export function DemoCardAnimated() {
               position: absolute;
               top: 0;
               left: 0;
-              width: 216px;
-              height: 216px;
-              margin-left: -108px;
-              margin-top: -108px;
-              border-radius: 46px;
+              width: 240px;
+              height: 240px;
+              margin-left: -120px;
+              margin-top: -120px;
+              border-radius: 52px;
               display: flex;
               align-items: center;
               justify-content: center;
@@ -280,31 +280,32 @@ export function DemoCardAnimated() {
               border: 3px solid rgba(255, 255, 255, 0.98);
               box-shadow: 0 24px 55px rgba(0, 0, 0, 0.55), 0 0 30px rgba(0, 144, 173, 0.15);
               will-change: transform, opacity;
-              animation: orbit-loop 18s linear infinite;
+              animation: orbit-loop-wide 18s linear infinite;
             }
 
-            @keyframes orbit-loop {
-              0.0% { transform: translate(0.0px, 75.0px) scale(1.1); z-index: 30; opacity: 1.0; }
-              5.0% { transform: translate(102px, 71.3px) scale(1.09); z-index: 29; opacity: 0.99; }
-              10.0% { transform: translate(194px, 60.7px) scale(1.06); z-index: 28; opacity: 0.96; }
-              15.0% { transform: translate(267px, 44.1px) scale(1.02); z-index: 25; opacity: 0.91; }
-              20.0% { transform: translate(314px, 23.2px) scale(0.97); z-index: 23; opacity: 0.84; }
-              25.0% { transform: translate(330.0px, 0.0px) scale(0.91); z-index: 20; opacity: 0.78; }
-              30.0% { transform: translate(314px, -23.2px) scale(0.85); z-index: 16; opacity: 0.71; }
-              35.0% { transform: translate(267px, -44.1px) scale(0.8); z-index: 14; opacity: 0.64; }
-              40.0% { transform: translate(194px, -60.7px) scale(0.76); z-index: 11; opacity: 0.59; }
-              45.0% { transform: translate(102px, -71.3px) scale(0.73); z-index: 10; opacity: 0.56; }
-              50.0% { transform: translate(0.0px, -75.0px) scale(0.72); z-index: 10; opacity: 0.55; }
-              55.0% { transform: translate(-102px, -71.3px) scale(0.73); z-index: 10; opacity: 0.56; }
-              60.0% { transform: translate(-194px, -60.7px) scale(0.76); z-index: 11; opacity: 0.59; }
-              65.0% { transform: translate(-267px, -44.1px) scale(0.8); z-index: 14; opacity: 0.64; }
-              70.0% { transform: translate(-314px, -23.2px) scale(0.85); z-index: 16; opacity: 0.71; }
-              75.0% { transform: translate(-330.0px, -0.0px) scale(0.91); z-index: 20; opacity: 0.78; }
-              80.0% { transform: translate(-314px, 23.2px) scale(0.97); z-index: 23; opacity: 0.84; }
-              85.0% { transform: translate(-267px, 44.1px) scale(1.02); z-index: 25; opacity: 0.91; }
-              90.0% { transform: translate(-194px, 60.7px) scale(1.06); z-index: 28; opacity: 0.96; }
-              95.0% { transform: translate(-102px, 71.3px) scale(1.09); z-index: 29; opacity: 0.99; }
-              100.0% { transform: translate(-0.0px, 75.0px) scale(1.1); z-index: 30; opacity: 1.0; }
+            /* Wider ellipse for desktop: Rx = 430px, Ry = 62px */
+            @keyframes orbit-loop-wide {
+              0.0% { transform: translate(0.0px, 62.0px) scale(1.1); z-index: 30; opacity: 1.0; }
+              5.0% { transform: translate(133px, 58.9px) scale(1.09); z-index: 29; opacity: 0.99; }
+              10.0% { transform: translate(253px, 50.1px) scale(1.06); z-index: 28; opacity: 0.96; }
+              15.0% { transform: translate(348px, 36.4px) scale(1.02); z-index: 25; opacity: 0.91; }
+              20.0% { transform: translate(409px, 19.1px) scale(0.97); z-index: 23; opacity: 0.84; }
+              25.0% { transform: translate(430.0px, 0.0px) scale(0.91); z-index: 20; opacity: 0.78; }
+              30.0% { transform: translate(409px, -19.1px) scale(0.85); z-index: 16; opacity: 0.71; }
+              35.0% { transform: translate(348px, -36.4px) scale(0.8); z-index: 14; opacity: 0.64; }
+              40.0% { transform: translate(253px, -50.1px) scale(0.76); z-index: 11; opacity: 0.59; }
+              45.0% { transform: translate(133px, -58.9px) scale(0.73); z-index: 10; opacity: 0.56; }
+              50.0% { transform: translate(0.0px, -62.0px) scale(0.72); z-index: 10; opacity: 0.55; }
+              55.0% { transform: translate(-133px, -58.9px) scale(0.73); z-index: 10; opacity: 0.56; }
+              60.0% { transform: translate(-253px, -50.1px) scale(0.76); z-index: 11; opacity: 0.59; }
+              65.0% { transform: translate(-348px, -36.4px) scale(0.8); z-index: 14; opacity: 0.64; }
+              70.0% { transform: translate(-409px, -19.1px) scale(0.85); z-index: 16; opacity: 0.71; }
+              75.0% { transform: translate(-430.0px, -0.0px) scale(0.91); z-index: 20; opacity: 0.78; }
+              80.0% { transform: translate(-409px, 19.1px) scale(0.97); z-index: 23; opacity: 0.84; }
+              85.0% { transform: translate(-348px, 36.4px) scale(1.02); z-index: 25; opacity: 0.91; }
+              90.0% { transform: translate(-253px, 50.1px) scale(1.06); z-index: 28; opacity: 0.96; }
+              95.0% { transform: translate(-133px, 58.9px) scale(1.09); z-index: 29; opacity: 0.99; }
+              100.0% { transform: translate(-0.0px, 62.0px) scale(1.1); z-index: 30; opacity: 1.0; }
             }
 
             .demo-pill-btn {

@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react";
 import DashboardLayout from "@/components/dashboard/DashboardLayout";
-import { Search, RefreshCw, Trash2, ShieldAlert, Users, Calendar, Mail } from "lucide-react";
+import { Search, RefreshCw, Trash2, ShieldAlert, Users, Mail } from "lucide-react";
 import { api } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 import { TableSkeleton } from "@/components/ui/SkeletonLoaders";
@@ -106,22 +106,12 @@ export default function TeamPage() {
     <DashboardLayout>
       <div className="space-y-6 font-sans text-left text-slate-900">
         
-        {/* Header Bar - Compact AWS Enterprise Style */}
-        <div className="bg-gradient-to-r from-[#EAF7F7]/70 via-white to-[#F0F6FF]/70 p-3.5 sm:p-4 rounded-lg border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        {/* Header Bar */}
+        <div className="bg-white p-3.5 sm:p-4 rounded-lg border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
           <div>
-            <div className="flex items-center gap-1.5 mb-0.5">
-              <span className="text-[10.5px] font-bold text-[#005B6E] tracking-wider uppercase">
-                Corporate Directory
-              </span>
-              <span className="text-slate-300">•</span>
-              <span className="text-[11px] text-slate-500 font-medium">Access Control &amp; Event Assignments</span>
-            </div>
             <h1 className="text-xl font-bold tracking-tight text-slate-950">
               Team Directory
             </h1>
-            <p className="text-xs text-slate-600 font-medium">
-              Verified corporate personnel, roles, and event assignments across FifthLab and CWG.
-            </p>
           </div>
 
           <button
@@ -179,7 +169,7 @@ export default function TeamPage() {
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
-                <tr className="border-b border-slate-200 bg-slate-50 text-slate-500 uppercase tracking-wider text-[10px] font-semibold">
+                <tr className="border-b border-slate-200 bg-slate-50 text-slate-500 uppercase tracking-wider text-[10px] font-semibold whitespace-nowrap">
                   <th className="py-2 px-3">Staff Member</th>
                   <th className="py-2 px-3">Corporate Email</th>
                   <th className="py-2 px-3">Role &amp; Access</th>
@@ -232,42 +222,35 @@ export default function TeamPage() {
                         {/* Role & Access */}
                         <td className="py-2 px-3 whitespace-nowrap">
                           {u.role === "ADMIN" && (
-                            <span className="font-semibold text-xs text-purple-700 flex items-center gap-1.5">
-                              <span className="w-1.5 h-1.5 rounded-full bg-purple-600 shrink-0" />
-                              <span>Admin</span>
+                            <span className="font-semibold text-xs text-purple-700">
+                              Admin
                             </span>
                           )}
                           {u.role === "PRODUCT_OWNER" && (
-                            <span className="font-semibold text-xs text-[#005B6E] flex items-center gap-1.5">
-                              <span className="w-1.5 h-1.5 rounded-full bg-[#005B6E] shrink-0" />
-                              <span>Product Owner</span>
+                            <span className="font-semibold text-xs text-[#005B6E]">
+                              Product Owner
                             </span>
                           )}
                           {u.role === "STAFF" && (
-                            <span className="font-semibold text-xs text-slate-700 flex items-center gap-1.5">
-                              <span className="w-1.5 h-1.5 rounded-full bg-slate-400 shrink-0" />
-                              <span>Staff</span>
+                            <span className="font-semibold text-xs text-slate-700">
+                              Staff
                             </span>
                           )}
                           {!["ADMIN", "PRODUCT_OWNER", "STAFF"].includes(u.role) && (
-                            <span className="font-medium text-xs text-slate-600 flex items-center gap-1.5">
-                              <span className="w-1.5 h-1.5 rounded-full bg-slate-300 shrink-0" />
-                              <span>{u.role}</span>
+                            <span className="font-medium text-xs text-slate-600">
+                              {u.role}
                             </span>
                           )}
                         </td>
 
                         {/* Assigned Inquiries */}
-                        <td className="py-2 px-3 font-semibold text-slate-900">
+                        <td className="py-2 px-3 font-semibold text-slate-900 whitespace-nowrap">
                           {u._count?.assignedLeads || 0} Leads
                         </td>
 
                         {/* Events Attending */}
-                        <td className="py-2 px-3 text-slate-800 font-medium">
-                          <div className="flex items-center gap-1.5">
-                            <Calendar className="w-3 h-3 text-[#005B6E]" />
-                            <span>{u._count?.rsvps || 0} Summits</span>
-                          </div>
+                        <td className="py-2 px-3 text-slate-800 font-medium whitespace-nowrap">
+                          <span>{u._count?.rsvps || 0} Summits</span>
                         </td>
 
                         {/* Actions */}

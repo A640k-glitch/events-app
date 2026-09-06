@@ -101,22 +101,12 @@ function LeadsContent() {
   return (
     <div className="space-y-4 sm:space-y-5 font-sans text-left text-slate-900">
       
-      {/* Header Bar - Compact AWS Enterprise Style */}
-      <div className="bg-gradient-to-r from-[#EAF7F7]/70 via-white to-[#F0F6FF]/70 p-3.5 sm:p-4 rounded-lg border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+      {/* Header Bar */}
+      <div className="bg-white p-3.5 sm:p-4 rounded-lg border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
         <div>
-          <div className="flex items-center gap-1.5 mb-0.5">
-            <span className="text-[10.5px] font-bold text-[#005B6E] tracking-wider uppercase">
-              Inbound CRM &amp; Walkthrough Pipeline
-            </span>
-            <span className="text-slate-300">•</span>
-            <span className="text-[11px] text-slate-500 font-medium">Verified Customer Inquiries</span>
-          </div>
           <h1 className="text-xl font-bold tracking-tight text-slate-950">
             Attendee Leads &amp; Bookings
           </h1>
-          <p className="text-xs text-slate-600 font-medium">
-            Manage corporate prospects, time-locked demo bookings, and specialist follow-up assignments.
-          </p>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
@@ -318,34 +308,23 @@ function LeadsContent() {
                             </div>
                           </div>
                         ) : (
-                          <span className="text-[10.5px] font-medium text-slate-400 italic flex items-center gap-1">
-                            <span className="w-1.5 h-1.5 rounded-full bg-slate-300 shrink-0" />
+                          <span className="text-[10.5px] font-medium text-slate-400 italic">
                             Unscheduled Lead
                           </span>
                         )}
                       </td>
 
-                      {/* Status Dropdown with indicator dot */}
+                      {/* Status Dropdown */}
                       <td className="py-2 px-2.5 whitespace-nowrap" onClick={(e) => e.stopPropagation()}>
-                        <div className="flex items-center gap-1.5">
-                          <span className={cn(
-                            "w-1.5 h-1.5 rounded-full shrink-0",
-                            lead.status === "Unread" && "bg-slate-400",
-                            lead.status === "Followed Up" && "bg-amber-500",
-                            lead.status === "Qualified" && "bg-[#005B6E]",
-                            lead.status === "Converted" && "bg-emerald-600",
-                            lead.status === "Closed" && "bg-slate-500"
-                          )} />
-                          <select
-                            value={lead.status}
-                            onChange={(e) => updateLeadStatus(lead.id, e.target.value as LeadStatus)}
-                            className="text-[10px] font-semibold text-slate-800 bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:border-[#005B6E] focus:outline-none cursor-pointer h-6 w-auto"
-                          >
+                        <select
+                          value={lead.status}
+                          onChange={(e) => updateLeadStatus(lead.id, e.target.value as LeadStatus)}
+                          className="text-xs font-semibold text-slate-800 bg-white border border-slate-300 rounded px-2 py-0.5 focus:border-[#005B6E] focus:outline-none cursor-pointer h-7 w-auto"
+                        >
                             {statusOptions.map((opt) => (
                               <option key={opt} value={opt}>{opt}</option>
                             ))}
                           </select>
-                        </div>
                       </td>
 
                       {/* Assigned Specialist */}
@@ -360,7 +339,7 @@ function LeadsContent() {
                               assignedProductOwner: targetOwner ? targetOwner.name : "Unassigned",
                             });
                           }}
-                          className="text-[10px] font-medium text-slate-800 bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:border-[#005B6E] focus:outline-none cursor-pointer h-6 max-w-[150px] truncate"
+                          className="text-xs font-medium text-slate-800 bg-white border border-slate-300 rounded px-2 py-0.5 focus:border-[#005B6E] focus:outline-none cursor-pointer h-7 max-w-[150px] truncate"
                         >
                           <option value="unassigned">Unassigned</option>
                           {owners.map((owner) => (
@@ -526,7 +505,7 @@ function LeadsContent() {
                   <select
                     value={activeLeadDrawer.status}
                     onChange={(e) => updateLeadStatus(activeLeadDrawer.id, e.target.value as LeadStatus)}
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#0090AD] shadow-2xs cursor-pointer"
+                    className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#005B6E] shadow-2xs cursor-pointer h-8"
                   >
                     {statusOptions.map((opt) => (
                       <option key={opt} value={opt}>{opt}</option>
@@ -549,7 +528,7 @@ function LeadsContent() {
                         assignedProductOwner: targetOwner ? targetOwner.name : "Unassigned",
                       });
                     }}
-                    className="w-full bg-white border border-slate-300 rounded-xl px-3 py-2 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#0090AD] shadow-2xs cursor-pointer"
+                    className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#005B6E] shadow-2xs cursor-pointer h-8"
                   >
                     <option value="unassigned">Unassigned (General Pool)</option>
                     {owners.map((owner) => (

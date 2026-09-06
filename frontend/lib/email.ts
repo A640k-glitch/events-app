@@ -46,7 +46,7 @@ export async function sendOtpVerificationEmail(props: OtpEmailProps): Promise<{ 
   const pass = (process.env.SMTP_PASS || process.env.GMAIL_APP_PASS || "").replace(/\s+/g, "");
 
   if (!user || !pass) {
-    console.warn(`[EmailService] ⚠️ SMTP credentials not detected in environment. Simulated OTP for ${recipientName} (${to}): ${otpCode}`);
+    console.warn(`[EmailService] SMTP credentials not detected in environment. Simulated OTP for ${recipientName} (${to}): ${otpCode}`);
     return { success: true, simulated: true };
   }
 
@@ -92,14 +92,14 @@ export async function sendOtpVerificationEmail(props: OtpEmailProps): Promise<{ 
     const info = await transporter.sendMail({
       from: fromAddress,
       to,
-      subject: `🔐 Your FifthLab Access Code: ${otpCode}`,
+      subject: `Your FifthLab Access Code: ${otpCode}`,
       html: htmlContent,
     });
 
-    console.log(`[EmailService] ✅ Security OTP successfully sent to ${to} (MessageId: ${info.messageId})`);
+    console.log(`[EmailService] Security OTP successfully sent to ${to} (MessageId: ${info.messageId})`);
     return { success: true };
   } catch (error: any) {
-    console.error(`[EmailService] ❌ Failed to dispatch OTP email to ${to}:`, error);
+    console.error(`[EmailService] Failed to dispatch OTP email to ${to}:`, error);
     return { success: false, error: error.message || "Failed to dispatch email" };
   }
 }
@@ -138,7 +138,7 @@ export async function sendEventTicketEmail(props: EventTicketEmailProps): Promis
   const pass = (process.env.SMTP_PASS || process.env.GMAIL_APP_PASS || "").replace(/\s+/g, "");
 
   if (!user || !pass) {
-    console.log(`[EmailService] 🎟️ Event QR Ticket dispatched in simulation for ${visitorName} (${to}) [Pass Code: ${qrPassCode}]`);
+    console.log(`[EmailService] Event QR Ticket dispatched in simulation for ${visitorName} (${to}) [Pass Code: ${qrPassCode}]`);
     return { success: true, simulated: true };
   }
 
@@ -197,7 +197,7 @@ export async function sendEventTicketEmail(props: EventTicketEmailProps): Promis
               </tr>
               <tr>
                 <td class="meta-label">Access</td>
-                <td><span style="color: #10b981;">● Confirmed Verified Registration</span></td>
+                <td><span style="color: #10b981;">Confirmed Verified Registration</span></td>
               </tr>
             </table>
 
@@ -219,7 +219,7 @@ export async function sendEventTicketEmail(props: EventTicketEmailProps): Promis
     const info = await transporter.sendMail({
       from: fromAddress,
       to,
-      subject: `🎟️ Your Event Pass: ${eventTitle}`,
+      subject: `Your Event Pass: ${eventTitle}`,
       html: htmlContent,
       attachments: [
         {
@@ -230,10 +230,10 @@ export async function sendEventTicketEmail(props: EventTicketEmailProps): Promis
       ],
     });
 
-    console.log(`[EmailService] ✅ Digital Ticket QR Pass successfully delivered to ${to} (MessageId: ${info.messageId})`);
+    console.log(`[EmailService] Digital Ticket QR Pass successfully delivered to ${to} (MessageId: ${info.messageId})`);
     return { success: true };
   } catch (error: any) {
-    console.error(`[EmailService] ❌ Failed to dispatch ticket email to ${to}:`, error);
+    console.error(`[EmailService] Failed to dispatch ticket email to ${to}:`, error);
     return { success: false, error: error.message || "Failed to dispatch ticket email" };
   }
 }

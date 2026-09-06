@@ -111,8 +111,8 @@ export default function PitchProposalModal({ isOpen, onClose }: PitchProposalMod
             </div>
 
             <div className="p-4 border border-white/10 bg-white/5 text-left text-xs space-y-2 text-white/70 font-light">
-              <p>● <strong>Review Timeline:</strong> 48-72 business hours</p>
-              <p>● <strong>Co-Hosting Notification:</strong> Emitted to {email}</p>
+              <p><strong className="text-white/90">Review Timeline:</strong> 48-72 business hours</p>
+              <p><strong className="text-white/90">Co-Hosting Notification:</strong> Emitted to {email}</p>
             </div>
 
             <button

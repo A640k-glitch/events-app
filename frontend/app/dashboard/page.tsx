@@ -64,18 +64,15 @@ export default function DashboardOverviewPage() {
         className="space-y-6 font-sans text-left text-slate-900"
       >
         
-        {/* 1. Header Area - Compact AWS Enterprise Style */}
+        {/* 1. Header Area */}
         <motion.div 
           variants={itemVariants} 
-          className="bg-gradient-to-r from-[#EAF7F7]/70 via-white to-[#F0F6FF]/70 p-3.5 sm:p-4 rounded-lg border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3"
+          className="bg-white p-3.5 sm:p-4 rounded-lg border border-slate-200 flex flex-col md:flex-row md:items-center justify-between gap-3 shadow-2xs"
         >
-          <div className="space-y-0.5">
+          <div>
             <h1 className="text-xl font-bold tracking-tight text-slate-900">
               Dashboard Overview
             </h1>
-            <p className="text-xs text-slate-600 font-medium max-w-2xl">
-              Manage your upcoming events, check booth staff rosters, and follow up with attendees.
-            </p>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
@@ -150,7 +147,7 @@ export default function DashboardOverviewPage() {
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
             
             {/* Metric 1: Active Events in DB */}
-            <div className="p-3.5 rounded-lg border border-slate-200 bg-white shadow-2xs space-y-1">
+            <div className="p-3.5 rounded-lg border border-slate-200 bg-white shadow-2xs space-y-1 hover:border-slate-300 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 cursor-default">
               <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Active Events</span>
               <div className="text-2xl font-bold text-slate-950 tracking-tight">
                 {events.length}
@@ -165,7 +162,7 @@ export default function DashboardOverviewPage() {
             </div>
 
             {/* Metric 2: Inbound Leads from DB */}
-            <div className="p-3.5 rounded-lg border border-slate-200 bg-white shadow-2xs space-y-1">
+            <div className="p-3.5 rounded-lg border border-slate-200 bg-white shadow-2xs space-y-1 hover:border-slate-300 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 cursor-default">
               <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Demo Inquiries &amp; Leads</span>
               <div className="text-2xl font-bold text-slate-950 tracking-tight">
                 {leads.length}
@@ -180,7 +177,7 @@ export default function DashboardOverviewPage() {
             </div>
 
             {/* Metric 3: Real QR Door Check-ins from DB */}
-            <div className="p-3.5 rounded-lg border border-slate-200 bg-white shadow-2xs space-y-1">
+            <div className="p-3.5 rounded-lg border border-slate-200 bg-white shadow-2xs space-y-1 hover:border-slate-300 hover:shadow-xs hover:-translate-y-0.5 transition-all duration-200 cursor-default">
               <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">Verified Check-in Rate</span>
               <div className="text-2xl font-bold text-slate-950 tracking-tight">
                 {stats.publicRegistrationsCount > 0 
@@ -274,18 +271,10 @@ export default function DashboardOverviewPage() {
                         </span>
                       </td>
 
-                      {/* Status (Clean indicator dot, no pill) */}
+                      {/* Status */}
                       <td className="py-2.5 px-3 whitespace-nowrap">
-                        <span className="inline-flex items-center gap-1.5 text-xs font-semibold text-slate-800">
-                          <span className={cn(
-                            "w-2 h-2 rounded-full shrink-0",
-                            lead.status === "Unread" && "bg-slate-400",
-                            lead.status === "Qualified" && "bg-[#005B6E]",
-                            lead.status === "Converted" && "bg-emerald-600",
-                            lead.status === "Followed Up" && "bg-amber-500",
-                            lead.status === "Closed" && "bg-slate-500"
-                          )} />
-                          <span>{lead.status}</span>
+                        <span className="text-xs font-semibold text-slate-800">
+                          {lead.status}
                         </span>
                       </td>
 

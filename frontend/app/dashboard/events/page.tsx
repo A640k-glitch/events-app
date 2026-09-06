@@ -24,6 +24,7 @@ import {
 import { cn } from "@/lib/utils";
 import { api } from "@/lib/api-client";
 import { TableSkeleton } from "@/components/ui/SkeletonLoaders";
+import { motion, AnimatePresence } from "framer-motion";
 
 export default function EventsPage() {
   const { 
@@ -193,52 +194,62 @@ export default function EventsPage() {
   // Current logged in user's RSVP status for the selected event
   const currentUserRecord = (selectedEvent?.attendanceManifest || []).find((m) => m.userId === user?.id);
 
+  const handleSelectEvent = (id: string, e?: React.MouseEvent) => {
+    setSelectedEventId(id);
+    const target = e?.currentTarget as HTMLElement | undefined;
+    if (target) {
+      setTimeout(() => {
+        target.scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest" });
+      }, 50);
+    }
+  };
+
   const renderSelectedEventPanel = () => {
     if (!selectedEvent) return null;
     return (
-      <div className="rounded-lg border border-slate-200 bg-white p-3 sm:p-4 space-y-3 sticky top-20 text-left shadow-2xs">
+      <div className="rounded-lg border border-slate-200 bg-white p-4 sm:p-5 space-y-4 sticky top-20 text-left shadow-2xs transition-all duration-200">
         {/* Event Overview */}
-        <div className="space-y-0.5 pb-2.5 border-b border-slate-100">
-          <span className="text-[10px] font-bold text-[#005B6E] uppercase tracking-wider">
+        <div className="space-y-1 pb-3 border-b border-slate-100">
+          <span className="text-xs font-bold text-[#005B6E] uppercase tracking-wider">
             Event Roster &amp; Decisions
           </span>
-          <h3 className="text-sm sm:text-base font-bold text-slate-950 leading-snug">{selectedEvent.title}</h3>
-          <p className="text-[10.5px] sm:text-[11px] text-slate-500">{selectedEvent.city} • {selectedEvent.date}</p>
+          <h3 className="text-base sm:text-lg font-bold text-slate-950 leading-snug">{selectedEvent.title}</h3>
+          <p className="text-xs text-slate-500 font-medium">{selectedEvent.city} • {selectedEvent.date}</p>
         </div>
 
         {/* 1. Quick Personal RSVP Decision for Current User - Solid Brand Green Card */}
-        <div className="p-2.5 sm:p-3 rounded-lg bg-[#005B6E] text-white space-y-2 shadow-xs border border-[#004754]">
+        <div className="p-3 rounded-lg bg-[#005B6E] text-white space-y-2 shadow-xs border border-[#004754]">
           <div className="flex items-center justify-between text-xs">
             <span className="font-bold text-white tracking-wide">Your Event Attendance</span>
-            <span className="text-[10.5px] font-medium text-teal-100">
-              Status: <strong className="text-white underline decoration-emerald-400 decoration-2">{currentUserRecord?.status || "Not Responded"}</strong>
+            <span className="text-[11px] font-medium text-teal-100">
+              Status: <strong className="text-white underline decoration-emerald-400 decoration-1">{currentUserRecord?.status || "Not Responded"}</strong>
             </span>
           </div>
 
-          <div className="flex items-center gap-1.5 pt-0.5">
+          <div className="flex items-center gap-2 pt-0.5">
             <button
               type="button"
               onClick={() => handleStaffStatusChange(user?.id || "usr_abraham", "Attending")}
               className={cn(
-                "flex-1 h-7 sm:h-7.5 rounded text-xs font-bold transition-all cursor-pointer text-center flex items-center justify-center gap-1",
+                "flex-1 h-7.5 rounded-md text-xs font-bold transition-all cursor-pointer text-center flex items-center justify-center gap-1.5",
                 currentUserRecord?.status === "Attending"
-                  ? "bg-emerald-500 text-white shadow-xs ring-2 ring-white/50"
+                  ? "bg-emerald-500 text-white shadow-xs ring-1 ring-white/50"
                   : "bg-white/15 text-white hover:bg-emerald-500 hover:text-white border border-white/20"
               )}
             >
-              <span>✓</span> <span>Attending</span>
+              <Check className="w-3.5 h-3.5 shrink-0" /> <span>Attending</span>
             </button>
             <button
               type="button"
               onClick={() => handleStaffStatusChange(user?.id || "usr_abraham", "Declined")}
               className={cn(
-                "flex-1 h-7 sm:h-7.5 rounded text-xs font-bold transition-all cursor-pointer text-center flex items-center justify-center gap-1",
+                "flex-1 h-7.5 rounded-md text-xs font-bold transition-all cursor-pointer text-center flex items-center justify-center gap-1.5",
                 currentUserRecord?.status === "Declined"
-                  ? "bg-rose-600 text-white shadow-xs ring-2 ring-white/50"
+                  ? "bg-rose-600 text-white shadow-xs ring-1 ring-white/50"
                   : "bg-white/15 text-white hover:bg-rose-600 hover:text-white border border-white/20"
               )}
             >
-              <span>✕</span> <span>Decline</span>
+              <X className="w-3.5 h-3.5 shrink-0" /> <span>Decline</span>
             </button>
           </div>
         </div>
@@ -247,17 +258,17 @@ export default function EventsPage() {
         <div className="space-y-2.5">
           <div className="flex items-center justify-between text-xs font-bold text-slate-900">
             <span>Assigned Staff ({selectedEvent.attendanceManifest?.length || 0})</span>
-            <span className="text-[11px] font-semibold text-emerald-700">
+            <span className="text-xs font-semibold text-emerald-700">
               {(selectedEvent.attendanceManifest || []).filter((m) => m.status === "Attending").length} Confirmed
             </span>
           </div>
 
-          {/* Add Staff Selector Dropdown (Compact) */}
+          {/* Add Staff Selector Dropdown (Clean, Compact Enterprise Dropdown) */}
           <div className="flex items-center gap-1.5">
             <select
               value={selectedStaffToAssign}
               onChange={(e) => setSelectedStaffToAssign(e.target.value)}
-              className="flex-1 bg-white border border-slate-300 rounded px-2 py-0.5 text-[11px] text-slate-800 font-medium focus:outline-none focus:border-[#005B6E] h-6.5 min-w-0"
+              className="flex-1 bg-white border border-slate-300 rounded-md px-2.5 py-1 text-xs text-slate-800 font-medium focus:outline-none focus:border-[#005B6E] h-7.5 min-w-0"
             >
               <option value="">+ Assign staff member...</option>
               {availableStaffToAssign.map((s) => (
@@ -270,7 +281,7 @@ export default function EventsPage() {
               type="button"
               onClick={handleAssignStaff}
               disabled={!selectedStaffToAssign || isUpdatingAttendance}
-              className="h-6.5 px-2.5 rounded bg-[#005B6E] hover:bg-[#004754] disabled:opacity-40 text-white text-[11px] font-semibold shadow-xs cursor-pointer whitespace-nowrap shrink-0 transition-colors"
+              className="h-7.5 px-3 rounded-md bg-[#005B6E] hover:bg-[#004754] disabled:opacity-40 text-white text-xs font-semibold shadow-xs cursor-pointer whitespace-nowrap shrink-0 transition-colors"
             >
               Assign
             </button>
@@ -279,18 +290,18 @@ export default function EventsPage() {
           {/* Staff List with Live Status Dropdown and Remove Button */}
           <div className="divide-y divide-slate-100 max-h-52 overflow-y-auto pr-1">
             {(selectedEvent.attendanceManifest || []).map((staff) => (
-              <div key={staff.userId} className="py-1.5 flex items-center justify-between gap-1.5 text-xs">
+              <div key={staff.userId} className="py-1.5 flex items-center justify-between gap-2 text-xs">
                 <div className="min-w-0 flex-1">
-                  <div className="font-semibold text-slate-900 truncate text-[11px]">{staff.userName}</div>
-                  <div className="text-[9.5px] text-slate-500">{staff.userRole}</div>
+                  <div className="font-semibold text-slate-900 truncate text-xs">{staff.userName}</div>
+                  <div className="text-[11px] text-slate-500">{staff.userRole}</div>
                 </div>
 
-                <div className="flex items-center gap-1 shrink-0">
+                <div className="flex items-center gap-1.5 shrink-0">
                   <select
                     value={staff.status}
                     onChange={(e) => handleStaffStatusChange(staff.userId, e.target.value as any)}
                     className={cn(
-                      "text-[10px] font-semibold px-1.5 py-0.5 rounded border focus:outline-none cursor-pointer bg-white h-6",
+                      "text-xs font-medium px-2 py-0.5 rounded-md border focus:outline-none cursor-pointer bg-white h-7",
                       staff.status === "Attending" && "text-emerald-800 border-emerald-300 bg-emerald-50/70",
                       staff.status === "Declined" && "text-rose-800 border-rose-300 bg-rose-50/70",
                       staff.status === "Maybe" && "text-amber-800 border-amber-300 bg-amber-50/70"
@@ -307,7 +318,7 @@ export default function EventsPage() {
                     title="Remove from event"
                     className="p-1 text-slate-400 hover:text-rose-600 rounded transition-colors cursor-pointer"
                   >
-                    <Trash2 className="w-3 h-3" />
+                    <Trash2 className="w-3.5 h-3.5" />
                   </button>
                 </div>
               </div>
@@ -321,7 +332,7 @@ export default function EventsPage() {
         </div>
 
         {/* QR Desk Check-In Scanner Form */}
-        <form onSubmit={handleVerifyPass} className="p-2.5 sm:p-3 rounded-md bg-slate-50 border border-slate-200 space-y-1.5">
+        <form onSubmit={handleVerifyPass} className="p-2.5 rounded-lg bg-slate-50 border border-slate-200 space-y-1.5">
           <div className="flex items-center gap-1.5 text-xs font-bold text-slate-900">
             <QrCode className="w-3.5 h-3.5 text-[#005B6E]" />
             <span>Door Pass Verification</span>
@@ -333,12 +344,12 @@ export default function EventsPage() {
               placeholder="Pass Code (e.g. FL-5821)..."
               value={verifyPassCode}
               onChange={(e) => setVerifyPassCode(e.target.value)}
-              className="flex-1 bg-white border border-slate-300 rounded-md px-2 py-1 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#005B6E] h-7 sm:h-7.5 min-w-0"
+              className="flex-1 bg-white border border-slate-300 rounded-md px-2.5 py-1 text-xs text-slate-900 placeholder:text-slate-400 focus:outline-none focus:border-[#005B6E] h-7.5 min-w-0"
             />
             <button
               type="submit"
               disabled={isVerifying}
-              className="h-7 sm:h-7.5 px-2.5 sm:px-3 bg-[#005B6E] hover:bg-[#004754] text-white rounded-md text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap shrink-0"
+              className="h-7.5 px-3 bg-[#005B6E] hover:bg-[#004754] text-white rounded-md text-xs font-semibold transition-colors cursor-pointer whitespace-nowrap shrink-0"
             >
               {isVerifying ? "..." : "Verify"}
             </button>
@@ -361,22 +372,12 @@ export default function EventsPage() {
     <DashboardLayout>
       <div className="space-y-6 font-sans text-left text-slate-900">
         
-        {/* Header Title Bar - Compact AWS Enterprise Style */}
-        <div className="bg-gradient-to-r from-[#EAF7F7]/70 via-white to-[#F0F6FF]/70 p-3.5 sm:p-4 rounded-lg border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        {/* Header Title Bar */}
+        <div className="bg-white p-3.5 sm:p-4 rounded-lg border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
           <div>
-            <div className="flex items-center gap-1.5 mb-0.5">
-              <span className="text-[10.5px] font-bold text-[#005B6E] tracking-wider uppercase">
-                Events &amp; Summits
-              </span>
-              <span className="text-slate-300">•</span>
-              <span className="text-[11px] text-slate-500 font-medium">Corporate Attendance &amp; Door Verification</span>
-            </div>
             <h1 className="text-xl font-bold tracking-tight text-slate-950">
               Events &amp; Attendance
             </h1>
-            <p className="text-xs text-slate-600 font-medium">
-              Coordinate team attendance rosters, verify attendee check-ins, and manage event schedules across Africa.
-            </p>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
@@ -413,9 +414,6 @@ export default function EventsPage() {
                   )}>
                     {t.count}
                   </span>
-                  {t.alert && (
-                    <span className="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse" />
-                  )}
                 </button>
               );
             })}
@@ -452,13 +450,17 @@ export default function EventsPage() {
 
                 return (
                   <div key={evt.id} className="space-y-2">
-                    <div
-                      onClick={() => setSelectedEventId(evt.id)}
+                    <motion.div
+                      layout
+                      initial={{ opacity: 0, y: 6 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.2 }}
+                      onClick={(e) => handleSelectEvent(evt.id, e)}
                       className={cn(
-                        "p-3 sm:p-4 rounded-lg border transition-all cursor-pointer space-y-2 text-left",
+                        "p-3 sm:p-4 rounded-lg border transition-all duration-200 cursor-pointer space-y-2 text-left hover:shadow-xs",
                         isSelected
-                          ? "border-[#005B6E] bg-[#F4F9FA] ring-1 ring-[#005B6E]/30"
-                          : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/50"
+                          ? "border-[#005B6E] bg-[#F4F9FA] ring-2 ring-[#005B6E]/20 shadow-xs"
+                          : "border-slate-200 bg-white hover:border-slate-300 hover:bg-slate-50/60"
                       )}
                     >
                       <div className="flex items-start justify-between gap-2">
@@ -517,14 +519,22 @@ export default function EventsPage() {
                           <span>{attendingStaffCount} Staff Attending</span>
                         </div>
                       </div>
-                    </div>
+                    </motion.div>
 
                     {/* Mobile Only: Inline Roster Card displayed immediately under selected event */}
-                    {isSelected && (
-                      <div className="block lg:hidden pt-1 pb-2">
-                        {renderSelectedEventPanel()}
-                      </div>
-                    )}
+                    <AnimatePresence>
+                      {isSelected && (
+                        <motion.div 
+                          initial={{ opacity: 0, height: 0, y: -4 }}
+                          animate={{ opacity: 1, height: "auto", y: 0 }}
+                          exit={{ opacity: 0, height: 0, y: -4 }}
+                          transition={{ duration: 0.25, ease: "easeOut" }}
+                          className="block lg:hidden overflow-hidden pt-1 pb-2"
+                        >
+                          {renderSelectedEventPanel()}
+                        </motion.div>
+                      )}
+                    </AnimatePresence>
                   </div>
                 );
               })}
@@ -532,7 +542,23 @@ export default function EventsPage() {
 
             {/* Right: Selected Event Control & Interactive Staff Decision System (5 cols) - Visible on lg+ screens */}
             <div className="hidden lg:block lg:col-span-5 space-y-4">
-              {renderSelectedEventPanel()}
+              <AnimatePresence mode="wait">
+                {selectedEvent ? (
+                  <motion.div
+                    key={selectedEvent.id}
+                    initial={{ opacity: 0, y: 8 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -8 }}
+                    transition={{ duration: 0.2, ease: "easeOut" }}
+                  >
+                    {renderSelectedEventPanel()}
+                  </motion.div>
+                ) : (
+                  <div className="rounded-lg border border-dashed border-slate-300 p-8 text-center text-slate-400 text-xs">
+                    Select an event to view roster and attendance decisions.
+                  </div>
+                )}
+              </AnimatePresence>
             </div>
 
           </div>
@@ -590,7 +616,7 @@ export default function EventsPage() {
                             "font-semibold text-xs",
                             a.isCheckedIn ? "text-emerald-700" : "text-slate-500"
                           )}>
-                            {a.isCheckedIn ? "● Checked In" : "○ Pending Door Scan"}
+                            {a.isCheckedIn ? "Checked In" : "Pending Door Scan"}
                           </span>
                         </td>
                       </tr>

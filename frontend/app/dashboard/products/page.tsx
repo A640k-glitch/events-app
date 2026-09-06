@@ -131,22 +131,12 @@ export default function ProductsPage() {
     <DashboardLayout>
       <div className="space-y-6 font-sans text-left text-slate-900">
         
-        {/* Header Title Bar - Compact AWS Enterprise Style */}
-        <div className="bg-gradient-to-r from-[#EAF7F7]/70 via-white to-[#F0F6FF]/70 p-3.5 sm:p-4 rounded-lg border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        {/* Header Title Bar */}
+        <div className="bg-white p-3.5 sm:p-4 rounded-lg border border-slate-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-2xs">
           <div>
-            <div className="flex items-center gap-1.5 mb-0.5">
-              <span className="text-[10.5px] font-bold text-[#005B6E] tracking-wider uppercase">
-                Enterprise Catalog
-              </span>
-              <span className="text-slate-300">•</span>
-              <span className="text-[11px] text-slate-500 font-medium">Live Bookings Telemetry</span>
-            </div>
             <h1 className="text-xl font-bold tracking-tight text-slate-950">
               Products &amp; Analytics
             </h1>
-            <p className="text-xs text-slate-600 font-medium">
-              Real-time pipeline, demo schedules, and verified attendee inquiry metrics across FifthLab &amp; CWG solutions.
-            </p>
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
@@ -603,44 +593,33 @@ export default function ProductsPage() {
                                     </div>
                                   </div>
                                 ) : (
-                                  <span className="text-[11px] font-medium text-slate-500 italic flex items-center gap-1">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-slate-300 shrink-0" />
+                                  <span className="text-[11px] font-medium text-slate-500 italic">
                                     Inbound (Unscheduled)
                                   </span>
                                 )}
                               </td>
 
-                              {/* Status Dropdown with indicator dot */}
+                              {/* Status Dropdown */}
                               <td className="py-2.5 px-3 whitespace-nowrap">
-                                <div className="flex items-center gap-1.5">
-                                  <span className={cn(
-                                    "w-2 h-2 rounded-full shrink-0",
-                                    lead.status === "Unread" && "bg-slate-400",
-                                    lead.status === "Followed Up" && "bg-amber-500",
-                                    lead.status === "Qualified" && "bg-[#005B6E]",
-                                    lead.status === "Converted" && "bg-emerald-600",
-                                    lead.status === "Closed" && "bg-slate-500"
-                                  )} />
-                                  <select
-                                    value={lead.status}
-                                    onChange={(e) => handleLeadStatusChange(lead.id, e.target.value as any)}
-                                    className="text-[10.5px] font-bold text-slate-800 bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:border-[#005B6E] focus:outline-none cursor-pointer h-6.5"
-                                  >
+                                <select
+                                  value={lead.status}
+                                  onChange={(e) => handleLeadStatusChange(lead.id, e.target.value as any)}
+                                  className="text-xs font-semibold text-slate-800 bg-white border border-slate-300 rounded px-2 py-0.5 focus:border-[#005B6E] focus:outline-none cursor-pointer h-7"
+                                >
                                     <option value="Unread">Unread</option>
                                     <option value="Followed Up">Followed Up</option>
                                     <option value="Qualified">Qualified</option>
                                     <option value="Converted">Converted</option>
                                     <option value="Closed">Closed</option>
                                   </select>
-                                </div>
                               </td>
 
                               {/* Handled / Assigned By Dropdown */}
-                              <td className="py-2.5 px-3 whitespace-nowrap">
+                              <td className="py-2 px-2.5 whitespace-nowrap">
                                 <select
                                   value={lead.assignedProductOwnerId || "unassigned"}
                                   onChange={(e) => handleLeadOwnerChange(lead.id, e.target.value)}
-                                  className="text-[10.5px] font-semibold text-slate-800 bg-white border border-slate-300 rounded px-1.5 py-0.5 focus:border-[#005B6E] focus:outline-none cursor-pointer h-6.5"
+                                  className="text-xs font-medium text-slate-800 bg-white border border-slate-300 rounded px-2 py-0.5 focus:border-[#005B6E] focus:outline-none cursor-pointer h-7"
                                 >
                                   <option value="unassigned">Unassigned</option>
                                   {owners.map((owner) => (
@@ -705,71 +684,71 @@ export default function ProductsPage() {
         {/* Add Product Modal */}
         {isAddModalOpen && (
           <div
-            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-2xs flex items-center justify-center p-4 animate-in fade-in duration-150"
+            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-2xs flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-150"
             onClick={() => setIsAddModalOpen(false)}
           >
             <div
-              className="w-full max-w-lg bg-white rounded-2xl border border-gray-200 p-6 sm:p-7 space-y-5 shadow-2xl text-left"
+              className="w-full max-w-md bg-white rounded-xl border border-slate-300 p-4 sm:p-5 space-y-3.5 shadow-2xl text-left"
               onClick={(e) => e.stopPropagation()}
             >
-              <div className="flex items-center justify-between pb-3 border-b border-gray-100">
-                <h3 className="text-base font-bold text-[#111827]">Add Product to Catalog</h3>
+              <div className="flex items-center justify-between pb-2.5 border-b border-slate-100">
+                <h3 className="text-sm font-bold text-slate-900">Add Product to Catalog</h3>
                 <button
                   onClick={() => setIsAddModalOpen(false)}
-                  className="p-1.5 text-gray-400 hover:text-gray-700 rounded-lg hover:bg-gray-100 cursor-pointer"
+                  className="p-1 text-slate-400 hover:text-slate-700 rounded-md hover:bg-slate-100 cursor-pointer"
                 >
                   <X className="w-4 h-4" />
                 </button>
               </div>
 
-              <form onSubmit={handleCreateProduct} className="space-y-4 text-xs">
-                <div className="space-y-1.5">
-                  <label className="font-semibold text-gray-700">Product Name *</label>
+              <form onSubmit={handleCreateProduct} className="space-y-3 text-xs">
+                <div className="space-y-1">
+                  <label className="text-[11px] font-semibold text-slate-700">Product Name *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. KuleanPay Multi-Rail Gateway"
                     value={name}
                     onChange={(e) => setName(e.target.value)}
-                    className="w-full bg-white border border-gray-200 rounded-xl p-2.5 text-[#111827] focus:outline-hidden focus:border-[#0090AD]"
+                    className="w-full h-8 bg-white border border-slate-300 rounded-md px-2.5 py-1 text-xs text-slate-900 focus:outline-none focus:border-[#005B6E] font-medium"
                   />
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="font-semibold text-gray-700">Tagline *</label>
+                <div className="space-y-1">
+                  <label className="text-[11px] font-semibold text-slate-700">Tagline *</label>
                   <input
                     type="text"
                     required
                     placeholder="e.g. Unified Cross-Border Settlement"
                     value={tagline}
                     onChange={(e) => setTagline(e.target.value)}
-                    className="w-full bg-white border border-gray-200 rounded-xl p-2.5 text-[#111827] focus:outline-hidden focus:border-[#0090AD]"
+                    className="w-full h-8 bg-white border border-slate-300 rounded-md px-2.5 py-1 text-xs text-slate-900 focus:outline-none focus:border-[#005B6E] font-medium"
                   />
                 </div>
 
-                <div className="space-y-1.5">
-                  <label className="font-semibold text-gray-700">Description *</label>
+                <div className="space-y-1">
+                  <label className="text-[11px] font-semibold text-slate-700">Description *</label>
                   <textarea
-                    rows={3}
+                    rows={2}
                     required
                     placeholder="Enter strategic capabilities and enterprise target persona..."
                     value={description}
                     onChange={(e) => setDescription(e.target.value)}
-                    className="w-full bg-white border border-gray-200 rounded-xl p-2.5 text-[#111827] focus:outline-hidden focus:border-[#0090AD] resize-none"
+                    className="w-full bg-white border border-slate-300 rounded-md p-2 text-xs text-slate-900 focus:outline-none focus:border-[#005B6E] resize-none font-medium"
                   />
                 </div>
 
-                <div className="pt-3 border-t border-gray-100 flex items-center justify-end gap-2.5">
+                <div className="pt-2.5 border-t border-slate-100 flex items-center justify-end gap-2">
                   <button
                     type="button"
                     onClick={() => setIsAddModalOpen(false)}
-                    className="px-4 py-2 border border-gray-200 rounded-xl text-gray-600 hover:bg-gray-50 text-xs font-semibold cursor-pointer"
+                    className="h-8 px-3 border border-slate-300 rounded-md text-slate-700 hover:bg-slate-50 text-xs font-semibold cursor-pointer"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-5 py-2 bg-[#0090AD] hover:bg-[#007A94] text-white rounded-xl text-xs font-semibold shadow-xs cursor-pointer"
+                    className="h-8 px-4 bg-[#005B6E] hover:bg-[#004754] text-white rounded-md text-xs font-semibold shadow-xs cursor-pointer transition-colors"
                   >
                     Publish Solution
                   </button>

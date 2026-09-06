@@ -48,7 +48,7 @@ export async function POST(request: NextRequest) {
     });
 
     if (emailResult.simulated) {
-      console.warn(`[AUTH] ⚠️ Running in simulation mode (no SMTP configured). Generated OTP for ${cleanEmail}: ${otp}`);
+      console.warn(`[AUTH] Running in simulation mode (no SMTP configured). Generated OTP for ${cleanEmail}: ${otp}`);
     }
 
     return NextResponse.json({
