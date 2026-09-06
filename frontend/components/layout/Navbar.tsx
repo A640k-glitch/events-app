@@ -168,7 +168,12 @@ export default function Navbar() {
 
                   <Link
                     href="/demo"
-                    className="px-4 sm:px-5 py-2 rounded-full text-xs font-semibold bg-gradient-to-r from-[#0090AD] to-[#229EA6] text-white hover:from-[#007A94] hover:to-[#1E8B92] transition-all shadow-xs hover:scale-[1.02] active:scale-[0.98] flex items-center gap-1.5"
+                    className={cn(
+                      "px-4 sm:px-5 py-2 rounded-full text-xs font-semibold transition-all shadow-xs hover:scale-[1.02] active:scale-[0.98] flex items-center gap-1.5",
+                      pathname === "/demo"
+                        ? "bg-slate-950 text-white hover:bg-black shadow-xs ring-1 ring-slate-800"
+                        : "bg-gradient-to-r from-[#0090AD] to-[#229EA6] text-white hover:from-[#007A94] hover:to-[#1E8B92]"
+                    )}
                   >
                     <span>Book Demo</span>
                     <ArrowRight className="w-3.5 h-3.5" />
@@ -220,7 +225,12 @@ export default function Navbar() {
                   <Link
                     href="/dashboard"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="w-full py-3 px-4 rounded-2xl bg-[#0090AD] hover:bg-[#007A94] text-white text-sm font-bold text-center flex items-center justify-center shadow-md shadow-[#0090AD]/25 active:scale-[0.99] transition-all cursor-pointer"
+                    className={cn(
+                      "w-full py-3 px-4 rounded-2xl text-sm font-bold text-center flex items-center justify-center active:scale-[0.99] transition-all cursor-pointer",
+                      pathname.startsWith("/dashboard")
+                        ? "bg-slate-950 text-white shadow-xs"
+                        : "bg-[#0090AD] hover:bg-[#007A94] text-white shadow-md shadow-[#0090AD]/25"
+                    )}
                   >
                     <span>Open Dashboard</span>
                   </Link>
@@ -239,14 +249,24 @@ export default function Navbar() {
                   <Link
                     href="/demo"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="w-full py-3 px-4 rounded-2xl bg-[#0090AD] hover:bg-[#007A94] text-white text-sm font-bold text-center flex items-center justify-center shadow-md shadow-[#0090AD]/25 active:scale-[0.99] transition-all"
+                    className={cn(
+                      "w-full py-3 px-4 rounded-2xl text-sm font-bold text-center flex items-center justify-center active:scale-[0.99] transition-all",
+                      pathname === "/demo"
+                        ? "bg-slate-950 text-white hover:bg-black shadow-xs ring-1 ring-slate-850"
+                        : "bg-[#0090AD] hover:bg-[#007A94] text-white shadow-md shadow-[#0090AD]/25"
+                    )}
                   >
                     <span>Book Product Demo</span>
                   </Link>
                   <Link
                     href="/login"
                     onClick={() => setMobileMenuOpen(false)}
-                    className="w-full py-2.5 px-4 rounded-2xl bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-900 text-sm font-bold text-center flex items-center justify-center transition-colors"
+                    className={cn(
+                      "w-full py-2.5 px-4 rounded-2xl text-sm font-bold text-center flex items-center justify-center transition-colors",
+                      pathname === "/login"
+                        ? "bg-slate-950 text-white shadow-xs"
+                        : "bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-900"
+                    )}
                   >
                     <span>Portal Login</span>
                   </Link>

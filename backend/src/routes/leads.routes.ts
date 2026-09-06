@@ -140,12 +140,20 @@ leadsRouter.patch("/:id", requireAuth, async (req: Request, res: Response): Prom
     const statusUpdate =
       normalizedStatus && isLeadStatus(normalizedStatus) ? (normalizedStatus as LeadStatus) : undefined;
 
+    const cleanAssignedId = 
+      assignedProductOwnerId === "unassigned" || 
+      assignedProductOwnerId === "general_pool" || 
+      assignedProductOwnerId === "" || 
+      assignedProductOwnerId === null
+        ? null
+        : assignedProductOwnerId;
+
     const lead = await prisma.lead.update({
       where: { id },
       data: {
         ...(statusUpdate ? { status: statusUpdate } : {}),
         ...(notes !== undefined ? { notes } : {}),
-        ...(assignedProductOwnerId !== undefined ? { assignedProductOwnerId } : {}),
+        ...(assignedProductOwnerId !== undefined ? { assignedProductOwnerId: cleanAssignedId } : {}),
         ...(bookingDate !== undefined ? { bookingDate: bookingDate ? new Date(bookingDate) : null } : {}),
         ...(bookingTime !== undefined ? { bookingTime: bookingTime || null } : {}),
       },

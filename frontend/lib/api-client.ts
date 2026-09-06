@@ -232,6 +232,12 @@ export const api = {
     });
   },
 
+  deleteLead: async (leadId: string) => {
+    return request<{ success: boolean; message: string }>(`/leads/${leadId}`, {
+      method: "DELETE",
+    });
+  },
+
   // Newsletter
   subscribeNewsletter: async (email: string, source = "HOMEPAGE") => {
     return request<{ success: boolean; message: string; data: any }>("/newsletter/subscribe", {

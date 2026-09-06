@@ -76,11 +76,12 @@ export default function TicketPassModal({ isOpen, onClose, ticket }: TicketPassM
 
   const modalContent = (
     <div
-      className="fixed inset-0 z-[100] bg-black/65 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-150"
+      className="fixed inset-0 z-[100] bg-black/65 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 overflow-y-auto animate-in fade-in duration-150 overscroll-contain"
       onClick={onClose}
+      onTouchMove={(e) => { if (e.target === e.currentTarget) e.preventDefault(); }}
     >
       <div
-        className="w-full max-w-md bg-white border border-gray-200 rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 text-left relative overflow-hidden font-sans my-auto max-h-[90vh] overflow-y-auto text-[#0E0E0E]"
+        className="w-full max-w-md bg-white border border-gray-200 rounded-3xl shadow-2xl p-6 sm:p-8 space-y-6 text-left relative overflow-hidden font-sans my-auto max-h-[90vh] overflow-y-auto text-[#0E0E0E] overscroll-contain"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}

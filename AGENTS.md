@@ -35,3 +35,8 @@ Whenever the user asks to "push", "push updates", or deploy changes:
 - **NEVER use cards with top colored accent borders** (e.g. `border-t-4`, `border-t-[color]`, top colored accent lines or wedges).
 - **NEVER use asymmetric thick colored top borders** or garish tinted gradient headers on KPI / metric cards.
 - Cards must use a clean, uniform enterprise style: consistent borders (`border border-slate-200`), clean white background (`bg-white`), subtle shadow (`shadow-2xs` or `shadow-none`), and crisp typography.
+
+## Pill Tag & Badge Design Rules
+- **NEVER use colored pill/tag/badge designs** with tinted background fills and colored borders (e.g. `bg-purple-50 border border-purple-200`, `bg-[#EAF7F7] border border-[#CEEFEF]`, or similar candy/pastel pill tags).
+- Display table data, roles, and metadata in clean, understated typography (e.g. `font-medium text-slate-700` or plain text) without pill containers or tinted background tags.
+

@@ -18,6 +18,7 @@ import {
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TableSkeleton } from "@/components/ui/SkeletonLoaders";
+import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 
 function LeadsContent() {
   const { leads, updateLeadStatus, updateLead, deleteLead, isLoading, owners } = useApp();
@@ -26,10 +27,13 @@ function LeadsContent() {
 
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [statusFilter, setStatusFilter] = useState("ALL");
-  const [recordTypeFilter, setRecordTypeFilter] = useState<"ALL" | "BOOKINGS" | "INBOUND">("ALL");
+  const [recordTypeFilter, setRecordTypeFilter] = useState<"ALL" | "BOOKINGS" | "INBOUND" | "POOL">("ALL");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [activeLeadDrawerId, setActiveLeadDrawerId] = useState<string | null>(null);
   const [isExporting, setIsExporting] = useState(false);
+
+  // Lock body scroll when drawer is open
+  useBodyScrollLock(Boolean(activeLeadDrawerId));
 
   useEffect(() => {
     const q = searchParams.get("search") || searchParams.get("product");
@@ -42,6 +46,7 @@ function LeadsContent() {
 
   const totalBookings = leads.filter((l) => Boolean(l.bookingDate || l.bookingTime)).length;
   const totalInbound = leads.length - totalBookings;
+  const generalPoolCount = leads.filter((l) => !l.assignedProductOwnerId || l.assignedProductOwner === "General Pool" || l.assignedProductOwner === "Unassigned").length;
   const qualifiedCount = leads.filter((l) => l.status === "Qualified" || l.status === "Converted").length;
 
   const filteredLeads = leads.filter((l) => {
@@ -52,10 +57,12 @@ function LeadsContent() {
       l.productInterested.toLowerCase().includes(searchQuery.toLowerCase());
     const matchesStatus = statusFilter === "ALL" || l.status.toLowerCase() === statusFilter.toLowerCase();
     const isBooking = Boolean(l.bookingDate || l.bookingTime);
+    const isGeneralPool = !l.assignedProductOwnerId || l.assignedProductOwner === "General Pool" || l.assignedProductOwner === "Unassigned";
     const matchesType =
       recordTypeFilter === "ALL" ||
       (recordTypeFilter === "BOOKINGS" && isBooking) ||
-      (recordTypeFilter === "INBOUND" && !isBooking);
+      (recordTypeFilter === "INBOUND" && !isBooking) ||
+      (recordTypeFilter === "POOL" && isGeneralPool);
 
     return matchesSearch && matchesStatus && matchesType;
   });
@@ -198,6 +205,17 @@ function LeadsContent() {
             >
               Inbound Leads ({totalInbound})
             </button>
+            <button
+              onClick={() => setRecordTypeFilter("POOL")}
+              className={cn(
+                "h-7.5 px-3 rounded-md text-xs font-semibold transition-all cursor-pointer whitespace-nowrap",
+                recordTypeFilter === "POOL"
+                  ? "bg-slate-950 text-white font-bold shadow-xs"
+                  : "bg-[#F0F4F8] text-slate-700 hover:bg-slate-200/80 hover:text-slate-900"
+              )}
+            >
+              General Pool ({generalPoolCount})
+            </button>
           </div>
 
           <div className="relative w-full sm:w-64">
@@ -336,12 +354,12 @@ function LeadsContent() {
                             const targetOwner = owners.find((o) => o.id === selectedId);
                             await updateLead(lead.id, {
                               assignedProductOwnerId: selectedId === "unassigned" ? null : selectedId,
-                              assignedProductOwner: targetOwner ? targetOwner.name : "Unassigned",
+                              assignedProductOwner: targetOwner ? targetOwner.name : "General Pool",
                             });
                           }}
                           className="text-xs font-medium text-slate-800 bg-white border border-slate-300 rounded px-2 py-0.5 focus:border-[#005B6E] focus:outline-none cursor-pointer h-7 max-w-[150px] truncate"
                         >
-                          <option value="unassigned">Unassigned</option>
+                          <option value="unassigned">General Pool (Unassigned)</option>
                           {owners.map((owner) => (
                             <option key={owner.id} value={owner.id}>
                               {owner.name} ({owner.role})
@@ -378,183 +396,185 @@ function LeadsContent() {
       {/* Lead Detail & Walkthrough Schedule Drawer */}
       {activeLeadDrawer && (
         <div 
-          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-2xs flex items-center justify-end animate-in fade-in duration-150"
+          className="fixed inset-0 z-50 bg-black/40 backdrop-blur-2xs flex items-center justify-end animate-in fade-in duration-150 overscroll-contain"
           onClick={() => setActiveLeadDrawerId(null)}
+          onTouchMove={(e) => { if (e.target === e.currentTarget) e.preventDefault(); }}
         >
           <div 
-            className="w-full max-w-md h-full bg-white shadow-2xl p-6 flex flex-col justify-between overflow-y-auto animate-in slide-in-from-right duration-200 font-sans text-left border-l border-slate-200"
+            className="w-full max-w-md h-full max-h-[100dvh] bg-white shadow-2xl flex flex-col justify-between overflow-hidden animate-in slide-in-from-right duration-200 font-sans text-left border-l border-slate-200 overscroll-contain"
             onClick={(e) => e.stopPropagation()}
           >
-            <div className="space-y-6">
-              <div className="flex items-start justify-between border-b border-slate-100 pb-4">
-                <div>
-                  <span className="text-[10px] font-bold text-[#005B6E] uppercase tracking-wider block mb-0.5">
-                    {activeLeadDrawer.bookingDate || activeLeadDrawer.bookingTime ? "Confirmed Booking Record" : "Inbound Lead Record"}
-                  </span>
-                  <h2 className="text-xl font-bold text-slate-950">{activeLeadDrawer.visitorName}</h2>
-                  <p className="text-xs text-slate-500 font-medium">{activeLeadDrawer.company}</p>
-                </div>
-                <button
-                  onClick={() => setActiveLeadDrawerId(null)}
-                  className="p-1 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 cursor-pointer"
-                >
-                  <X className="w-5 h-5" />
-                </button>
+            {/* Sticky Drawer Header */}
+            <div className="flex items-start justify-between border-b border-slate-200 px-4 sm:px-6 py-3.5 sm:py-4 bg-white shrink-0">
+              <div className="min-w-0 pr-2">
+                <span className="text-[10px] font-bold text-[#005B6E] uppercase tracking-wider block mb-0.5">
+                  {activeLeadDrawer.bookingDate || activeLeadDrawer.bookingTime ? "Confirmed Booking Record" : "Inbound Lead Record"}
+                </span>
+                <h2 className="text-lg sm:text-xl font-bold text-slate-950 truncate">{activeLeadDrawer.visitorName}</h2>
+                <p className="text-xs text-slate-500 font-medium truncate">{activeLeadDrawer.company}</p>
+              </div>
+              <button
+                onClick={() => setActiveLeadDrawerId(null)}
+                className="p-1.5 text-slate-400 hover:text-slate-700 rounded-lg hover:bg-slate-100 cursor-pointer shrink-0"
+              >
+                <X className="w-5 h-5" />
+              </button>
+            </div>
+
+            {/* Scrollable Drawer Body with compact spacing on small mobile */}
+            <div className="flex-1 overflow-y-auto px-4 sm:px-6 py-4 space-y-3.5 sm:space-y-4 text-xs">
+              <div className="space-y-0.5">
+                <span className="text-slate-500 uppercase text-[9.5px] sm:text-[10px] font-bold">Company / Organization</span>
+                <div className="font-bold text-slate-950 text-xs sm:text-sm">{activeLeadDrawer.company}</div>
               </div>
 
-              <div className="space-y-4 text-xs">
-                <div className="space-y-1">
-                  <span className="text-slate-500 uppercase text-[10px] font-bold">Company / Organization</span>
-                  <div className="font-bold text-slate-950 text-sm">{activeLeadDrawer.company}</div>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                <div className="space-y-0.5">
+                  <span className="text-slate-500 uppercase text-[9.5px] sm:text-[10px] font-bold">Email</span>
+                  <div className="text-slate-800 font-semibold break-all text-xs">{activeLeadDrawer.email}</div>
+                </div>
+                <div className="space-y-0.5">
+                  <span className="text-slate-500 uppercase text-[9.5px] sm:text-[10px] font-bold">Phone</span>
+                  <div className="text-slate-800 font-semibold text-xs">{activeLeadDrawer.phone || "N/A"}</div>
+                </div>
+              </div>
+
+              <div className="space-y-0.5">
+                <span className="text-slate-500 uppercase text-[9.5px] sm:text-[10px] font-bold">Product Solution</span>
+                <div className="font-bold text-[#005B6E] text-xs sm:text-sm">{activeLeadDrawer.productInterested}</div>
+              </div>
+
+              {/* Interactive Demo Booking Scheduling Box */}
+              <div className="p-3 sm:p-3.5 bg-slate-50 rounded-xl border border-slate-300 space-y-2.5 sm:space-y-3">
+                <div className="flex items-center justify-between gap-2">
+                  <span className="text-slate-800 uppercase text-[10px] sm:text-[10.5px] font-bold flex items-center gap-1.5 shrink-0">
+                    <Calendar className="w-3.5 h-3.5 text-[#005B6E]" />
+                    <span>Demo Walkthrough Schedule</span>
+                  </span>
+                  <span className={cn(
+                    "text-[9.5px] sm:text-[10px] font-bold px-2 py-0.5 rounded shrink-0",
+                    (activeLeadDrawer.bookingDate || activeLeadDrawer.bookingTime)
+                      ? "bg-[#005B6E] text-white"
+                      : "bg-slate-200 text-slate-700"
+                  )}>
+                    {(activeLeadDrawer.bookingDate || activeLeadDrawer.bookingTime) ? "Confirmed Booking" : "Unscheduled"}
+                  </span>
                 </div>
 
-                <div className="grid grid-cols-2 gap-3">
-                  <div className="space-y-1">
-                    <span className="text-slate-500 uppercase text-[10px] font-bold">Email</span>
-                    <div className="text-slate-800 font-semibold">{activeLeadDrawer.email}</div>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
+                  <div>
+                    <label className="text-slate-600 uppercase text-[9.5px] sm:text-[10px] font-bold block mb-1">
+                      Scheduled Date
+                    </label>
+                    <input
+                      type="date"
+                      value={activeLeadDrawer.bookingDate || ""}
+                      onChange={async (e) => {
+                        await updateLead(activeLeadDrawer.id, { bookingDate: e.target.value });
+                      }}
+                      className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-900 focus:outline-none focus:border-[#005B6E]"
+                    />
                   </div>
-                  <div className="space-y-1">
-                    <span className="text-slate-500 uppercase text-[10px] font-bold">Phone</span>
-                    <div className="text-slate-800 font-semibold">{activeLeadDrawer.phone || "N/A"}</div>
-                  </div>
-                </div>
-
-                <div className="space-y-1">
-                  <span className="text-slate-500 uppercase text-[10px] font-bold">Product Solution</span>
-                  <div className="font-bold text-[#005B6E] text-sm">{activeLeadDrawer.productInterested}</div>
-                </div>
-
-                {/* Interactive Demo Booking Scheduling Box */}
-                <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-300 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <span className="text-slate-800 uppercase text-[10.5px] font-bold flex items-center gap-1.5">
-                      <Calendar className="w-3.5 h-3.5 text-[#005B6E]" />
-                      <span>Demo Walkthrough Schedule</span>
-                    </span>
-                    <span className={cn(
-                      "text-[10px] font-bold px-2 py-0.5 rounded",
-                      (activeLeadDrawer.bookingDate || activeLeadDrawer.bookingTime)
-                        ? "bg-[#005B6E] text-white"
-                        : "bg-slate-200 text-slate-700"
-                    )}>
-                      {(activeLeadDrawer.bookingDate || activeLeadDrawer.bookingTime) ? "Confirmed Booking" : "Unscheduled Lead"}
-                    </span>
-                  </div>
-
-                  <div className="grid grid-cols-2 gap-3">
-                    <div>
-                      <label className="text-slate-600 uppercase text-[10px] font-bold block mb-1">
-                        Scheduled Date
-                      </label>
-                      <input
-                        type="date"
-                        value={activeLeadDrawer.bookingDate || ""}
-                        onChange={async (e) => {
-                          await updateLead(activeLeadDrawer.id, { bookingDate: e.target.value });
-                        }}
-                        className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-900 focus:outline-none focus:border-[#005B6E]"
-                      />
-                    </div>
-                    <div>
-                      <label className="text-slate-600 uppercase text-[10px] font-bold block mb-1">
-                        Time Slot
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="e.g. 10:00 AM - 10:45 AM"
-                        value={activeLeadDrawer.bookingTime || ""}
-                        onChange={async (e) => {
-                          await updateLead(activeLeadDrawer.id, { bookingTime: e.target.value });
-                        }}
-                        className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-900 focus:outline-none focus:border-[#005B6E]"
-                      />
-                    </div>
-                  </div>
-
-                  <div className="flex items-center justify-between pt-1">
-                    {(activeLeadDrawer.bookingDate || activeLeadDrawer.bookingTime) ? (
-                      <button
-                        type="button"
-                        onClick={async () => {
-                          await updateLead(activeLeadDrawer.id, { bookingDate: null as any, bookingTime: null as any });
-                        }}
-                        className="text-[11px] font-semibold text-rose-600 hover:underline cursor-pointer"
-                      >
-                        Clear Booking (Convert to Unscheduled Lead)
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        onClick={async () => {
-                          const today = new Date().toISOString().split("T")[0];
-                          await updateLead(activeLeadDrawer.id, { bookingDate: today, bookingTime: "10:00 AM - 10:45 AM" });
-                        }}
-                        className="text-[11px] font-semibold text-[#005B6E] hover:underline cursor-pointer"
-                      >
-                        + Quick Book for Today (10:00 AM)
-                      </button>
-                    )}
+                  <div>
+                    <label className="text-slate-600 uppercase text-[9.5px] sm:text-[10px] font-bold block mb-1">
+                      Time Slot
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="e.g. 10:00 AM - 10:45 AM"
+                      value={activeLeadDrawer.bookingTime || ""}
+                      onChange={async (e) => {
+                        await updateLead(activeLeadDrawer.id, { bookingTime: e.target.value });
+                      }}
+                      className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-900 focus:outline-none focus:border-[#005B6E]"
+                    />
                   </div>
                 </div>
 
-                {/* Live Pipeline Status Selector */}
-                <div className="space-y-1.5">
-                  <label className="text-slate-600 uppercase text-[10px] font-bold block">
-                    Pipeline Status
-                  </label>
-                  <select
-                    value={activeLeadDrawer.status}
-                    onChange={(e) => updateLeadStatus(activeLeadDrawer.id, e.target.value as LeadStatus)}
-                    className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#005B6E] shadow-2xs cursor-pointer h-8"
-                  >
-                    {statusOptions.map((opt) => (
-                      <option key={opt} value={opt}>{opt}</option>
-                    ))}
-                  </select>
+                <div className="flex items-center justify-between pt-0.5">
+                  {(activeLeadDrawer.bookingDate || activeLeadDrawer.bookingTime) ? (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        await updateLead(activeLeadDrawer.id, { bookingDate: null as any, bookingTime: null as any });
+                      }}
+                      className="text-[10.5px] sm:text-[11px] font-semibold text-rose-600 hover:underline cursor-pointer"
+                    >
+                      Clear Booking (Convert to Unscheduled Lead)
+                    </button>
+                  ) : (
+                    <button
+                      type="button"
+                      onClick={async () => {
+                        const today = new Date().toISOString().split("T")[0];
+                        await updateLead(activeLeadDrawer.id, { bookingDate: today, bookingTime: "10:00 AM - 10:45 AM" });
+                      }}
+                      className="text-[10.5px] sm:text-[11px] font-semibold text-[#005B6E] hover:underline cursor-pointer"
+                    >
+                      + Quick Book for Today (10:00 AM)
+                    </button>
+                  )}
                 </div>
+              </div>
 
-                {/* Live Assigned Specialist Selector */}
-                <div className="space-y-1.5">
-                  <label className="text-slate-600 uppercase text-[10px] font-bold block">
-                    Assigned Lead Specialist
-                  </label>
-                  <select
-                    value={activeLeadDrawer.assignedProductOwnerId || "unassigned"}
-                    onChange={async (e) => {
-                      const selectedId = e.target.value;
-                      const targetOwner = owners.find((o) => o.id === selectedId);
-                      await updateLead(activeLeadDrawer.id, {
-                        assignedProductOwnerId: selectedId === "unassigned" ? null : selectedId,
-                        assignedProductOwner: targetOwner ? targetOwner.name : "Unassigned",
-                      });
-                    }}
-                    className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1.5 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#005B6E] shadow-2xs cursor-pointer h-8"
-                  >
-                    <option value="unassigned">Unassigned (General Pool)</option>
-                    {owners.map((owner) => (
-                      <option key={owner.id} value={owner.id}>
-                        {owner.name} — {owner.role}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+              {/* Live Pipeline Status Selector */}
+              <div className="space-y-1">
+                <label className="text-slate-600 uppercase text-[9.5px] sm:text-[10px] font-bold block">
+                  Pipeline Status
+                </label>
+                <select
+                  value={activeLeadDrawer.status}
+                  onChange={(e) => updateLeadStatus(activeLeadDrawer.id, e.target.value as LeadStatus)}
+                  className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#005B6E] shadow-2xs cursor-pointer h-8"
+                >
+                  {statusOptions.map((opt) => (
+                    <option key={opt} value={opt}>{opt}</option>
+                  ))}
+                </select>
+              </div>
 
-                <div className="space-y-1">
-                  <span className="text-slate-500 uppercase text-[10px] font-bold">Meeting Notes &amp; Brief</span>
-                  <div className="p-3.5 bg-slate-50 rounded-xl border border-slate-200 text-slate-700 leading-relaxed font-medium">
-                    {activeLeadDrawer.notes || "No additional meeting notes provided."}
-                  </div>
+              {/* Live Assigned Specialist Selector */}
+              <div className="space-y-1">
+                <label className="text-slate-600 uppercase text-[9.5px] sm:text-[10px] font-bold block">
+                  Assigned Lead Specialist
+                </label>
+                <select
+                  value={activeLeadDrawer.assignedProductOwnerId || "unassigned"}
+                  onChange={async (e) => {
+                    const selectedId = e.target.value;
+                    const targetOwner = owners.find((o) => o.id === selectedId);
+                    await updateLead(activeLeadDrawer.id, {
+                      assignedProductOwnerId: selectedId === "unassigned" ? null : selectedId,
+                      assignedProductOwner: targetOwner ? targetOwner.name : "General Pool",
+                    });
+                  }}
+                  className="w-full bg-white border border-slate-300 rounded-lg px-2.5 py-1 text-xs font-semibold text-slate-800 focus:outline-none focus:border-[#005B6E] shadow-2xs cursor-pointer h-8"
+                >
+                  <option value="unassigned">Unassigned (General Pool)</option>
+                  {owners.map((owner) => (
+                    <option key={owner.id} value={owner.id}>
+                      {owner.name} — {owner.role}
+                    </option>
+                  ))}
+                </select>
+              </div>
+
+              <div className="space-y-1 pb-2">
+                <span className="text-slate-500 uppercase text-[9.5px] sm:text-[10px] font-bold">Meeting Notes &amp; Brief</span>
+                <div className="p-3 bg-slate-50 rounded-xl border border-slate-200 text-slate-700 leading-relaxed font-medium text-xs max-h-36 overflow-y-auto">
+                  {activeLeadDrawer.notes || "No additional meeting notes provided."}
                 </div>
               </div>
             </div>
 
-            <div className="pt-4 border-t border-slate-100 flex items-center justify-between">
-              <span className="text-[11px] text-slate-400 font-mono">
-                FifthEvents Live CRM Record
+            {/* Sticky Drawer Footer with safe padding */}
+            <div className="px-4 sm:px-6 py-3 border-t border-slate-200 bg-slate-50 flex items-center justify-between shrink-0">
+              <span className="text-[10.5px] sm:text-[11px] text-slate-400 font-mono">
+                FifthEvents Live CRM
               </span>
               <button
                 onClick={() => setActiveLeadDrawerId(null)}
-                className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 font-semibold text-xs rounded-xl cursor-pointer"
+                className="px-4 py-1.5 sm:py-2 bg-white hover:bg-slate-100 border border-slate-300 text-slate-700 font-semibold text-xs rounded-lg cursor-pointer shadow-2xs"
               >
                 Close
               </button>

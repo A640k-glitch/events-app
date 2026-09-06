@@ -79,11 +79,12 @@ export default function PitchProposalModal({ isOpen, onClose }: PitchProposalMod
 
   return (
     <div
-      className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 bg-black/85 backdrop-blur-md flex items-center justify-center p-4 animate-in fade-in duration-150 overscroll-contain"
       onClick={handleClose}
+      onTouchMove={(e) => { if (e.target === e.currentTarget) e.preventDefault(); }}
     >
       <div
-        className="w-full max-w-lg bg-[#0b0c10] border border-white/15 p-6 sm:p-8 space-y-6 text-left shadow-2xl relative overflow-hidden font-sans max-h-[90vh] overflow-y-auto"
+        className="w-full max-w-lg bg-[#0b0c10] border border-white/15 p-6 sm:p-8 space-y-6 text-left shadow-2xl relative overflow-hidden font-sans max-h-[90vh] overflow-y-auto overscroll-contain"
         onClick={(e) => e.stopPropagation()}
       >
         {/* Close Button */}

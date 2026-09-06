@@ -25,6 +25,7 @@ import { CardGridSkeleton } from "@/components/ui/SkeletonLoaders";
 import { FifthLabProduct } from "@/lib/types";
 import { resolveProductLogo, resolveProductTheme } from "@/lib/products-data";
 import { cn } from "@/lib/utils";
+import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 
 export default function ProductsPage() {
   const { products, addProduct, isLoading, owners, leads, updateLeadStatus, updateLead } = useApp();
@@ -33,6 +34,9 @@ export default function ProductsPage() {
   const [activeFilter, setActiveFilter] = useState<"ALL" | "FIFTHLAB" | "CWG">("ALL");
   const [searchQuery, setSearchQuery] = useState("");
   const [modalLeadFilter, setModalLeadFilter] = useState<"ALL" | "BOOKINGS" | "INBOUND">("ALL");
+
+  // Lock body scroll when any product modal is open
+  useBodyScrollLock(Boolean(selectedProduct || isAddModalOpen));
 
   // Live matched leads from global state for the selected product
   const activeProductLeads = selectedProduct
@@ -74,7 +78,7 @@ export default function ProductsPage() {
     const targetOwner = owners.find((o) => o.id === ownerId);
     await updateLead(leadId, {
       assignedProductOwnerId: ownerId === "unassigned" || !ownerId ? null : ownerId,
-      assignedProductOwner: targetOwner ? targetOwner.name : "Unassigned",
+      assignedProductOwner: targetOwner ? targetOwner.name : "General Pool",
     });
   };
 
@@ -368,11 +372,12 @@ export default function ProductsPage() {
         {/* ─── Individual Product Analytics & Customer Roster Modal ─────────── */}
         {selectedProduct && selectedTheme && (
           <div
-            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 animate-in fade-in duration-150"
+            className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 animate-in fade-in duration-150 overscroll-contain"
             onClick={() => setSelectedProduct(null)}
+            onTouchMove={(e) => { if (e.target === e.currentTarget) e.preventDefault(); }}
           >
             <div
-              className="w-full max-w-4xl bg-white rounded-3xl border border-slate-200 shadow-2xl p-5 sm:p-7 lg:p-8 space-y-6 text-left max-h-[92vh] overflow-y-auto"
+              className="w-full max-w-4xl bg-white rounded-3xl border border-slate-200 shadow-2xl p-5 sm:p-7 lg:p-8 space-y-6 text-left max-h-[92vh] overflow-y-auto overscroll-contain"
               onClick={(e) => e.stopPropagation()}
             >
               {/* Modal Header with Authentic Product Brand Styling */}
@@ -621,7 +626,7 @@ export default function ProductsPage() {
                                   onChange={(e) => handleLeadOwnerChange(lead.id, e.target.value)}
                                   className="text-xs font-medium text-slate-800 bg-white border border-slate-300 rounded px-2 py-0.5 focus:border-[#005B6E] focus:outline-none cursor-pointer h-7"
                                 >
-                                  <option value="unassigned">Unassigned</option>
+                                  <option value="unassigned">General Pool (Unassigned)</option>
                                   {owners.map((owner) => (
                                     <option key={owner.id} value={owner.id}>
                                       {owner.name} ({owner.role})
@@ -684,11 +689,12 @@ export default function ProductsPage() {
         {/* Add Product Modal */}
         {isAddModalOpen && (
           <div
-            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-2xs flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-150"
+            className="fixed inset-0 z-50 bg-black/40 backdrop-blur-2xs flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-150 overscroll-contain"
             onClick={() => setIsAddModalOpen(false)}
+            onTouchMove={(e) => { if (e.target === e.currentTarget) e.preventDefault(); }}
           >
             <div
-              className="w-full max-w-md bg-white rounded-xl border border-slate-300 p-4 sm:p-5 space-y-3.5 shadow-2xl text-left"
+              className="w-full max-w-md bg-white rounded-xl border border-slate-300 p-4 sm:p-5 space-y-3.5 shadow-2xl text-left overscroll-contain"
               onClick={(e) => e.stopPropagation()}
             >
               <div className="flex items-center justify-between pb-2.5 border-b border-slate-100">

@@ -7,6 +7,7 @@ import { api } from "@/lib/api-client";
 import { cn } from "@/lib/utils";
 import { TableSkeleton } from "@/components/ui/SkeletonLoaders";
 import AppleSpinner from "@/components/ui/AppleSpinner";
+import { useApp } from "@/context/AppContext";
 
 interface CorporateUser {
   id: string;
@@ -25,6 +26,7 @@ interface CorporateUser {
 }
 
 export default function TeamPage() {
+  const { refreshData } = useApp();
   const [users, setUsers] = useState<CorporateUser[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("ALL");
@@ -67,6 +69,7 @@ export default function TeamPage() {
       setUpdatingUserId(userId);
       await api.updateUserRole(userId, newRole);
       await fetchTeam();
+      await refreshData();
     } catch (err) {
       console.error("Failed to update role:", err);
     } finally {
@@ -75,13 +78,14 @@ export default function TeamPage() {
   };
 
   const handleDeleteUser = async (userId: string, name: string) => {
-    if (!confirm(`Are you sure you want to remove ${name} from the corporate roster?`)) {
+    if (!confirm(`Are you sure you want to remove ${name} from the corporate roster? Any assigned inquiries will be returned to the General Pool.`)) {
       return;
     }
     try {
       setDeletingUserId(userId);
       await api.deleteUser(userId);
       await fetchTeam();
+      await refreshData();
     } catch (err: unknown) {
       alert(err instanceof Error ? err.message : "Failed to remove staff member");
     } finally {
@@ -128,7 +132,7 @@ export default function TeamPage() {
           </button>
         </div>
 
-        {/* Compact Search & Filter Bar (Image 1 Style) */}
+        {/* Compact Search & Filter Bar */}
         <div className="bg-white p-2 rounded-lg border border-slate-200 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2">
           <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
             {[
@@ -164,18 +168,18 @@ export default function TeamPage() {
           </div>
         </div>
 
-        {/* Team Table - Dense AWS Console Style */}
+        {/* Team Table - Dense, Compact Enterprise Style */}
         <div className="rounded-lg border border-slate-200 bg-white shadow-none overflow-hidden">
           <div className="overflow-x-auto">
             <table className="w-full text-left text-xs border-collapse">
               <thead>
                 <tr className="border-b border-slate-200 bg-slate-50 text-slate-500 uppercase tracking-wider text-[10px] font-semibold whitespace-nowrap">
-                  <th className="py-2 px-3">Staff Member</th>
-                  <th className="py-2 px-3">Corporate Email</th>
-                  <th className="py-2 px-3">Role &amp; Access</th>
-                  <th className="py-2 px-3">Assigned Inquiries</th>
-                  <th className="py-2 px-3">Events Attending</th>
-                  <th className="py-2 px-3 text-right">Actions</th>
+                  <th className="py-2 px-2.5 sm:py-2.5 sm:px-3.5">Staff Member</th>
+                  <th className="py-2 px-2.5 sm:py-2.5 sm:px-3.5 hidden sm:table-cell">Corporate Email</th>
+                  <th className="py-2 px-2 sm:py-2.5 sm:px-3">Role</th>
+                  <th className="py-2 px-2 sm:py-2.5 sm:px-3">Inquiries</th>
+                  <th className="py-2 px-2.5 sm:py-2.5 sm:px-3.5 hidden md:table-cell">Summits</th>
+                  <th className="py-2 px-2 sm:py-2.5 sm:px-3 text-right">Actions</th>
                 </tr>
               </thead>
               <tbody className="divide-y divide-slate-100">
@@ -192,26 +196,30 @@ export default function TeamPage() {
                     return (
                       <tr key={u.id} className="hover:bg-slate-50/70 transition-colors">
                         {/* Member */}
-                        <td className="py-2 px-3">
+                        <td className="py-2 px-2.5 sm:py-2.5 sm:px-3.5 whitespace-nowrap">
                           <div className="flex items-center gap-2">
-                            <div className="w-6 h-6 rounded-full bg-[#EAF7F7] border border-[#CEEFEF] text-[#005B6E] font-bold text-[10px] flex items-center justify-center shrink-0">
+                            <div className="w-6 h-6 sm:w-7 sm:h-7 rounded-full bg-[#EAF7F7] border border-[#CEEFEF] text-[#005B6E] font-bold text-[10px] sm:text-[11px] flex items-center justify-center shrink-0 uppercase">
                               {u.name.charAt(0).toUpperCase()}
                             </div>
                             <div className="min-w-0">
-                              <div className="font-semibold text-slate-950">{u.name}</div>
-                              <div className="text-[10px] text-slate-400 font-mono">ID: {u.id.slice(0, 8)}</div>
+                              <div className="font-semibold text-slate-950 truncate max-w-[130px] sm:max-w-none text-xs">
+                                {u.name}
+                              </div>
+                              <div className="text-[10px] text-slate-500 font-mono truncate max-w-[130px] sm:hidden">
+                                {u.email}
+                              </div>
                             </div>
                           </div>
                         </td>
 
-                        {/* Email */}
-                        <td className="py-2 px-3">
+                        {/* Email (Visible on sm+) */}
+                        <td className="py-2 px-2.5 sm:py-2.5 sm:px-3.5 hidden sm:table-cell whitespace-nowrap">
                           <div className="flex items-center gap-1.5">
-                            <span className="font-medium text-slate-800">{u.email}</span>
+                            <span className="font-medium text-slate-800 text-xs">{u.email}</span>
                             {!validDomain && (
                               <span 
                                 title="Non-corporate domain email."
-                                className="inline-flex items-center gap-1 text-[10px] font-semibold text-rose-600 shrink-0"
+                                className="inline-flex items-center gap-1 text-[9.5px] font-semibold text-rose-600 shrink-0"
                               >
                                 <ShieldAlert className="w-3 h-3 text-rose-500" /> Non-Domain
                               </span>
@@ -219,15 +227,15 @@ export default function TeamPage() {
                           </div>
                         </td>
 
-                        {/* Role & Access */}
-                        <td className="py-2 px-3 whitespace-nowrap">
+                        {/* Role */}
+                        <td className="py-2 px-2 sm:py-2.5 sm:px-3 whitespace-nowrap">
                           {u.role === "ADMIN" && (
-                            <span className="font-semibold text-xs text-purple-700">
+                            <span className="font-semibold text-xs text-slate-800">
                               Admin
                             </span>
                           )}
                           {u.role === "PRODUCT_OWNER" && (
-                            <span className="font-semibold text-xs text-[#005B6E]">
+                            <span className="font-semibold text-xs text-slate-800">
                               Product Owner
                             </span>
                           )}
@@ -244,23 +252,26 @@ export default function TeamPage() {
                         </td>
 
                         {/* Assigned Inquiries */}
-                        <td className="py-2 px-3 font-semibold text-slate-900 whitespace-nowrap">
-                          {u._count?.assignedLeads || 0} Leads
+                        <td className="py-2 px-2 sm:py-2.5 sm:px-3 whitespace-nowrap">
+                          <span className="font-bold text-slate-900 text-xs">
+                            {u._count?.assignedLeads || 0}
+                          </span>
+                          <span className="text-[10px] text-slate-400 font-medium ml-1">leads</span>
                         </td>
 
-                        {/* Events Attending */}
-                        <td className="py-2 px-3 text-slate-800 font-medium whitespace-nowrap">
+                        {/* Events Attending (Visible on md+) */}
+                        <td className="py-2 px-2.5 sm:py-2.5 sm:px-3.5 text-slate-700 font-medium whitespace-nowrap hidden md:table-cell text-xs">
                           <span>{u._count?.rsvps || 0} Summits</span>
                         </td>
 
                         {/* Actions */}
-                        <td className="py-2 px-3 text-right">
-                          <div className="flex items-center justify-end gap-1.5">
+                        <td className="py-2 px-2 sm:py-2.5 sm:px-3 text-right whitespace-nowrap">
+                          <div className="flex items-center justify-end gap-1 sm:gap-1.5">
                             <select
                               value={u.role}
                               disabled={updatingUserId === u.id}
                               onChange={(e) => handleRoleChange(u.id, e.target.value)}
-                              className="bg-white border border-slate-300 rounded px-2 py-0.5 text-[10.5px] text-slate-900 font-medium focus:outline-none focus:border-[#005B6E] cursor-pointer h-6.5"
+                              className="bg-white border border-slate-300 rounded px-1.5 py-0.5 text-[10px] sm:text-[10.5px] text-slate-900 font-medium focus:outline-none focus:border-[#005B6E] cursor-pointer h-6.5"
                             >
                               <option value="STAFF">Staff</option>
                               <option value="PRODUCT_OWNER">Product Owner</option>

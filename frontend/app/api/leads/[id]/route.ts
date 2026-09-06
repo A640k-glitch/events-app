@@ -22,11 +22,19 @@ export async function PATCH(
       : existing.bookingDate;
     const newBookingTime = bookingTime !== undefined ? (bookingTime || null) : existing.bookingTime;
 
+    const cleanAssignedId = 
+      assignedProductOwnerId === "unassigned" || 
+      assignedProductOwnerId === "general_pool" || 
+      assignedProductOwnerId === "" || 
+      assignedProductOwnerId === null
+        ? null
+        : assignedProductOwnerId;
+
     const [updated] = await sql`
       UPDATE leads SET
         status = ${normalizedStatus}::"LeadStatus",
         notes = ${notes !== undefined ? notes : existing.notes},
-        "assignedProductOwnerId" = ${assignedProductOwnerId !== undefined ? assignedProductOwnerId : existing.assignedProductOwnerId},
+        "assignedProductOwnerId" = ${assignedProductOwnerId !== undefined ? cleanAssignedId : existing.assignedProductOwnerId},
         "bookingDate" = ${newBookingDate},
         "bookingTime" = ${newBookingTime},
         "updatedAt" = NOW()

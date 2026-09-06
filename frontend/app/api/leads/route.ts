@@ -36,21 +36,24 @@ export async function GET(request: NextRequest) {
       `;
     }
 
-    const data = rows.map((l: any) => ({
-      id: l.id,
-      visitorName: l.visitorName,
-      company: l.company,
-      email: l.email,
-      phone: l.phone,
-      productInterested: l.productInterested,
-      assignedProductOwner: l.assignedOwnerName || "Unassigned",
-      assignedProductOwnerId: l.assignedProductOwnerId || null,
-      bookingDate: l.bookingDate ? new Date(l.bookingDate).toISOString().split("T")[0] : "",
-      bookingTime: l.bookingTime || "",
-      status: l.status === "FOLLOWED_UP" ? "Followed Up" : l.status.charAt(0).toUpperCase() + l.status.slice(1).toLowerCase(),
-      notes: l.notes || "",
-      createdAt: l.createdAt ? new Date(l.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "Today",
-    }));
+    const data = rows.map((l: any) => {
+      const isAssigned = Boolean(l.assignedProductOwnerId && l.assignedOwnerName);
+      return {
+        id: l.id,
+        visitorName: l.visitorName,
+        company: l.company,
+        email: l.email,
+        phone: l.phone,
+        productInterested: l.productInterested,
+        assignedProductOwner: isAssigned ? l.assignedOwnerName : "General Pool",
+        assignedProductOwnerId: isAssigned ? l.assignedProductOwnerId : null,
+        bookingDate: l.bookingDate ? new Date(l.bookingDate).toISOString().split("T")[0] : "",
+        bookingTime: l.bookingTime || "",
+        status: l.status === "FOLLOWED_UP" ? "Followed Up" : l.status.charAt(0).toUpperCase() + l.status.slice(1).toLowerCase(),
+        notes: l.notes || "",
+        createdAt: l.createdAt ? new Date(l.createdAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" }) : "Today",
+      };
+    });
 
     return NextResponse.json({ success: true, count: data.length, data });
   } catch (error: any) {

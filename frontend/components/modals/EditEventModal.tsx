@@ -169,11 +169,12 @@ export default function EditEventModal({ isOpen, onClose, event, onEventUpdated 
 
   return (
     <div 
-      className="fixed inset-0 z-50 bg-black/40 backdrop-blur-2xs flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-150"
+      className="fixed inset-0 z-50 bg-black/40 backdrop-blur-2xs flex items-center justify-center p-3 sm:p-4 animate-in fade-in duration-150 overscroll-contain"
       onClick={onClose}
+      onTouchMove={(e) => { if (e.target === e.currentTarget) e.preventDefault(); }}
     >
       <div 
-        className="w-full max-w-xl bg-white border border-slate-300 shadow-2xl rounded-xl p-4 sm:p-5 space-y-3.5 max-h-[90vh] overflow-y-auto font-sans text-left text-slate-900"
+        className="w-full max-w-xl bg-white border border-slate-300 shadow-2xl rounded-xl p-4 sm:p-5 space-y-3.5 max-h-[90vh] overflow-y-auto font-sans text-left text-slate-900 overscroll-contain"
         onClick={(e) => e.stopPropagation()}
       >
         <div className="flex items-center justify-between border-b border-slate-100 pb-2.5">

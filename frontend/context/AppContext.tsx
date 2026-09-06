@@ -169,6 +169,14 @@ function mapPrismaLead(l: any): Lead {
     CLOSED: "Closed",
   };
 
+  const rawOwnerName = l.assignedOwner?.name || l.assignedProductOwner || l.assignedOwnerName;
+  const isAssigned = Boolean(
+    (l.assignedProductOwnerId || l.assignedOwner?.id) &&
+    rawOwnerName &&
+    rawOwnerName !== "Unassigned" &&
+    rawOwnerName !== "General Pool"
+  );
+
   return {
     id: l.id,
     visitorName: l.visitorName,
@@ -176,8 +184,8 @@ function mapPrismaLead(l: any): Lead {
     email: l.email,
     phone: l.phone,
     productInterested: l.productInterested,
-    assignedProductOwner: l.assignedOwner?.name || l.assignedProductOwner || "Unassigned",
-    assignedProductOwnerId: l.assignedProductOwnerId || l.assignedOwner?.id || null,
+    assignedProductOwner: isAssigned ? rawOwnerName : "General Pool",
+    assignedProductOwnerId: isAssigned ? (l.assignedProductOwnerId || l.assignedOwner?.id || null) : null,
     bookingDate: l.bookingDate ? new Date(l.bookingDate).toISOString().split("T")[0] : "",
     bookingTime: l.bookingTime || "",
     status: statusMap[l.status] || l.status || "Unread",
@@ -699,9 +707,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
 
   const updateLead = async (leadId: string, updatedFields: Partial<Lead>) => {
     try {
-      await api.updateLead(leadId, updatedFields);
+      const sanitizedFields = {
+        ...updatedFields,
+        ...(updatedFields.assignedProductOwnerId === "unassigned" || updatedFields.assignedProductOwnerId === ""
+          ? { assignedProductOwnerId: null, assignedProductOwner: "General Pool" }
+          : {}),
+      };
+      await api.updateLead(leadId, sanitizedFields);
       setLeads((prev) =>
-        prev.map((l) => (l.id === leadId ? { ...l, ...updatedFields } : l))
+        prev.map((l) => (l.id === leadId ? { ...l, ...sanitizedFields } : l))
       );
       notifySync();
       await refreshData();
@@ -710,9 +724,15 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
     }
   };
 
-  const deleteLead = (leadId: string) => {
+  const deleteLead = async (leadId: string) => {
+    try {
+      await api.deleteLead(leadId);
+    } catch (e) {
+      console.warn("Failed to delete lead from database:", e);
+    }
     setLeads((prev) => prev.filter((l) => l.id !== leadId));
     notifySync();
+    await refreshData();
   };
 
   const addProduct = async (productData: { slug: string; name: string; tagline: string; description: string; iconName?: string; ownerId?: string }) => {

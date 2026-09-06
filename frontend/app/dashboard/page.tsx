@@ -282,9 +282,11 @@ export default function DashboardOverviewPage() {
                       <td className="py-2.5 px-3 whitespace-nowrap">
                         <div className="flex items-center gap-1.5 text-slate-700 text-xs font-semibold">
                           <div className="w-5 h-5 rounded-full bg-slate-100 border border-slate-300 text-slate-700 text-[10px] font-bold flex items-center justify-center shrink-0 uppercase">
-                            {lead.assignedProductOwner ? lead.assignedProductOwner.charAt(0) : "P"}
+                            {lead.assignedProductOwner && lead.assignedProductOwner !== "Unassigned" && lead.assignedProductOwner !== "General Pool" ? lead.assignedProductOwner.charAt(0) : "G"}
                           </div>
-                          <span>{lead.assignedProductOwner || "Unassigned"}</span>
+                          <span className={lead.assignedProductOwner && lead.assignedProductOwner !== "Unassigned" && lead.assignedProductOwner !== "General Pool" ? "text-slate-800" : "text-slate-500 font-medium"}>
+                            {lead.assignedProductOwner && lead.assignedProductOwner !== "Unassigned" ? lead.assignedProductOwner : "General Pool"}
+                          </span>
                         </div>
                       </td>
                     </tr>

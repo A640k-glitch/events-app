@@ -210,7 +210,7 @@ export default function LiveEventsCarousel({ events, onClaimPass }: LiveEventsCa
         </div>
       </div>
 
-      {/* Horizontal Carousel Track - Centered on mobile, generous left start padding on desktop */}
+      {/* Horizontal Carousel Track - touch-pan-y allows free vertical page scrolling on touch */}
       <div
         ref={scrollContainerRef}
         onScroll={handleScroll}
@@ -223,7 +223,7 @@ export default function LiveEventsCarousel({ events, onClaimPass }: LiveEventsCa
             setIsUserInteracting(false);
           }, 3000);
         }}
-        className="flex items-center gap-5 sm:gap-7 md:gap-8 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar py-10 sm:py-14 w-full touch-pan-x"
+        className="flex items-center gap-5 sm:gap-7 md:gap-8 overflow-x-auto snap-x snap-mandatory scroll-smooth no-scrollbar py-8 sm:py-12 w-full touch-pan-y"
       >
         {/* Physical Spacer before first card: centers card on mobile, gives 80px-176px breathing room on desktop */}
         <div 
@@ -253,7 +253,7 @@ export default function LiveEventsCarousel({ events, onClaimPass }: LiveEventsCa
               }}
               onMouseEnter={() => setHoveredIndex(idx)}
               onMouseLeave={() => setHoveredIndex(null)}
-              className={`group relative snap-center shrink-0 w-[285px] sm:w-[340px] md:w-[370px] h-[450px] sm:h-[490px] rounded-[32px] overflow-hidden cursor-pointer select-none transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] transform-gpu text-left ${
+              className={`group relative snap-center shrink-0 w-[285px] sm:w-[340px] md:w-[370px] h-[450px] sm:h-[490px] rounded-[32px] overflow-hidden cursor-pointer select-none transition-all duration-700 ease-[cubic-bezier(0.22,1,0.36,1)] transform-gpu text-left touch-pan-y ${
                 isSpotlit || isHovered
                   ? "scale-100 opacity-100 blur-0 shadow-2xl z-20 ring-1 ring-black/10"
                   : "scale-[0.96] opacity-50 sm:opacity-60 blur-[2px] sm:blur-[3px] shadow-md z-10 hover:opacity-100 hover:scale-100 hover:blur-0"
