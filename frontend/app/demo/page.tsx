@@ -20,6 +20,7 @@ import {
 import { useApp } from "@/context/AppContext";
 import { BrandButton } from "@/components/ui/BrandButtons";
 import FingerprintPattern from "@/components/brand/FingerprintPattern";
+import DataPrivacyModal from "@/components/modals/DataPrivacyModal";
 import { cn } from "@/lib/utils";
 import confetti from "canvas-confetti";
 
@@ -182,6 +183,7 @@ function DemoBookingContent() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [errorMessage, setErrorMessage] = useState("");
+  const [isSecurityModalOpen, setIsSecurityModalOpen] = useState(false);
 
   // Sync state if query param changes dynamically
   useEffect(() => {
@@ -569,10 +571,14 @@ function DemoBookingContent() {
 
               {/* Submit Action */}
               <div className="flex flex-col sm:flex-row items-center justify-between gap-4 pt-1">
-                <div className="flex items-center gap-2 text-[11px] text-gray-500 font-mono">
-                  <ShieldCheck className="w-4 h-4 text-[#0090AD]" />
-                  <span>Data Privacy & Enterprise Security Compliant</span>
-                </div>
+                <button
+                  type="button"
+                  onClick={() => setIsSecurityModalOpen(true)}
+                  className="flex items-center gap-2 text-[11px] text-gray-500 hover:text-gray-800 font-mono transition-colors cursor-pointer text-left group"
+                >
+                  <ShieldCheck className="w-4 h-4 text-[#0090AD] group-hover:scale-110 transition-transform shrink-0" />
+                  <span className="underline decoration-dotted underline-offset-2">Data Privacy & Enterprise Security Compliant</span>
+                </button>
 
                 <BrandButton
                   type="submit"
@@ -591,6 +597,12 @@ function DemoBookingContent() {
 
         </div>
       </section>
+
+      {/* Compliance & Security Statement Modal */}
+      <DataPrivacyModal
+        isOpen={isSecurityModalOpen}
+        onClose={() => setIsSecurityModalOpen(false)}
+      />
 
     </div>
   );

@@ -11,12 +11,18 @@ import {
 import { api } from "@/lib/api-client";
 import FifthEventsLogo from "@/components/brand/FifthEventsLogo";
 import CwgLogo from "@/components/brand/CwgLogo";
+import PrivacyModal from "@/components/modals/PrivacyModal";
+import TermsModal from "@/components/modals/TermsModal";
+import DataPrivacyModal from "@/components/modals/DataPrivacyModal";
 
 export default function Footer() {
   const [email, setEmail] = useState("");
   const [isSubscribing, setIsSubscribing] = useState(false);
   const [isSubscribed, setIsSubscribed] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
+  const [isPrivacyOpen, setPrivacyOpen] = useState(false);
+  const [isTermsOpen, setTermsOpen] = useState(false);
+  const [isDataPrivacyOpen, setDataPrivacyOpen] = useState(false);
 
   const handleSubscribe = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -242,13 +248,36 @@ export default function Footer() {
             </span>
           </div>
           <div className="flex flex-wrap items-center justify-center sm:justify-end gap-4 sm:gap-6">
-            <a href="https://thefifthlab.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Privacy Policy</a>
-            <a href="https://thefifthlab.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Terms of Service</a>
-            <a href="https://thefifthlab.com" target="_blank" rel="noopener noreferrer" className="hover:text-white transition-colors">Data Privacy & Security</a>
+            <button
+              type="button"
+              onClick={() => setPrivacyOpen(true)}
+              className="hover:text-white transition-colors cursor-pointer text-left"
+            >
+              Privacy Policy
+            </button>
+            <button
+              type="button"
+              onClick={() => setTermsOpen(true)}
+              className="hover:text-white transition-colors cursor-pointer text-left"
+            >
+              Terms of Service
+            </button>
+            <button
+              type="button"
+              onClick={() => setDataPrivacyOpen(true)}
+              className="hover:text-white transition-colors cursor-pointer text-left"
+            >
+              Data Privacy & Security
+            </button>
           </div>
         </div>
 
       </div>
+
+      {/* Factual Legal & Compliance Modals */}
+      <PrivacyModal isOpen={isPrivacyOpen} onClose={() => setPrivacyOpen(false)} />
+      <TermsModal isOpen={isTermsOpen} onClose={() => setTermsOpen(false)} />
+      <DataPrivacyModal isOpen={isDataPrivacyOpen} onClose={() => setDataPrivacyOpen(false)} />
     </footer>
   );
 }

@@ -6,6 +6,8 @@ import { X, Ticket, ArrowRight, ShieldCheck, User, Mail, Building, Phone } from 
 import { api } from "@/lib/api-client";
 import { useApp } from "@/context/AppContext";
 import TicketPassModal, { TicketPassData } from "./TicketPassModal";
+import PrivacyModal from "./PrivacyModal";
+import TermsModal from "./TermsModal";
 import { BrandButton } from "@/components/ui/BrandButtons";
 import { cn } from "@/lib/utils";
 import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
@@ -54,6 +56,8 @@ export default function RegisterPassModal(props: RegisterPassModalProps) {
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const [confirmedTicket, setConfirmedTicket] = useState<TicketPassData | null>(null);
   const [isPassModalOpen, setIsPassModalOpen] = useState(false);
+  const [isPrivacyOpen, setIsPrivacyOpen] = useState(false);
+  const [isTermsOpen, setIsTermsOpen] = useState(false);
 
   // Synchronize chosen event and tier when modal opens or props change
   useEffect(() => {
@@ -282,7 +286,23 @@ export default function RegisterPassModal(props: RegisterPassModalProps) {
             <div className="p-3 bg-gray-50 border border-gray-200 rounded-xl flex items-start gap-2 text-[11px] text-[#5F5F7A]">
               <ShieldCheck className="w-4 h-4 text-[#0090AD] shrink-0 mt-0.5" />
               <span>
-                By registering, your badge information is securely processed in accordance with global data protection and enterprise privacy standards.
+                By registering, your badge information is securely processed under our{" "}
+                <button
+                  type="button"
+                  onClick={() => setIsPrivacyOpen(true)}
+                  className="text-[#0090AD] font-medium hover:underline cursor-pointer"
+                >
+                  Privacy Policy
+                </button>{" "}
+                and{" "}
+                <button
+                  type="button"
+                  onClick={() => setIsTermsOpen(true)}
+                  className="text-[#0090AD] font-medium hover:underline cursor-pointer"
+                >
+                  Terms
+                </button>
+                .
               </span>
             </div>
 
@@ -323,6 +343,10 @@ export default function RegisterPassModal(props: RegisterPassModalProps) {
           ticket={confirmedTicket}
         />
       )}
+
+      {/* Compliance Modals */}
+      <PrivacyModal isOpen={isPrivacyOpen} onClose={() => setIsPrivacyOpen(false)} />
+      <TermsModal isOpen={isTermsOpen} onClose={() => setIsTermsOpen(false)} />
     </>
   );
 
