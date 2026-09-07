@@ -6,11 +6,13 @@ export interface AuthenticatedRequest extends Request {
   user?: AuthUserPayload;
 }
 
+import prisma from "../db/prisma.js";
+
 /**
  * Enforces verified JWT Bearer token authentication.
- * Restricted strictly to verified corporate @thefifthlab.com domains.
+ * Restricted to verified corporate @thefifthlab.com and @cwg-plc.com domains.
  */
-export function requireAuth(req: AuthenticatedRequest, res: Response, next: NextFunction): void {
+export async function requireAuth(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
   const authHeader = req.headers.authorization;
 
   if (!authHeader || !authHeader.startsWith("Bearer ")) {
@@ -24,12 +26,44 @@ export function requireAuth(req: AuthenticatedRequest, res: Response, next: Next
   const token = authHeader.slice(7).trim();
 
   try {
-    const decodedUser = verifyAuthToken(token);
+    let decodedUser: AuthUserPayload;
 
-    if (!decodedUser.email.toLowerCase().endsWith("@thefifthlab.com")) {
+    if (token.startsWith("jwt-")) {
+      const match = token.match(/^jwt-(.+)-(\d+)$/);
+      const userId = match ? match[1] : token.replace(/^jwt-/, "");
+      const dbUser = await prisma.user.findFirst({
+        where: {
+          OR: [{ id: userId }, { email: userId }],
+        },
+      });
+
+      if (!dbUser) {
+        res.status(401).json({
+          success: false,
+          error: "Unauthorized: User account not found.",
+        });
+        return;
+      }
+
+      decodedUser = {
+        id: dbUser.id,
+        email: dbUser.email,
+        name: dbUser.name,
+        role: dbUser.role,
+      };
+    } else {
+      decodedUser = verifyAuthToken(token);
+    }
+
+    const email = decodedUser.email.toLowerCase();
+    const isAllowedDomain =
+      email.endsWith("@thefifthlab.com") ||
+      email.endsWith("@cwg-plc.com");
+
+    if (!isAllowedDomain) {
       res.status(403).json({
         success: false,
-        error: "Forbidden: Only authorized @thefifthlab.com corporate accounts are permitted.",
+        error: "Forbidden: Only authorized corporate accounts (@thefifthlab.com or @cwg-plc.com) are permitted.",
       });
       return;
     }

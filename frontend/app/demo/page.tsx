@@ -147,6 +147,26 @@ const DEMO_PRODUCTS: DemoProductItem[] = [
     badge: "Custom Software",
   },
   {
+    id: "cwg-training",
+    name: "CWG Training Academy",
+    tagline: "IT Professional Certification & Enterprise Training",
+    logoUrl: "/brand/cwg/training.svg",
+    accentColor: "#16A34A",
+    bgColor: "#F0FDF4",
+    borderColor: "#DCFCE7",
+    badge: "Training & Certs",
+  },
+  {
+    id: "texcellence",
+    name: "The TeXcellence Conference",
+    tagline: "Flagship Annual Pan-African Tech Summit & Awards",
+    logoUrl: "/brand/texcellence-logo.png",
+    accentColor: "#1E2A78",
+    bgColor: "#EEF2FF",
+    borderColor: "#C7D2FE",
+    badge: "Annual Summit",
+  },
+  {
     id: "cwg-atm",
     name: "CWG Self-Service & ATM Solutions",
     tagline: "Banking Hardware & Fleet Management",
@@ -307,7 +327,7 @@ function DemoBookingContent() {
           />
         </div>
 
-        <div className="max-w-4xl mx-auto space-y-2 relative z-10">
+        <div className="max-w-4xl mx-auto space-y-2.5 relative z-10">
           <div className="flex items-center gap-2 text-xs text-[#6B7280]">
             <Link href="/" className="hover:text-[#111827] flex items-center gap-1 transition-colors">
               <ArrowLeft className="w-3.5 h-3.5" /> Home
@@ -320,10 +340,19 @@ function DemoBookingContent() {
             <span className="text-[#111827] font-medium">Book a Demo</span>
           </div>
 
-          <h1 className="text-2xl sm:text-3xl font-medium text-[#111827] tracking-tight">
+          <div className="flex items-center gap-2">
+            <span className="text-xs font-bold text-[#0090AD] uppercase tracking-wider font-mono">
+              Open Demo Booking
+            </span>
+            <span className="text-xs text-slate-500 font-medium">
+              • 100% Free • No login or account required
+            </span>
+          </div>
+
+          <h1 className="text-2xl sm:text-4xl font-semibold text-[#111827] tracking-tight">
             Book a Live Product Demo
           </h1>
-          <p className="text-xs sm:text-sm text-[#6B7280] max-w-2xl">
+          <p className="text-xs sm:text-sm text-[#6B7280] max-w-2xl leading-relaxed">
             Connect 1-on-1 with product teams behind FifthLab and CWG fintech solutions. All times in West Africa Time (WAT).
           </p>
         </div>

@@ -5,14 +5,24 @@ import { sql } from "@/lib/db";
 function formatEvent(row: any, attendanceRows: any[] = []) {
   const manifest = attendanceRows
     .filter((ar: any) => ar.eventId === row.id)
-    .map((ar: any) => ({
-      userId: ar.userId,
-      userName: ar.userName || "Staff Member",
-      userRole: ar.userRole || "Staff",
-      avatarUrl: ar.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(ar.userName || "Staff")}&background=0090ad&color=fff&bold=true`,
-      confirmedAt: ar.confirmedAt ? new Date(ar.confirmedAt).toISOString() : null,
-      status: ar.status === "ATTENDING" ? "Attending" : ar.status === "DECLINED" ? "Declined" : "Maybe",
-    }));
+    .map((ar: any) => {
+      const name = ar.userName || "Staff Member";
+      return {
+        userId: ar.userId,
+        userName: name,
+        userRole: ar.userRole || "Staff",
+        avatarUrl: ar.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0090ad&color=fff&bold=true`,
+        confirmedAt: ar.confirmedAt ? new Date(ar.confirmedAt).toISOString() : null,
+        status: ar.status === "ATTENDING" ? "Attending" : ar.status === "DECLINED" ? "Declined" : "Maybe",
+        user: {
+          id: ar.userId,
+          name: name,
+          role: ar.userRole || "Staff",
+          avatarUrl: ar.avatarUrl || null,
+          email: ar.userEmail || null,
+        },
+      };
+    });
 
   return {
     id: row.id,
@@ -51,7 +61,7 @@ export async function GET(request: NextRequest) {
     const attendancePromise = sql`
       SELECT ar.*, u.name as "userName", u.email as "userEmail", u.role as "userRole", u."avatarUrl"
       FROM attendance_records ar
-      JOIN users u ON ar."userId" = u.id
+      LEFT JOIN users u ON ar."userId" = u.id
       ORDER BY ar."confirmedAt" ASC
     `;
 

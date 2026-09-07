@@ -14,20 +14,21 @@ import {
   X,
   Calendar,
   Clock,
-  ExternalLink
+  ExternalLink,
+  UserCheck
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { TableSkeleton } from "@/components/ui/SkeletonLoaders";
 import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 
 function LeadsContent() {
-  const { leads, updateLeadStatus, updateLead, deleteLead, isLoading, owners } = useApp();
+  const { leads, updateLeadStatus, updateLead, deleteLead, isLoading, owners, user } = useApp();
   const searchParams = useSearchParams();
   const initialSearch = searchParams.get("search") || searchParams.get("product") || "";
 
   const [searchQuery, setSearchQuery] = useState(initialSearch);
   const [statusFilter, setStatusFilter] = useState("ALL");
-  const [recordTypeFilter, setRecordTypeFilter] = useState<"ALL" | "BOOKINGS" | "INBOUND" | "POOL">("ALL");
+  const [recordTypeFilter, setRecordTypeFilter] = useState<"ALL" | "BOOKINGS" | "INBOUND" | "POOL" | "MY_LEADS">("ALL");
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [activeLeadDrawerId, setActiveLeadDrawerId] = useState<string | null>(null);
   const [isExporting, setIsExporting] = useState(false);
@@ -48,6 +49,11 @@ function LeadsContent() {
   const totalInbound = leads.length - totalBookings;
   const generalPoolCount = leads.filter((l) => !l.assignedProductOwnerId || l.assignedProductOwner === "General Pool" || l.assignedProductOwner === "Unassigned").length;
   const qualifiedCount = leads.filter((l) => l.status === "Qualified" || l.status === "Converted").length;
+  const myLeadsCount = leads.filter(
+    (l) =>
+      (user?.id && l.assignedProductOwnerId === user.id) ||
+      (user?.name && l.assignedProductOwner && l.assignedProductOwner.toLowerCase() === user.name.toLowerCase())
+  ).length;
 
   const filteredLeads = leads.filter((l) => {
     const matchesSearch =
@@ -58,8 +64,13 @@ function LeadsContent() {
     const matchesStatus = statusFilter === "ALL" || l.status.toLowerCase() === statusFilter.toLowerCase();
     const isBooking = Boolean(l.bookingDate || l.bookingTime);
     const isGeneralPool = !l.assignedProductOwnerId || l.assignedProductOwner === "General Pool" || l.assignedProductOwner === "Unassigned";
+    const isMyLead =
+      (user?.id && l.assignedProductOwnerId === user.id) ||
+      (user?.name && l.assignedProductOwner && l.assignedProductOwner.toLowerCase() === user.name.toLowerCase());
+
     const matchesType =
       recordTypeFilter === "ALL" ||
+      (recordTypeFilter === "MY_LEADS" && isMyLead) ||
       (recordTypeFilter === "BOOKINGS" && isBooking) ||
       (recordTypeFilter === "INBOUND" && !isBooking) ||
       (recordTypeFilter === "POOL" && isGeneralPool);
@@ -182,6 +193,20 @@ function LeadsContent() {
             >
               All Records ({leads.length})
             </button>
+            {user && (
+              <button
+                onClick={() => setRecordTypeFilter("MY_LEADS")}
+                className={cn(
+                  "h-7.5 px-3 rounded-md text-xs font-semibold transition-all cursor-pointer whitespace-nowrap flex items-center gap-1.5",
+                  recordTypeFilter === "MY_LEADS"
+                    ? "bg-[#005B6E] text-white font-bold shadow-xs"
+                    : "bg-[#F0F4F8] text-slate-700 hover:bg-slate-200/80 hover:text-slate-900"
+                )}
+              >
+                <UserCheck className="w-3.5 h-3.5" />
+                <span>Assigned to Me ({myLeadsCount})</span>
+              </button>
+            )}
             <button
               onClick={() => setRecordTypeFilter("BOOKINGS")}
               className={cn(

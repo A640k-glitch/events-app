@@ -15,22 +15,43 @@ export async function POST(
       return NextResponse.json({ success: false, error: "User ID is required" }, { status: 400 });
     }
 
+    // Resolve user by ID or email
+    const [user] = await sql`
+      SELECT id, name, role, email, "avatarUrl" 
+      FROM users 
+      WHERE id = ${userId} OR email = ${userId}
+    `;
+
+    if (!user) {
+      return NextResponse.json({ success: false, error: "Staff user record not found" }, { status: 404 });
+    }
+
+    const resolvedUserId = user.id;
     const rawStatus = typeof status === "string" ? status.toUpperCase() : "ATTENDING";
     const dbStatus = ["ATTENDING", "DECLINED", "MAYBE"].includes(rawStatus) ? rawStatus : "ATTENDING";
-    const recordId = `att-${eventId}-${userId}`;
+    const recordId = `att-${eventId}-${resolvedUserId}`;
 
     const [record] = await sql`
       INSERT INTO attendance_records (
         id, "userId", "eventId", status, "isCheckedIn", "confirmedAt"
       ) VALUES (
-        ${recordId}, ${userId}, ${eventId}, ${dbStatus}::"AttendanceStatus", false, NOW()
+        ${recordId}, ${resolvedUserId}, ${eventId}, ${dbStatus}::"AttendanceStatus", false, NOW()
       )
       ON CONFLICT ("userId", "eventId")
       DO UPDATE SET status = ${dbStatus}::"AttendanceStatus", "confirmedAt" = NOW()
       RETURNING *
     `;
 
-    return NextResponse.json({ success: true, data: record });
+    return NextResponse.json({
+      success: true,
+      data: {
+        ...record,
+        userName: user.name,
+        userRole: user.role,
+        userEmail: user.email,
+        avatarUrl: user.avatarUrl,
+      },
+    });
   } catch (error: any) {
     return NextResponse.json({ success: false, error: error.message }, { status: 500 });
   }

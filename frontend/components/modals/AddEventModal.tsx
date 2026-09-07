@@ -6,18 +6,12 @@ import { useApp } from "@/context/AppContext";
 import { EventCategory, EventPriority } from "@/lib/types";
 import { X, Calendar, Image as ImageIcon, Sparkles, Upload, Loader2, CheckCircle2 } from "lucide-react";
 import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
+import PresetImagePicker from "@/components/events/PresetImagePicker";
 
 interface AddEventModalProps {
   isOpen: boolean;
   onClose: () => void;
 }
-
-const PRESET_IMAGES = [
-  { label: "Keynote Lagos", url: "/images/auth/real_lagos_keynote.jpg" },
-  { label: "Door Accreditation", url: "/images/auth/real_lagos_checkin.jpg" },
-  { label: "Developer Pavilion", url: "/images/auth/developer.jpg" },
-  { label: "VIP Executive Lounge", url: "/images/vip_lounge.jpg" },
-];
 
 export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
   useBodyScrollLock(isOpen);
@@ -262,38 +256,25 @@ export default function AddEventModal({ isOpen, onClose }: AddEventModalProps) {
 
             {/* Presets Toggle */}
             <div className="pt-1">
-              <div className="flex items-center justify-between">
+              <div className="flex items-center justify-between pb-1.5">
                 <button
                   type="button"
                   onClick={() => setShowPresets(!showPresets)}
-                  className="text-[11px] font-semibold text-[#0090AD] hover:underline cursor-pointer flex items-center gap-1"
+                  className="text-[11px] font-semibold text-[#005B6E] hover:underline cursor-pointer flex items-center gap-1"
                 >
-                  <span>{showPresets ? "Hide preset library" : "Or choose from preset photo library"}</span>
+                  <span>{showPresets ? "Hide preset library" : "Or choose from African tech summits & expos library"}</span>
                 </button>
               </div>
 
               {showPresets && (
-                <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 pt-2 animate-in fade-in duration-150">
-                  {PRESET_IMAGES.map((img) => (
-                    <button
-                      type="button"
-                      key={img.url}
-                      onClick={() => {
-                        setImageUrl(img.url);
-                        handleRemoveCustomImage();
-                      }}
-                      className={`relative h-20 rounded-xl overflow-hidden border-2 transition-all cursor-pointer ${
-                        imageUrl === img.url && !customImage
-                          ? "border-[#0090AD] ring-2 ring-[#0090AD]/20 scale-95"
-                          : "border-transparent opacity-70 hover:opacity-100"
-                      }`}
-                    >
-                      <Image src={img.url} alt={img.label} fill sizes="150px" className="object-cover" />
-                      <div className="absolute inset-x-0 bottom-0 bg-black/60 p-1 text-[10px] text-white font-medium text-center truncate">
-                        {img.label}
-                      </div>
-                    </button>
-                  ))}
+                <div className="pt-1 pb-1">
+                  <PresetImagePicker
+                    selectedUrl={!customImage ? imageUrl : ""}
+                    onSelect={(url) => {
+                      setImageUrl(url);
+                      handleRemoveCustomImage();
+                    }}
+                  />
                 </div>
               )}
             </div>

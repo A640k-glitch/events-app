@@ -12,6 +12,9 @@ import {
   Wifi,
   Cpu,
   Award,
+  CheckCircle2,
+  X,
+  ExternalLink,
 } from "lucide-react";
 import FingerprintPattern from "@/components/brand/FingerprintPattern";
 import CwgLogo from "@/components/brand/CwgLogo";
@@ -32,6 +35,12 @@ const FIFTHLAB_PRODUCTS = [
     cardBorder: "#E0E4FB",
     badge: "Payments & Rewards",
     tags: ["Airtime Distribution", "Bulk SMS", "Data Vending", "API"],
+    features: [
+      "High-throughput multi-telco airtime and data distribution",
+      "Bulk SMS and transaction notification gateway",
+      "Automated real-time reconciliation and corporate disbursement ledger",
+      "Plug-and-play REST APIs with 99.9% uptime SLA"
+    ],
   },
   {
     id: "finedge",
@@ -39,13 +48,19 @@ const FIFTHLAB_PRODUCTS = [
     tagline: "Core Banking for Microfinance",
     description:
       "Modern cloud-native core banking solution designed for MFBs and financial institutions to streamline loan management, member savings, compliance reporting, and digital branch operations.",
-    url: "https://thefifthlab.com/finedge",
+    url: "https://thefifthlab.com",
     logoUrl: "/brand/finedge-logo.png",
     accentColor: "#0090AD",
     bgColor: "#EAF7F7",
     cardBorder: "#CEEFEF",
     badge: "Core Banking",
     tags: ["MFB Core", "Loan Management", "Compliance", "Digital Banking"],
+    features: [
+      "Cloud-native core banking engine built specifically for MFBs",
+      "Automated loan origination, credit scoring and repayment tracking",
+      "Central Bank and regulatory compliance reporting built-in",
+      "Digital branchless banking and agency banking enablement"
+    ],
   },
   {
     id: "smerp",
@@ -60,6 +75,12 @@ const FIFTHLAB_PRODUCTS = [
     cardBorder: "#F6DFEC",
     badge: "Enterprise ERP",
     tags: ["Inventory", "Accounting", "Field Teams", "Operations"],
+    features: [
+      "End-to-end ERP: inventory, accounting, sales and procurement",
+      "Field agent tracking and mobile point-of-sale operations",
+      "Multi-warehouse stock alerts and replenishment automation",
+      "Executive business intelligence and real-time financial reporting"
+    ],
   },
   {
     id: "ucp",
@@ -67,13 +88,19 @@ const FIFTHLAB_PRODUCTS = [
     tagline: "Unified Cooperative Platform",
     description:
       "Digital-first platform to manage cooperative societies end-to-end, including member record-keeping, contribution tracking, loan processing, and governance workflows all in one unified system.",
-    url: "https://thefifthlab.com/ucp",
+    url: "https://thefifthlab.com",
     logoUrl: "/brand/ucp-emblem.png",
     accentColor: "#7C3AED",
     bgColor: "#F5F3FF",
     cardBorder: "#E4DEFD",
     badge: "Cooperative Tech",
     tags: ["Member Records", "Contributions", "Loan Processing", "Governance"],
+    features: [
+      "Complete membership management and digital passbooks",
+      "Automated contribution ledgers and dividend calculations",
+      "Cooperative loan eligibility appraisal and automated deductions",
+      "Democratic voting, resolutions and annual general meeting workflows"
+    ],
   },
   {
     id: "kuleanpay",
@@ -88,6 +115,12 @@ const FIFTHLAB_PRODUCTS = [
     cardBorder: "#D8E6FA",
     badge: "Secure Payments",
     tags: ["Escrow", "AI Fraud Detection", "Secure Commerce", "API"],
+    features: [
+      "AI-driven milestone escrow protection for high-value commerce",
+      "Multi-channel pay-in and instant settlement payout rails",
+      "Automated fraud mitigation and identity verification checks",
+      "Enterprise checkout SDKs and merchant dispute resolution"
+    ],
   },
   {
     id: "beetvas",
@@ -95,13 +128,19 @@ const FIFTHLAB_PRODUCTS = [
     tagline: "High-Performance Value-Added Services",
     description:
       "Enterprise-grade VAS engine for telcos and aggregators delivering high-throughput airtime and data vending, real-time reconciliation, and white-label reseller infrastructure.",
-    url: "https://thefifthlab.com/beetvas",
+    url: "https://thefifthlab.com",
     logoUrl: "/brand/beetvaslogo.png",
     accentColor: "#DC2626",
     bgColor: "#FFF5F5",
     cardBorder: "#FED7D7",
     badge: "Telecom VAS",
     tags: ["Airtime Vending", "White-Label", "Reconciliation", "Telco API"],
+    features: [
+      "Enterprise value-added services aggregation engine",
+      "Utility bills, airtime, data and digital content vending APIs",
+      "White-label reseller portals and sub-agent commission management",
+      "High concurrency architecture handling tens of thousands of requests/sec"
+    ],
   },
 ];
 
@@ -119,6 +158,12 @@ const CWG_PRODUCTS = [
     neutralHover: true,
     badge: "Cloud Services",
     tags: ["IaaS", "ERP Cloud", "Banking Cloud", "Colocation"],
+    features: [
+      "Tier III sovereign datacenter hosting and disaster recovery",
+      "Infrastructure-as-a-Service (IaaS) and hybrid cloud architecture",
+      "Cloud ERP and banking workload hosting with 99.98% uptime",
+      "Regulatory data residency and stringent enterprise security compliance"
+    ],
   },
   {
     id: "cwg-managed",
@@ -132,6 +177,12 @@ const CWG_PRODUCTS = [
     neutralHover: true,
     badge: "Managed IT",
     tags: ["Network Ops", "Data Center", "Security", "24/7 Monitoring"],
+    features: [
+      "24/7/365 Network Operations Center (NOC) monitoring and management",
+      "Complete enterprise IT infrastructure outsourcing",
+      "Proactive threat detection, vulnerability response and compliance audits",
+      "Dedicated SLAs with rapid incident response and recovery"
+    ],
   },
   {
     id: "cwg-payments",
@@ -145,6 +196,12 @@ const CWG_PRODUCTS = [
     neutralHover: true,
     badge: "Terminal Solutions",
     tags: ["POS Terminals", "Merchant Acquiring", "Card Processing", "Fintech"],
+    features: [
+      "Smart Android POS hardware with EMV Level 1 & 2 compliance",
+      "Multi-rail payment processing: Chip, PIN, Contactless and QR codes",
+      "Comprehensive terminal management system (TMS) with remote updates",
+      "Direct acquiring integration with major commercial banks"
+    ],
   },
   {
     id: "cwg-infra",
@@ -158,6 +215,12 @@ const CWG_PRODUCTS = [
     neutralHover: true,
     badge: "Infrastructure",
     tags: ["Data Center", "Hardware Architecture", "Networking", "Storage"],
+    features: [
+      "Mission-critical enterprise server and mainframe architecture",
+      "Enterprise Storage Area Networks (SAN) and high-speed data backup",
+      "Precision cooling, smart UPS and green data center engineering",
+      "Structured cabling, software-defined WAN and campus network design"
+    ],
   },
   {
     id: "cwg-software",
@@ -171,6 +234,12 @@ const CWG_PRODUCTS = [
     neutralHover: true,
     badge: "Custom Software",
     tags: ["Custom Dev", "Core Integration", "Quality Assurance", "APIs"],
+    features: [
+      "Bespoke enterprise application development and legacy modernization",
+      "Enterprise middleware, message bus and core banking integrations",
+      "Rigorous automated QA, performance benchmarking and penetration testing",
+      "Agile delivery with dedicated on-site and remote engineering squads"
+    ],
   },
   {
     id: "cwg-training",
@@ -184,6 +253,12 @@ const CWG_PRODUCTS = [
     neutralHover: true,
     badge: "Training & Certs",
     tags: ["Certification", "Cloud Training", "Cybersecurity", "Tech Community"],
+    features: [
+      "Vendor-accredited certification courses (AWS, Microsoft, Cisco, etc.)",
+      "Hands-on practical enterprise labs and instructor-led masterclasses",
+      "Customized corporate training packages for enterprise IT teams",
+      "Direct pathway to the CWG talent alumni network"
+    ],
   },
   {
     id: "texcellence",
@@ -199,6 +274,12 @@ const CWG_PRODUCTS = [
     neutralHover: false,
     badge: "Annual Summit",
     tags: ["Annual Summit", "Innovation", "Pan-African", "Tech Awards"],
+    features: [
+      "Keynote addresses from leading continental business and government luminaries",
+      "Executive C-suite roundtables on AI, FinTech and Digital Governance",
+      "Prestigious Pan-African Tech Excellence Awards ceremony",
+      "Direct exhibition floor showcasing disruptive African enterprise solutions"
+    ],
   },
   {
     id: "cwg-atm",
@@ -212,12 +293,18 @@ const CWG_PRODUCTS = [
     neutralHover: true,
     badge: "Self-Service",
     tags: ["ATM Fleets", "Uptime Engineering", "Banking Hardware", "Maintenance"],
+    features: [
+      "Full lifecycle ATM deployment, commissioning and terminal staging",
+      "Preventative maintenance and 24/7 West African field engineer support",
+      "Biometric and cash-recycling multi-currency self-service terminals",
+      "High availability monitoring with over 98.5% uptime guarantee"
+    ],
   },
 ];
 
-// ─── Reusable Product Card ────────────────────────────────────────────────────
-interface ProductCardProps {
-  id?: string;
+// ─── Product Data Types ───────────────────────────────────────────────────────
+interface ProductItem {
+  id: string;
   name: string;
   tagline: string;
   description: string;
@@ -227,12 +314,29 @@ interface ProductCardProps {
   bgColor?: string;
   cardBorder?: string;
   neutralHover?: boolean;
-  bgGradient?: string;
-  borderColor?: string;
+  badge?: string;
+  tags: string[];
+  features?: string[];
+}
+
+// ─── Reusable Product Card ────────────────────────────────────────────────────
+interface ProductCardProps {
+  id: string;
+  name: string;
+  tagline: string;
+  description: string;
+  url: string;
+  logoUrl?: string;
+  accentColor: string;
+  bgColor?: string;
+  cardBorder?: string;
+  neutralHover?: boolean;
   Icon?: React.ElementType;
   badge?: string;
   tags: string[];
+  features?: string[];
   className?: string;
+  onSelect?: () => void;
   onCardClick?: (e: React.MouseEvent) => void;
 }
 
@@ -250,12 +354,13 @@ function ProductCard({
   Icon,
   tags,
   className,
+  onSelect,
   onCardClick,
 }: ProductCardProps) {
   const handleCardClick = (e: React.MouseEvent<HTMLDivElement>) => {
     if (onCardClick) onCardClick(e);
-    if (url && !e.defaultPrevented) {
-      window.open(url, "_blank", "noopener,noreferrer");
+    if (!e.defaultPrevented && onSelect) {
+      onSelect();
     }
   };
 
@@ -267,7 +372,7 @@ function ProductCard({
       onKeyDown={(e) => {
         if (e.key === "Enter" || e.key === " ") {
           e.preventDefault();
-          if (url) window.open(url, "_blank", "noopener,noreferrer");
+          if (onSelect) onSelect();
         }
       }}
       style={{
@@ -299,9 +404,17 @@ function ProductCard({
             ) : null}
           </div>
 
-          <div className="product-arrow w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-white/80 border border-black/[0.06] text-slate-400 group-hover:text-slate-900 transition-colors shadow-2xs">
-            <ArrowUpRight className="w-4 h-4 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </div>
+          <button
+            type="button"
+            onClick={(e: React.MouseEvent) => {
+              e.stopPropagation();
+              if (onSelect) onSelect();
+            }}
+            aria-label={`View ${name} details`}
+            className="product-arrow w-8 h-8 rounded-full flex items-center justify-center shrink-0 bg-white/80 border border-black/[0.06] text-slate-400 hover:text-slate-900 transition-colors shadow-2xs cursor-pointer"
+          >
+            <ArrowUpRight className="w-4 h-4 transition-transform hover:translate-x-0.5 hover:-translate-y-0.5" />
+          </button>
         </div>
 
         {/* Name & Tagline */}
@@ -320,7 +433,7 @@ function ProductCard({
         </p>
       </div>
 
-      {/* Bottom Row: Tags + thefifthlab.com Signature Black Pill Button */}
+      {/* Bottom Row: Tags + Actions */}
       <div className="pt-4 border-t border-black/[0.06] flex items-center justify-between gap-2">
         <div className="flex flex-wrap gap-1 min-w-0 flex-1 overflow-hidden">
           {tags.slice(0, 1).map((tag) => (
@@ -339,19 +452,24 @@ function ProductCard({
         </div>
 
         <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          {id !== "cwg-training" && id !== "texcellence" && (
-            <Link
-              href={`/demo?product=${id || name.toLowerCase().replace(/[^a-z0-9]/g, "")}`}
-              onClick={(e: React.MouseEvent) => e.stopPropagation()}
-              className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#0090AD] hover:bg-[#007b94] text-white text-[11px] font-bold shadow-xs hover:scale-105 transition-all whitespace-nowrap shrink-0"
-            >
-              <span>Book Demo</span>
-            </Link>
-          )}
-          <span className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-slate-950 text-white text-[11px] font-semibold group-hover:bg-black transition-all shrink-0 shadow-sm group-hover:scale-105 whitespace-nowrap">
+          <Link
+            href={`/demo?product=${id || name.toLowerCase().replace(/[^a-z0-9]/g, "")}`}
+            onClick={(e: React.MouseEvent) => e.stopPropagation()}
+            className="inline-flex items-center justify-center px-3 py-1.5 rounded-full bg-[#0090AD] hover:bg-[#007b94] text-white text-[11px] font-bold shadow-xs hover:scale-105 transition-all whitespace-nowrap shrink-0"
+          >
+            <span>Book Demo</span>
+          </Link>
+          <button
+            type="button"
+            onClick={(e: React.MouseEvent) => {
+              e.stopPropagation();
+              if (onSelect) onSelect();
+            }}
+            className="inline-flex items-center gap-1 px-3 py-1.5 rounded-full bg-slate-950 text-white text-[11px] font-semibold hover:bg-black transition-all shrink-0 shadow-sm hover:scale-105 whitespace-nowrap cursor-pointer"
+          >
             <span>Details</span>
             <ArrowUpRight className="w-3 h-3 transition-transform group-hover:translate-x-0.5 group-hover:-translate-y-0.5" />
-          </span>
+          </button>
         </div>
       </div>
     </div>
@@ -359,36 +477,25 @@ function ProductCard({
 }
 
 // ─── High-Performance GPU-Accelerated Draggable Continuous Marquee ───────────
-interface ProductItem {
-  id: string;
-  name: string;
-  tagline: string;
-  description: string;
-  url: string;
-  logoUrl?: string;
-  accentColor: string;
-  bgColor?: string;
-  cardBorder?: string;
-  neutralHover?: boolean;
-  badge?: string;
-  tags: string[];
-}
-
 interface DraggableMarqueeProps {
   items: ProductItem[];
   direction?: "left" | "right";
   speed?: number;
+  onSelectProduct?: (product: ProductItem) => void;
 }
 
 function DraggableMarquee({
   items,
   direction = "left",
   speed = 1.35,
+  onSelectProduct,
 }: DraggableMarqueeProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const trackRef = useRef<HTMLDivElement>(null);
   const isHoveredRef = useRef(false);
+  const isDownRef = useRef(false);
   const isDraggingRef = useRef(false);
+  const hasDraggedRef = useRef(false);
   const startXRef = useRef(0);
   const startYRef = useRef(0);
   const startPosRef = useRef(0);
@@ -464,47 +571,63 @@ function DraggableMarquee({
     };
   }, [direction, speed, items.length]);
 
-  // Unified drag initialization
-  const onDragStart = (clientX: number, clientY: number) => {
-    isDraggingRef.current = true;
-    startXRef.current = clientX;
-    startYRef.current = clientY;
-    lastXRef.current = clientX;
+  // Pointer event handlers — Unified for Desktop Mouse and Mobile Touch
+  const handlePointerDown = (e: React.PointerEvent) => {
+    if (e.button !== 0) return;
+    isDownRef.current = true;
+    isDraggingRef.current = false;
+    hasDraggedRef.current = false;
+    startXRef.current = e.clientX;
+    startYRef.current = e.clientY;
+    lastXRef.current = e.clientX;
     lastTimeRef.current = performance.now();
     startPosRef.current = posRef.current;
     dragDistanceRef.current = 0;
     isHorizontalDragRef.current = null;
     velocityRef.current = 0;
-    if (containerRef.current) {
-      containerRef.current.style.cursor = "grabbing";
-    }
+    // CRITICAL: Do NOT call setPointerCapture on pointerdown!
+    // Capturing pointer immediately prevents native click dispatches on desktop links/buttons.
   };
 
-  // Unified drag movement
-  const onDragMove = (clientX: number, clientY: number) => {
-    if (!isDraggingRef.current || !trackRef.current) return;
+  const handlePointerMove = (e: React.PointerEvent) => {
+    if (!isDownRef.current || !trackRef.current) return;
 
-    const deltaX = clientX - startXRef.current;
-    const deltaY = clientY - startYRef.current;
+    const deltaX = e.clientX - startXRef.current;
+    const deltaY = e.clientY - startYRef.current;
+    const totalDist = Math.hypot(deltaX, deltaY);
 
-    // Detect gesture intent: horizontal marquee drag vs vertical page scroll
-    if (isHorizontalDragRef.current === null) {
-      if (Math.abs(deltaX) > 4 || Math.abs(deltaY) > 4) {
-        isHorizontalDragRef.current = Math.abs(deltaX) >= Math.abs(deltaY);
+    // Only engage drag if movement exceeds desktop threshold (> 7px)
+    if (!isDraggingRef.current) {
+      if (totalDist < 7) {
+        return; // Plain click or resting mouse jitter
+      }
+      isDraggingRef.current = true;
+      hasDraggedRef.current = true;
+      if (containerRef.current) {
+        containerRef.current.style.cursor = "grabbing";
+        try {
+          containerRef.current.setPointerCapture(e.pointerId);
+        } catch {
+          // ignore
+        }
       }
     }
 
+    // Detect gesture intent: horizontal marquee drag vs vertical page scroll
+    if (isHorizontalDragRef.current === null) {
+      isHorizontalDragRef.current = Math.abs(deltaX) >= Math.abs(deltaY);
+    }
+
     if (isHorizontalDragRef.current === false) {
-      // User is scrolling vertically, allow native page scroll
       return;
     }
 
     const now = performance.now();
     const dt = now - lastTimeRef.current;
     if (dt > 0) {
-      const stepDelta = clientX - lastXRef.current;
+      const stepDelta = e.clientX - lastXRef.current;
       velocityRef.current = (stepDelta / dt) * 16.6; // normalized velocity
-      lastXRef.current = clientX;
+      lastXRef.current = e.clientX;
       lastTimeRef.current = now;
     }
 
@@ -526,71 +649,29 @@ function DraggableMarquee({
     trackRef.current.style.transform = `translate3d(${posRef.current}px, 0, 0)`;
   };
 
-  // Unified drag completion
-  const onDragEnd = () => {
-    isDraggingRef.current = false;
-    isHorizontalDragRef.current = null;
+  const handlePointerUpOrCancel = (e: React.PointerEvent) => {
+    if (!isDownRef.current) return;
+
+    if (containerRef.current && containerRef.current.hasPointerCapture(e.pointerId)) {
+      try {
+        containerRef.current.releasePointerCapture(e.pointerId);
+      } catch {
+        // ignore
+      }
+    }
+
     if (containerRef.current) {
       containerRef.current.style.cursor = "grab";
     }
-  };
 
-  // Mouse handlers (desktop)
-  const handleMouseDown = (e: React.MouseEvent) => {
-    onDragStart(e.clientX, e.clientY);
-  };
-
-  const handleMouseMove = (e: React.MouseEvent) => {
-    onDragMove(e.clientX, e.clientY);
-  };
-
-  const handleMouseUpOrLeave = () => {
-    if (isDraggingRef.current) {
-      onDragEnd();
-    }
-  };
-
-  // Pointer event handlers (modern touchscreen / stylus / trackpad)
-  const handlePointerDown = (e: React.PointerEvent) => {
-    if (e.button !== 0) return;
-    try {
-      e.currentTarget.setPointerCapture(e.pointerId);
-    } catch {
-      // ignore
-    }
-    onDragStart(e.clientX, e.clientY);
-  };
-
-  const handlePointerMove = (e: React.PointerEvent) => {
-    onDragMove(e.clientX, e.clientY);
-  };
-
-  const handlePointerUpOrCancel = (e: React.PointerEvent) => {
-    try {
-      if (e.currentTarget.hasPointerCapture(e.pointerId)) {
-        e.currentTarget.releasePointerCapture(e.pointerId);
-      }
-    } catch {
-      // ignore
-    }
-    onDragEnd();
-  };
-
-  // Native touch fallback
-  const handleTouchStart = (e: React.TouchEvent) => {
-    if (e.touches.length === 1) {
-      onDragStart(e.touches[0].clientX, e.touches[0].clientY);
-    }
-  };
-
-  const handleTouchMove = (e: React.TouchEvent) => {
-    if (e.touches.length === 1) {
-      onDragMove(e.touches[0].clientX, e.touches[0].clientY);
-    }
-  };
-
-  const handleTouchEnd = () => {
-    onDragEnd();
+    // Delay reset slightly so click handlers can check if a real drag occurred
+    setTimeout(() => {
+      isDownRef.current = false;
+      isDraggingRef.current = false;
+      hasDraggedRef.current = false;
+      dragDistanceRef.current = 0;
+      isHorizontalDragRef.current = null;
+    }, 60);
   };
 
   const handleWheel = (e: React.WheelEvent) => {
@@ -619,7 +700,10 @@ function DraggableMarquee({
       }}
       onMouseLeave={() => {
         isHoveredRef.current = false;
-        handleMouseUpOrLeave();
+        if (isDraggingRef.current) {
+          isDraggingRef.current = false;
+          isDownRef.current = false;
+        }
       }}
     >
       {/* Subtle Gradient Edge Fades */}
@@ -629,17 +713,10 @@ function DraggableMarquee({
       {/* Interactive Drag & Wheel Viewport */}
       <div
         ref={containerRef}
-        onMouseDown={handleMouseDown}
-        onMouseMove={handleMouseMove}
-        onMouseUp={handleMouseUpOrLeave}
         onPointerDown={handlePointerDown}
         onPointerMove={handlePointerMove}
         onPointerUp={handlePointerUpOrCancel}
         onPointerCancel={handlePointerUpOrCancel}
-        onTouchStart={handleTouchStart}
-        onTouchMove={handleTouchMove}
-        onTouchEnd={handleTouchEnd}
-        onTouchCancel={handleTouchEnd}
         onWheel={handleWheel}
         className="overflow-hidden py-3 w-full cursor-grab active:cursor-grabbing touch-pan-y select-none"
       >
@@ -652,8 +729,9 @@ function DraggableMarquee({
               key={`${direction}-${p.id}-${idx}`}
               {...p}
               className="w-[330px] sm:w-[380px] shrink-0"
+              onSelect={() => onSelectProduct && onSelectProduct(p)}
               onCardClick={(e) => {
-                if (dragDistanceRef.current > 6) {
+                if (hasDraggedRef.current || dragDistanceRef.current > 6) {
                   e.preventDefault();
                 }
               }}
@@ -665,8 +743,155 @@ function DraggableMarquee({
   );
 }
 
+// ─── Interactive Product Detail Modal ─────────────────────────────────────────
+function ProductDetailModal({
+  product,
+  onClose,
+}: {
+  product: ProductItem | null;
+  onClose: () => void;
+}) {
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === "Escape") onClose();
+    };
+    if (product) {
+      window.addEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "hidden";
+    }
+    return () => {
+      window.removeEventListener("keydown", handleKeyDown);
+      document.body.style.overflow = "unset";
+    };
+  }, [product, onClose]);
+
+  if (!product) return null;
+
+  return (
+    <div
+      className="fixed inset-0 z-50 bg-black/60 backdrop-blur-xs flex items-center justify-center p-4 sm:p-6 animate-in fade-in duration-200 overscroll-contain"
+      onClick={onClose}
+    >
+      <div
+        className="w-full max-w-2xl bg-white rounded-3xl border border-slate-200 shadow-2xl p-6 sm:p-8 space-y-6 text-left max-h-[90vh] overflow-y-auto overscroll-contain"
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Header */}
+        <div className="flex items-start justify-between gap-4 pb-4 border-b border-slate-100">
+          <div className="flex items-center gap-4">
+            <div className="w-14 h-14 sm:w-16 sm:h-16 rounded-2xl bg-slate-50 border border-slate-200 p-2 flex items-center justify-center shrink-0">
+              {product.logoUrl ? (
+                <img
+                  src={product.logoUrl}
+                  alt={product.name}
+                  className="w-full h-full object-contain"
+                />
+              ) : (
+                <Building2 className="w-8 h-8 text-slate-700" />
+              )}
+            </div>
+            <div>
+              <div className="text-xs font-mono uppercase tracking-wider text-slate-500">
+                {product.badge || "Ecosystem Solution"}
+              </div>
+              <h2 className="text-xl sm:text-2xl font-bold text-slate-950">
+                {product.name}
+              </h2>
+              <p className="text-xs sm:text-sm font-medium text-slate-600">
+                {product.tagline}
+              </p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-2 text-slate-400 hover:text-slate-700 rounded-xl hover:bg-slate-100 transition-colors cursor-pointer"
+            aria-label="Close modal"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {/* Overview */}
+        <div className="space-y-2">
+          <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+            Overview &amp; Architecture
+          </h3>
+          <p className="text-sm text-slate-700 leading-relaxed">
+            {product.description}
+          </p>
+        </div>
+
+        {/* Features / Capabilities */}
+        {product.features && product.features.length > 0 && (
+          <div className="space-y-2.5">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              Key Capabilities &amp; Features
+            </h3>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+              {product.features.map((feat, idx) => (
+                <div
+                  key={idx}
+                  className="flex items-start gap-2 text-xs text-slate-700"
+                >
+                  <CheckCircle2 className="w-4 h-4 text-[#0090AD] shrink-0 mt-0.5" />
+                  <span>{feat}</span>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Solution Focus Tags */}
+        {product.tags && product.tags.length > 0 && (
+          <div className="space-y-2">
+            <h3 className="text-xs font-bold uppercase tracking-wider text-slate-500">
+              Solution Focus Areas
+            </h3>
+            <div className="flex flex-wrap gap-1.5">
+              {product.tags.map((t) => (
+                <span
+                  key={t}
+                  className="text-xs font-medium text-slate-700 border border-slate-200 px-2.5 py-1 rounded-md bg-slate-50"
+                >
+                  {t}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {/* Action Buttons */}
+        <div className="pt-4 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
+          <Link
+            href={`/demo?product=${product.id}`}
+            onClick={onClose}
+            className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 rounded-full bg-[#0090AD] hover:bg-[#007b94] text-white text-xs font-bold shadow-md hover:scale-105 transition-all"
+          >
+            <span>Book 1-on-1 Product Demo</span>
+            <ArrowUpRight className="w-4 h-4" />
+          </Link>
+
+          {product.url && (
+            <a
+              href={product.url}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-1.5 px-4 py-2.5 rounded-full border border-slate-200 text-slate-700 hover:text-slate-950 hover:bg-slate-50 text-xs font-semibold transition-all"
+            >
+              <span>Visit Official Website</span>
+              <ExternalLink className="w-3.5 h-3.5 text-slate-400" />
+            </a>
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
 // ─── Page ─────────────────────────────────────────────────────────────────────
 export default function ProductsPage() {
+  const [selectedProduct, setSelectedProduct] = useState<ProductItem | null>(null);
+
   return (
     <div className="min-h-screen text-[#111827] font-sans">
 
@@ -821,7 +1046,7 @@ export default function ProductsPage() {
         </div>
 
         {/* Interactive Continuous Marquee */}
-        <DraggableMarquee items={FIFTHLAB_PRODUCTS} direction="left" speed={1.35} />
+        <DraggableMarquee items={FIFTHLAB_PRODUCTS} direction="left" speed={1.35} onSelectProduct={setSelectedProduct} />
       </section>
 
       {/* Divider */}
@@ -883,7 +1108,7 @@ export default function ProductsPage() {
         </div>
 
         {/* Interactive Continuous Marquee in Counter Direction */}
-        <DraggableMarquee items={CWG_PRODUCTS} direction="right" speed={1.35} />
+        <DraggableMarquee items={CWG_PRODUCTS} direction="right" speed={1.35} onSelectProduct={setSelectedProduct} />
       </section>
 
       {/* ── Bottom CTA ────────────────────────────────────────────────────── */}
@@ -940,6 +1165,12 @@ export default function ProductsPage() {
           </div>
         </div>
       </section>
+
+      {/* ── Interactive Product Detail Modal ── */}
+      <ProductDetailModal
+        product={selectedProduct}
+        onClose={() => setSelectedProduct(null)}
+      />
 
     </div>
   );

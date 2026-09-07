@@ -291,7 +291,8 @@ eventsRouter.delete("/:id", requireAuth, async (req: AuthenticatedRequest, res: 
 eventsRouter.post("/:id/rsvp", requireAuth, async (req: AuthenticatedRequest, res: Response): Promise<void> => {
   try {
     const eventId = getParam(req.params.id);
-    const userId = req.user?.id || (typeof req.body.userId === "string" ? req.body.userId : undefined);
+    const targetUserId = typeof req.body.userId === "string" && req.body.userId.trim() !== "" ? req.body.userId.trim() : undefined;
+    let userId = targetUserId || req.user?.id;
     const rawStatus = typeof req.body.status === "string" ? req.body.status.toUpperCase() : "ATTENDING";
     const status: AttendanceStatus = isAttendanceStatus(rawStatus)
       ? (rawStatus as AttendanceStatus)
@@ -301,6 +302,18 @@ eventsRouter.post("/:id/rsvp", requireAuth, async (req: AuthenticatedRequest, re
       res.status(400).json({ success: false, error: "User ID is required for RSVP" });
       return;
     }
+
+    // Verify user exists or resolve by email if an email was passed
+    const existingUser = await prisma.user.findFirst({
+      where: { OR: [{ id: userId }, { email: userId }] },
+    });
+
+    if (!existingUser) {
+      res.status(404).json({ success: false, error: "Staff user record not found." });
+      return;
+    }
+
+    userId = existingUser.id;
 
     const rsvp = await prisma.attendanceRecord.upsert({
       where: {
@@ -324,7 +337,16 @@ eventsRouter.post("/:id/rsvp", requireAuth, async (req: AuthenticatedRequest, re
     });
 
     broadcast("EVENT_CHANGE", { action: "rsvp", eventId });
-    res.json({ success: true, data: rsvp });
+    res.json({
+      success: true,
+      data: {
+        ...rsvp,
+        userName: rsvp.user?.name || existingUser.name,
+        userRole: rsvp.user?.role || existingUser.role,
+        userEmail: rsvp.user?.email || existingUser.email,
+        avatarUrl: rsvp.user?.avatarUrl || existingUser.avatarUrl,
+      },
+    });
   } catch (error: unknown) {
     const message = error instanceof Error ? error.message : "Failed to submit RSVP";
     res.status(400).json({ success: false, error: message });

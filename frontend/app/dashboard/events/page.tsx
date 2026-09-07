@@ -45,7 +45,7 @@ export default function EventsPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState<any>(null);
-  const [viewTab, setViewTab] = useState<"CATALOG" | "ATTENDEES_ROSTER" | "PITCHES">("CATALOG");
+  const [viewTab, setViewTab] = useState<"CATALOG" | "MY_EVENTS" | "ATTENDEES_ROSTER" | "PITCHES">("CATALOG");
 
   const [attendeeRoster, setAttendeeRoster] = useState<any[]>([]);
   const [isLoadingAttendees, setIsLoadingAttendees] = useState(false);
@@ -173,16 +173,35 @@ export default function EventsPage() {
     document.body.removeChild(link);
   };
 
+  const myEventsCount = events.filter((e) =>
+    (e.attendanceManifest || []).some(
+      (m) =>
+        (user?.id && m.userId === user.id) ||
+        (user?.name && m.userName.toLowerCase() === user.name.toLowerCase())
+    )
+  ).length;
+
   const filteredEvents = events.filter((e) => {
-    return (
+    const matchesSearch =
       e.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
       e.location.toLowerCase().includes(searchQuery.toLowerCase()) ||
-      e.city.toLowerCase().includes(searchQuery.toLowerCase())
-    );
+      e.city.toLowerCase().includes(searchQuery.toLowerCase());
+
+    if (viewTab === "MY_EVENTS") {
+      const isMyEvent = (e.attendanceManifest || []).some(
+        (m) =>
+          (user?.id && m.userId === user.id) ||
+          (user?.name && m.userName.toLowerCase() === user.name.toLowerCase())
+      );
+      return matchesSearch && isMyEvent;
+    }
+
+    return matchesSearch;
   });
 
   const tabOptions = [
-    { id: "CATALOG", label: "Events Catalog", count: events.length },
+    { id: "CATALOG", label: "All Summits", count: events.length },
+    { id: "MY_EVENTS", label: "My Delegations", count: myEventsCount },
     { id: "ATTENDEES_ROSTER", label: "Public Attendees", count: attendeeRoster.length },
     { id: "PITCHES", label: "Organizer Proposals", count: pendingPitches.length, alert: pendingPitches.length > 0 },
   ];
@@ -192,7 +211,11 @@ export default function EventsPage() {
   const availableStaffToAssign = owners.filter((o) => !currentManifestUserIds.has(o.id));
 
   // Current logged in user's RSVP status for the selected event
-  const currentUserRecord = (selectedEvent?.attendanceManifest || []).find((m) => m.userId === user?.id);
+  const currentUserRecord = (selectedEvent?.attendanceManifest || []).find(
+    (m) =>
+      (user?.id && m.userId === user.id) ||
+      (user?.name && m.userName.toLowerCase() === user.name.toLowerCase())
+  );
 
   const handleSelectEvent = (id: string, e?: React.MouseEvent) => {
     setSelectedEventId(id);
@@ -229,7 +252,8 @@ export default function EventsPage() {
           <div className="flex items-center gap-2 pt-0.5">
             <button
               type="button"
-              onClick={() => handleStaffStatusChange(user?.id || "usr_abraham", "Attending")}
+              onClick={() => user?.id && handleStaffStatusChange(user.id, "Attending")}
+              disabled={!user}
               className={cn(
                 "flex-1 h-7.5 rounded-md text-xs font-bold transition-all cursor-pointer text-center flex items-center justify-center gap-1.5",
                 currentUserRecord?.status === "Attending"
@@ -241,7 +265,8 @@ export default function EventsPage() {
             </button>
             <button
               type="button"
-              onClick={() => handleStaffStatusChange(user?.id || "usr_abraham", "Declined")}
+              onClick={() => user?.id && handleStaffStatusChange(user.id, "Declined")}
+              disabled={!user}
               className={cn(
                 "flex-1 h-7.5 rounded-md text-xs font-bold transition-all cursor-pointer text-center flex items-center justify-center gap-1.5",
                 currentUserRecord?.status === "Declined"
@@ -420,7 +445,7 @@ export default function EventsPage() {
           </div>
 
           {/* Search Bar */}
-          {viewTab === "CATALOG" && (
+          {(viewTab === "CATALOG" || viewTab === "MY_EVENTS") && (
             <div className="relative w-full md:w-56 shrink-0">
               <Search className="w-3.5 h-3.5 absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400" />
               <input
@@ -434,13 +459,27 @@ export default function EventsPage() {
           )}
         </div>
 
-        {/* 1. Catalog View */}
-        {viewTab === "CATALOG" && (
+        {/* 1. Catalog & My Delegations View */}
+        {(viewTab === "CATALOG" || viewTab === "MY_EVENTS") && (
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-4">
             
             {/* Left: Event Cards (7 cols) - Clean AWS Enterprise Design with mobile inline roster card */}
             <div className="lg:col-span-7 space-y-2.5">
-              {filteredEvents.map((evt) => {
+              {filteredEvents.length === 0 ? (
+                <div className="p-8 rounded-lg border border-dashed border-slate-200 bg-white text-center">
+                  <p className="text-xs font-semibold text-slate-700">
+                    {viewTab === "MY_EVENTS"
+                      ? "No events assigned to your account yet."
+                      : "No events match your current filter."}
+                  </p>
+                  <p className="text-[11px] text-slate-400 mt-1">
+                    {viewTab === "MY_EVENTS"
+                      ? "When you are assigned to an event delegation or RSVP, it will appear here."
+                      : "Try adjusting your search query to see other events."}
+                  </p>
+                </div>
+              ) : (
+                filteredEvents.map((evt) => {
                 const isSelected = evt.id === selectedEventId;
                 const attendingStaffCount = (evt.attendanceManifest || []).filter((m) => m.status === "Attending").length;
 
@@ -537,7 +576,7 @@ export default function EventsPage() {
                     </AnimatePresence>
                   </div>
                 );
-              })}
+              }))}
             </div>
 
             {/* Right: Selected Event Control & Interactive Staff Decision System (5 cols) - Visible on lg+ screens */}

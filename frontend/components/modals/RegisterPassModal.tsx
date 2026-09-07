@@ -158,14 +158,19 @@ export default function RegisterPassModal(props: RegisterPassModalProps) {
 
           {/* Header */}
           <div className="space-y-1.5 pr-8">
-            <span className="text-[11px] font-semibold text-[#0090AD] uppercase tracking-widest flex items-center gap-1.5">
-              <Ticket className="w-3.5 h-3.5" /> Public Attendee Pass Registration
-            </span>
-            <h2 className="text-2xl font-medium text-[#0E0E0E]">
+            <div className="flex items-center gap-2">
+              <span className="text-[11px] font-semibold text-[#0090AD] uppercase tracking-widest flex items-center gap-1.5">
+                <Ticket className="w-3.5 h-3.5" /> Public Attendee Pass Registration
+              </span>
+              <span className="text-[11px] text-slate-500 font-medium">
+                • No Login Required
+              </span>
+            </div>
+            <h2 className="text-2xl font-semibold text-[#0E0E0E]">
               Claim Your Event Pass
             </h2>
             <p className="text-xs text-[#5F5F7A]">
-              Sub-second QR badge check-in delivered instantly to your corporate email.
+              100% Free &amp; Open Access. Sub-second QR badge check-in delivered instantly to your inbox.
             </p>
           </div>
 

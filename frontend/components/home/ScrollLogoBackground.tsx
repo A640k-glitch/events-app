@@ -41,16 +41,14 @@ export default function ScrollLogoBackground() {
   const secondaryScale = useTransform(smoothProgress, [0, 0.5, 1], [0.85, 1.1, 0.78]);
   const secondaryOpacity = useTransform(smoothProgress, [0, 0.4, 0.8, 1], [0.22, 0.35, 0.28, 0.2]);
 
-  if (!mounted) {
-    return null;
-  }
-
   return (
     <div 
       ref={containerRef}
       aria-hidden="true"
       className="fixed inset-0 overflow-hidden pointer-events-none z-0 select-none"
     >
+      {mounted && (
+        <>
       {/* 1. Primary Full-Color Emblem (Floats down and settles into bottom-right behind footer) */}
       <motion.div
         style={{
@@ -85,6 +83,8 @@ export default function ScrollLogoBackground() {
           <FifthEventsEmblem size={390} monochrome={false} />
         </div>
       </motion.div>
+        </>
+      )}
     </div>
   );
 }

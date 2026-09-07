@@ -11,7 +11,7 @@ import { cn } from "@/lib/utils";
 export default function LayoutShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const isDashboard = pathname.startsWith("/dashboard");
-  const isAuth = pathname.startsWith("/login") || pathname.startsWith("/register");
+  const isAuth = pathname.startsWith("/login");
   const isDarkHeroPage = pathname.startsWith("/events") || pathname.startsWith("/products");
 
   // Scroll to top on every page transition (unless an anchor hash like #about is targeted)

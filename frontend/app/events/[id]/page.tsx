@@ -66,14 +66,20 @@ export default function EventDetailPage() {
             expectedAttendance: raw.expectedAttendance || 1000,
             confirmedStaffCount: raw.attendanceManifest?.length || 0,
             isFifthLabAttending: Boolean(raw.isFifthLabAttending),
-            attendanceManifest: (raw.attendanceManifest || []).map((m: any) => ({
-              userId: m.userId || m.user?.id,
-              userName: m.user?.name || "Staff",
-              userRole: m.user?.role || "Staff",
-              avatarUrl: m.user?.avatarUrl || "",
-              confirmedAt: m.confirmedAt ? new Date(m.confirmedAt).toLocaleDateString() : "Recently",
-              status: m.status === "ATTENDING" ? "Attending" : "Declined",
-            })),
+            attendanceManifest: (raw.attendanceManifest || []).map((m: any) => {
+              const rawName = m.userName || m.user?.name;
+              const staffName = (rawName && rawName !== "Staff") ? rawName : (user && user.id === (m.userId || m.user?.id) ? user.name : "Staff Member");
+              const upper = String(m.status || "").toUpperCase();
+              const status = upper === "ATTENDING" ? "Attending" : upper === "DECLINED" ? "Declined" : "Maybe";
+              return {
+                userId: m.userId || m.user?.id,
+                userName: staffName,
+                userRole: m.user?.role || m.userRole || "Staff",
+                avatarUrl: m.avatarUrl || m.user?.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(staffName)}&background=0891b2&color=fff&bold=true`,
+                confirmedAt: m.confirmedAt ? new Date(m.confirmedAt).toLocaleDateString() : "Recently",
+                status,
+              };
+            }),
           });
         }
       })
@@ -196,12 +202,62 @@ export default function EventDetailPage() {
               </div>
             </div>
 
+            {/* Public Pass & Demo Access Card */}
+            <div className="rounded-xl border border-slate-200 bg-white p-6 sm:p-8 space-y-4 shadow-2xs">
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gray-100">
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-base font-semibold text-[#111827]">Guest &amp; Delegate Access</h2>
+                    <span className="text-[11px] font-medium text-emerald-700">Open Public Access • No Login Required</span>
+                  </div>
+                  <p className="text-xs text-gray-500 mt-0.5">
+                    Attending {event.title}? Digital passes and product demos are open to all visitors, delegates, and guests.
+                  </p>
+                </div>
+              </div>
+
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-1">
+                <button
+                  type="button"
+                  onClick={() => setIsPassModalOpen(true)}
+                  className="p-4 rounded-lg border border-slate-200 hover:border-slate-300 bg-[#FAFAFA] hover:bg-white text-left transition-all group cursor-pointer"
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-bold text-[#111827] group-hover:text-[#0090AD] flex items-center gap-1.5">
+                      <Ticket className="w-3.5 h-3.5 text-[#0090AD]" />
+                      Claim Attendee Pass
+                    </span>
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+                  </div>
+                  <p className="text-[11px] text-slate-500 leading-relaxed">
+                    Instant digital QR badge for summit entry. 100% free, no login or account required.
+                  </p>
+                </button>
+
+                <Link
+                  href="/demo"
+                  className="p-4 rounded-lg border border-slate-200 hover:border-slate-300 bg-[#FAFAFA] hover:bg-white text-left transition-all group"
+                >
+                  <div className="flex items-center justify-between mb-1">
+                    <span className="text-xs font-bold text-[#111827] group-hover:text-[#0090AD] flex items-center gap-1.5">
+                      <Sparkles className="w-3.5 h-3.5 text-[#0090AD]" />
+                      Schedule Product Demo
+                    </span>
+                    <ChevronRight className="w-3.5 h-3.5 text-slate-400 group-hover:translate-x-0.5 transition-transform" />
+                  </div>
+                  <p className="text-[11px] text-slate-500 leading-relaxed">
+                    Book a dedicated 1-on-1 walkthrough with FifthLab engineers at our booth or online.
+                  </p>
+                </Link>
+              </div>
+            </div>
+
             {/* Staff Manifest Card */}
-            <div className="rounded-xl border border-gray-200 bg-white p-6 sm:p-8 space-y-5">
+            <div className="rounded-xl border border-slate-200 bg-white p-6 sm:p-8 space-y-5 shadow-2xs">
               <div className="flex items-center justify-between pb-3 border-b border-gray-100">
                 <div>
-                  <h2 className="text-base font-semibold text-[#111827]">FifthLab Delegation</h2>
-                  <p className="text-xs text-gray-500">Confirmed engineering and product specialists attending this summit.</p>
+                  <h2 className="text-base font-semibold text-[#111827]">FifthLab Delegation (Internal Staff)</h2>
+                  <p className="text-xs text-gray-500">Confirmed engineering and product team members attending this summit.</p>
                 </div>
                 <span className="text-xs font-mono font-medium px-2.5 py-0.5 rounded bg-gray-100 text-gray-700">
                   {event.attendanceManifest?.length || 0} Staff
@@ -209,7 +265,7 @@ export default function EventDetailPage() {
               </div>
 
               {/* Staff RSVP Toggle if logged in */}
-              {user && (
+              {user ? (
                 <div className="p-4 rounded-lg bg-gray-50 border border-gray-200 space-y-2">
                   <span className="text-xs font-semibold text-[#111827] block">Your Staff RSVP Status</span>
                   <div className="flex items-center gap-2">
@@ -229,6 +285,14 @@ export default function EventDetailPage() {
                     ))}
                   </div>
                 </div>
+              ) : (
+                <div className="text-[11px] text-gray-500">
+                  Are you on the FifthLab team?{" "}
+                  <Link href="/login" className="text-[#0090AD] font-semibold hover:underline">
+                    Sign in to Staff Portal
+                  </Link>{" "}
+                  to update your internal delegation status.
+                </div>
               )}
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -238,10 +302,7 @@ export default function EventDetailPage() {
                       <div className="font-semibold text-[#111827]">{staff.userName}</div>
                       <div className="text-[11px] text-gray-500">{staff.userRole}</div>
                     </div>
-                    <span className={cn(
-                      "text-[10px] font-mono px-2 py-0.5 rounded font-medium",
-                      staff.status === "Attending" ? "bg-emerald-50 text-emerald-700 border border-emerald-200" : "bg-amber-50 text-amber-700 border border-amber-200"
-                    )}>
+                    <span className="text-xs font-medium text-slate-600">
                       {staff.status}
                     </span>
                   </div>
@@ -255,14 +316,14 @@ export default function EventDetailPage() {
           <div className="lg:col-span-4 space-y-6">
             
             {/* Registration Card */}
-            <div className="rounded-xl border-2 border-[#00B4D8] bg-white p-6 space-y-5 shadow-xs sticky top-24">
+            <div className="rounded-xl border border-slate-200 bg-white p-6 space-y-5 shadow-2xs sticky top-24">
               <div className="space-y-1">
-                <span className="text-xs font-semibold text-[#0090AD] uppercase font-mono">
-                  Public Pass
-                </span>
-                <h3 className="text-xl font-semibold text-[#111827]">Claim Digital Pass</h3>
+                <div className="text-[11px] font-semibold text-emerald-700 tracking-wide uppercase font-mono">
+                  No Login Required
+                </div>
+                <h3 className="text-xl font-semibold text-[#111827]">Claim Attendee Pass</h3>
                 <p className="text-xs text-[#6B7280]">
-                  Sub-second QR badge delivered directly to your corporate inbox.
+                  Open to all delegates and attendees. Sub-second QR badge delivered directly to your inbox.
                 </p>
               </div>
 
@@ -276,7 +337,7 @@ export default function EventDetailPage() {
                   Register Free Visitor Pass
                 </BrandButton>
 
-                <Link href={`/demo?product=bulkwave`}>
+                <Link href="/demo">
                   <BrandButton
                     variant="outline"
                     size="md"
@@ -287,9 +348,12 @@ export default function EventDetailPage() {
                 </Link>
               </div>
 
-              <div className="pt-3 border-t border-gray-100 flex items-center gap-2 text-[11px] text-gray-500">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
-                <span>Data Privacy & Security Compliant</span>
+              <div className="pt-3 border-t border-gray-100 flex items-center justify-between text-[11px] text-gray-500">
+                <div className="flex items-center gap-1.5">
+                  <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <span>100% Free &amp; Open Access</span>
+                </div>
+                <span>No password needed</span>
               </div>
             </div>
 

@@ -106,16 +106,35 @@ interface AppContextType {
 
 const AppContext = createContext<AppContextType | undefined>(undefined);
 
+function normalizeAttendanceStatus(raw: any): "Attending" | "Declined" | "Maybe" {
+  if (!raw) return "Maybe";
+  const upper = String(raw).toUpperCase().trim();
+  if (upper === "ATTENDING") return "Attending";
+  if (upper === "DECLINED") return "Declined";
+  return "Maybe";
+}
+
+function formatStaffName(m: any): string {
+  const rawName = m.userName || m.user?.name || m.name;
+  if (rawName && rawName !== "Staff Member") return rawName;
+  if (m.userEmail) {
+    const parts = String(m.userEmail).split("@")[0].split(/[._-]/);
+    return parts.map((w) => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase()).join(" ");
+  }
+  return "Staff Member";
+}
+
 function mapPrismaEvent(e: any): FifthLabEvent {
   const manifest: AttendanceRecord[] = (e.attendanceManifest || []).map((m: any) => {
-    const staffName = m.user?.name || "Staff Member";
+    const staffName = formatStaffName(m);
+    const status = normalizeAttendanceStatus(m.status);
     return {
       userId: m.userId || m.user?.id,
       userName: staffName,
-      userRole: m.user?.role || "Staff",
-      avatarUrl: m.user?.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(staffName)}&background=0891b2&color=fff&bold=true`,
+      userRole: m.user?.role || m.userRole || "Staff",
+      avatarUrl: m.avatarUrl || m.user?.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(staffName)}&background=0891b2&color=fff&bold=true`,
       confirmedAt: m.confirmedAt ? new Date(m.confirmedAt).toLocaleString("en-US", { month: "short", day: "numeric", hour: "2-digit", minute: "2-digit" }) : "Recently",
-      status: m.status === "ATTENDING" ? "Attending" : m.status === "DECLINED" ? "Declined" : "Maybe",
+      status,
     };
   });
 
@@ -342,7 +361,12 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
             localStorage.setItem("fifthlab_user", JSON.stringify(liveUser));
           }
         } catch (e) {
-          console.warn("Could not sync live session from database:", e);
+          console.warn("Could not sync live session from database, clearing stale session:", e);
+          clearAuthToken();
+          setUser(null);
+          if (typeof window !== "undefined") {
+            localStorage.removeItem("fifthlab_user");
+          }
         }
       }
 
@@ -605,21 +629,86 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
   };
 
   const toggleAttendance = async (eventId: string, status: "Attending" | "Declined" | "Maybe", targetUserId?: string) => {
-    try {
-      const dbStatus = status === "Attending" ? "ATTENDING" : status === "Declined" ? "DECLINED" : "MAYBE";
-      const effectiveUserId = targetUserId || user?.id || "usr_abraham";
-      const res = await api.rsvpEvent(eventId, dbStatus, effectiveUserId);
+    const effectiveUserId = targetUserId || user?.id;
+    if (!effectiveUserId) {
+      console.warn("Cannot toggle attendance without user session");
+      return;
+    }
 
+    const dbStatus = status === "Attending" ? "ATTENDING" : status === "Declined" ? "DECLINED" : "MAYBE";
+
+    // 1. Optimistically update local events manifest so UI updates immediately
+    setEvents((prev) =>
+      prev.map((evt) => {
+        if (evt.id !== eventId) return evt;
+        const currentManifest = evt.attendanceManifest || [];
+        const existingIndex = currentManifest.findIndex((m) => m.userId === effectiveUserId);
+        const resolvedName = targetUserId
+          ? (owners.find((o) => o.id === targetUserId)?.name || "Staff Member")
+          : (user?.name || "Staff Member");
+        const resolvedRole = targetUserId
+          ? (owners.find((o) => o.id === targetUserId)?.role || "Staff")
+          : (user?.role || "Staff");
+
+        let updatedManifest: AttendanceRecord[];
+        if (existingIndex >= 0) {
+          updatedManifest = currentManifest.map((m, idx) =>
+            idx === existingIndex
+              ? {
+                  ...m,
+                  status,
+                  userName: m.userName && m.userName !== "Staff Member" ? m.userName : resolvedName,
+                }
+              : m
+          );
+        } else {
+          updatedManifest = [
+            ...currentManifest,
+            {
+              userId: effectiveUserId,
+              userName: resolvedName,
+              userRole: resolvedRole,
+              avatarUrl: user?.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(resolvedName)}&background=0891b2&color=fff&bold=true`,
+              confirmedAt: "Just now",
+              status,
+            },
+          ];
+        }
+
+        return {
+          ...evt,
+          attendanceManifest: updatedManifest,
+          confirmedStaffCount: updatedManifest.filter((m) => m.status === "Attending").length,
+        };
+      })
+    );
+
+    try {
+      const res = await api.rsvpEvent(eventId, dbStatus, effectiveUserId);
       if (res.success) {
         notifySync();
         await refreshData();
       }
     } catch (e) {
       console.error("Failed to submit RSVP:", e);
+      await refreshData();
     }
   };
 
   const removeStaffAttendance = async (eventId: string, targetUserId: string) => {
+    // Optimistically update local manifest
+    setEvents((prev) =>
+      prev.map((evt) => {
+        if (evt.id !== eventId) return evt;
+        const updatedManifest = (evt.attendanceManifest || []).filter((m) => m.userId !== targetUserId);
+        return {
+          ...evt,
+          attendanceManifest: updatedManifest,
+          confirmedStaffCount: updatedManifest.filter((m) => m.status === "Attending").length,
+        };
+      })
+    );
+
     try {
       const res = await fetch(`/api/events/${eventId}/rsvp?userId=${encodeURIComponent(targetUserId)}`, {
         method: "DELETE",
@@ -633,6 +722,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (e) {
       console.error("Failed to remove staff attendance:", e);
+      await refreshData();
     }
   };
 
@@ -677,6 +767,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
         productInterested: leadData.productInterested,
         bookingDate: leadData.bookingDate || new Date().toISOString(),
         timeSlot: leadData.bookingTime || "11:00 AM WAT",
+        bookingTime: leadData.bookingTime || "11:00 AM WAT",
         notes: leadData.notes,
       });
 
@@ -688,6 +779,7 @@ export function AppProvider({ children }: { children: React.ReactNode }) {
       }
     } catch (e) {
       console.error("Failed to submit lead:", e);
+      throw e;
     }
   };
 

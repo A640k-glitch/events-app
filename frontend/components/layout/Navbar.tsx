@@ -54,6 +54,7 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Events", href: "/events" },
+    { name: "Get Pass", href: "/register" },
     { name: "Products", href: "/products" },
     { name: "About", href: "/#about" },
   ];
@@ -163,7 +164,7 @@ export default function Navbar() {
                     href="/login"
                     className="px-3.5 py-2 rounded-full text-xs font-semibold text-slate-700 hover:text-slate-900 hover:bg-slate-100/80 transition-colors"
                   >
-                    Portal Login
+                    Staff Login
                   </Link>
 
                   <Link
@@ -268,7 +269,7 @@ export default function Navbar() {
                         : "bg-slate-100 hover:bg-slate-200 border border-slate-300 text-slate-900"
                     )}
                   >
-                    <span>Portal Login</span>
+                    <span className="text-xs">Staff Login</span>
                   </Link>
                 </>
               )}

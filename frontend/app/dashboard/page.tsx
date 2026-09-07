@@ -32,13 +32,40 @@ const categoryColorMap: Record<string, { text: string }> = {
 };
 
 export default function DashboardOverviewPage() {
-  const { events, leads, pitches, approvePitch, declinePitch, isLoading, stats } = useApp();
+  const { events, leads, pitches, approvePitch, declinePitch, isLoading, stats, user, toggleAttendance } = useApp();
   const [isAddLeadOpen, setIsAddLeadOpen] = useState(false);
   const [isAddEventOpen, setIsAddEventOpen] = useState(false);
+  const [leadsFilterMode, setLeadsFilterMode] = useState<"ALL" | "MY">("ALL");
 
   const pendingPitches = pitches.filter((p) => p.status === "SUBMITTED");
   const recentLeads = leads.slice(0, 6);
   const upcomingEvents = events.slice(0, 4);
+
+  const myAssignedLeads = leads.filter(
+    (l) =>
+      (user?.id && l.assignedProductOwnerId === user.id) ||
+      (user?.name && l.assignedProductOwner && l.assignedProductOwner.toLowerCase() === user.name.toLowerCase())
+  );
+
+  const myAttendingEvents = events.filter((e) =>
+    (e.attendanceManifest || []).some(
+      (m) =>
+        ((user?.id && m.userId === user.id) ||
+          (user?.name && m.userName.toLowerCase() === user.name.toLowerCase())) &&
+        m.status === "Attending"
+    )
+  );
+
+  const myPendingEvents = events.filter((e) =>
+    !(e.attendanceManifest || []).some(
+      (m) =>
+        ((user?.id && m.userId === user.id) ||
+          (user?.name && m.userName.toLowerCase() === user.name.toLowerCase())) &&
+        (m.status === "Attending" || m.status === "Declined")
+    )
+  );
+
+  const displayedLeads = leadsFilterMode === "MY" ? myAssignedLeads.slice(0, 6) : recentLeads;
 
   const containerVariants: Variants = {
     hidden: { opacity: 0 },
@@ -93,6 +120,165 @@ export default function DashboardOverviewPage() {
             </button>
           </div>
         </motion.div>
+
+        {/* Personalized Staff Account & Delegation Hub */}
+        {user && (
+          <motion.div variants={itemVariants} className="space-y-3">
+            {/* Staff Greeting & Profile Bar */}
+            <div className="bg-white p-4 rounded-lg border border-slate-200 shadow-2xs flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+              <div className="flex items-center gap-3">
+                <div className="w-10 h-10 rounded-full bg-slate-900 text-white font-bold text-sm flex items-center justify-center shadow-xs shrink-0">
+                  {user.name ? user.name.charAt(0).toUpperCase() : "S"}
+                </div>
+                <div>
+                  <div className="flex items-center gap-2">
+                    <h2 className="text-base font-bold text-slate-950">
+                      Welcome, {user.name}
+                    </h2>
+                    <span className="text-[11px] font-medium text-slate-600">
+                      ({user.role})
+                    </span>
+                  </div>
+                  <p className="text-xs text-slate-500 font-medium">
+                    {user.email} • Timezone: {user.timezone || "WAT"}
+                  </p>
+                </div>
+              </div>
+
+              <div className="flex items-center gap-2">
+                <Link
+                  href="/dashboard/events"
+                  className="h-7.5 px-3 rounded-md bg-[#005B6E] hover:bg-[#004754] text-white text-xs font-semibold shadow-xs flex items-center gap-1.5 transition-colors"
+                >
+                  <CalendarDays className="w-3.5 h-3.5" />
+                  <span>My Delegations ({myAttendingEvents.length})</span>
+                </Link>
+                <Link
+                  href="/dashboard/settings"
+                  className="h-7.5 px-3 rounded-md border border-slate-200 hover:bg-slate-50 text-slate-700 text-xs font-medium transition-colors"
+                >
+                  Edit Profile
+                </Link>
+              </div>
+            </div>
+
+            {/* 3 Personalized KPI Cards */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+              <div className="p-3.5 rounded-lg border border-slate-200 bg-white shadow-2xs space-y-1">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+                  My Confirmed Summits
+                </span>
+                <div className="text-2xl font-bold text-slate-950 tracking-tight">
+                  {myAttendingEvents.length}
+                </div>
+                <div className="text-[11px] text-slate-500 font-medium">
+                  Confirmed on FifthLab delegation manifest
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-lg border border-slate-200 bg-white shadow-2xs space-y-1">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+                  My Assigned Inquiries
+                </span>
+                <div className="text-2xl font-bold text-slate-950 tracking-tight">
+                  {myAssignedLeads.length}
+                </div>
+                <div className="text-[11px] text-slate-500 font-medium">
+                  Demo inquiries assigned to your desk
+                </div>
+              </div>
+
+              <div className="p-3.5 rounded-lg border border-slate-200 bg-white shadow-2xs space-y-1">
+                <span className="text-[11px] font-bold text-slate-500 uppercase tracking-wider block">
+                  Pending Event Decisions
+                </span>
+                <div className="text-2xl font-bold text-slate-950 tracking-tight">
+                  {myPendingEvents.length}
+                </div>
+                <div className="text-[11px] text-slate-500 font-medium">
+                  Upcoming summits requiring your RSVP
+                </div>
+              </div>
+            </div>
+
+            {/* Fast 1-Click RSVP Roster for Upcoming Summits */}
+            {events.length > 0 && (
+              <div className="rounded-lg border border-slate-200 bg-white p-4 space-y-3 shadow-2xs">
+                <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+                  <div>
+                    <h3 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+                      Quick Delegation Attendance Decisions
+                    </h3>
+                    <p className="text-xs text-slate-500">
+                      Submit your 1-click RSVP status for upcoming summits and conferences.
+                    </p>
+                  </div>
+                  <Link
+                    href="/dashboard/events"
+                    className="text-xs font-semibold text-[#005B6E] hover:underline flex items-center gap-1"
+                  >
+                    Manage Roster <ArrowRight className="w-3.5 h-3.5" />
+                  </Link>
+                </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-3">
+                  {events.slice(0, 3).map((evt) => {
+                    const userRecord = (evt.attendanceManifest || []).find(
+                      (m) =>
+                        (user.id && m.userId === user.id) ||
+                        (user.name && m.userName.toLowerCase() === user.name.toLowerCase())
+                    );
+                    const currentStatus = userRecord?.status;
+
+                    return (
+                      <div
+                        key={evt.id}
+                        className="p-3 rounded-lg border border-slate-200 bg-[#FAFAFA] space-y-2.5 flex flex-col justify-between"
+                      >
+                        <div className="space-y-1">
+                          <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium">
+                            <span className="font-semibold text-slate-700">{evt.city}</span>
+                            <span>{evt.date}</span>
+                          </div>
+                          <div className="text-xs font-bold text-slate-950 line-clamp-1">
+                            {evt.title}
+                          </div>
+                        </div>
+
+                        <div className="flex items-center gap-1.5 pt-1 border-t border-slate-200/80">
+                          <button
+                            type="button"
+                            onClick={() => toggleAttendance(evt.id, "Attending")}
+                            className={cn(
+                              "flex-1 h-7 rounded text-[11px] font-semibold transition-all cursor-pointer text-center",
+                              currentStatus === "Attending"
+                                ? "bg-slate-950 text-white shadow-xs"
+                                : "bg-white border border-slate-300 text-slate-700 hover:bg-slate-100"
+                            )}
+                          >
+                            Attending
+                          </button>
+                          <button
+                            type="button"
+                            onClick={() => toggleAttendance(evt.id, "Declined")}
+                            className={cn(
+                              "flex-1 h-7 rounded text-[11px] font-semibold transition-all cursor-pointer text-center",
+                              currentStatus === "Declined"
+                                ? "bg-slate-900 text-white shadow-xs"
+                                : "bg-white border border-slate-300 text-slate-700 hover:bg-slate-100"
+                            )}
+                          >
+                            Decline
+                          </button>
+                        </div>
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+          </motion.div>
+        )}
 
         {/* 2. Pending Proposal Alert Banner (if any) */}
         {pendingPitches.length > 0 && (
@@ -202,7 +388,7 @@ export default function DashboardOverviewPage() {
           
           {/* Left: Leads CRM Table (8 Cols) */}
           <div className="lg:col-span-8 rounded-lg border border-slate-200 bg-white p-3.5 sm:p-4 space-y-3 text-left">
-            <div className="flex items-center justify-between pb-2 border-b border-slate-100">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-2 border-b border-slate-100">
               <div>
                 <h2 className="text-sm font-bold text-slate-900">
                   Recent Inbound Inquiries
@@ -212,13 +398,38 @@ export default function DashboardOverviewPage() {
                 </p>
               </div>
 
-              <Link
-                href="/dashboard/leads"
-                className="text-xs font-semibold text-[#005B6E] hover:underline flex items-center gap-1 group"
-              >
-                <span>View all ({leads.length})</span>
-                <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
-              </Link>
+              <div className="flex items-center gap-2">
+                {user && (
+                  <div className="flex items-center gap-1 bg-slate-100 p-0.5 rounded-md border border-slate-200">
+                    <button
+                      onClick={() => setLeadsFilterMode("ALL")}
+                      className={cn(
+                        "px-2 py-1 text-[10.5px] font-semibold rounded transition-all cursor-pointer",
+                        leadsFilterMode === "ALL" ? "bg-white text-slate-900 shadow-2xs" : "text-slate-600 hover:text-slate-900"
+                      )}
+                    >
+                      All ({leads.length})
+                    </button>
+                    <button
+                      onClick={() => setLeadsFilterMode("MY")}
+                      className={cn(
+                        "px-2 py-1 text-[10.5px] font-semibold rounded transition-all cursor-pointer",
+                        leadsFilterMode === "MY" ? "bg-white text-slate-900 shadow-2xs" : "text-slate-600 hover:text-slate-900"
+                      )}
+                    >
+                      Assigned to Me ({myAssignedLeads.length})
+                    </button>
+                  </div>
+                )}
+
+                <Link
+                  href="/dashboard/leads"
+                  className="text-xs font-semibold text-[#005B6E] hover:underline flex items-center gap-1 group whitespace-nowrap"
+                >
+                  <span>View CRM</span>
+                  <ChevronRight className="w-3.5 h-3.5 group-hover:translate-x-0.5 transition-transform" />
+                </Link>
+              </div>
             </div>
 
             <div className="overflow-x-auto">
@@ -239,8 +450,8 @@ export default function DashboardOverviewPage() {
                         <TableSkeleton rows={4} columns={5} hasAvatar={false} />
                       </td>
                     </tr>
-                  ) : recentLeads.length > 0 ? (
-                    recentLeads.map((lead) => (
+                  ) : displayedLeads.length > 0 ? (
+                    displayedLeads.map((lead) => (
                     <tr key={lead.id} className="hover:bg-slate-50 transition-colors">
                       {/* Visitor */}
                       <td className="py-2.5 px-3">
@@ -293,8 +504,10 @@ export default function DashboardOverviewPage() {
                   ))
                   ) : (
                     <tr>
-                      <td colSpan={5} className="py-6 text-center text-slate-400">
-                        No inquiries yet.
+                      <td colSpan={5} className="py-6 text-center text-slate-500 text-xs">
+                        {leadsFilterMode === "MY"
+                          ? "No demo inquiries currently assigned to your desk."
+                          : "No inquiries recorded yet."}
                       </td>
                     </tr>
                   )}

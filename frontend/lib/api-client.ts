@@ -20,13 +20,28 @@ export function clearAuthToken(): void {
 
 async function request<T>(endpoint: string, options: RequestInit = {}): Promise<T> {
   const token = getAuthToken();
+  const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+
+  const method = (options.method || "GET").toUpperCase();
+
+  // Only public guest submission endpoints (which public visitors access without logging in)
+  // should omit Authorization headers so stale client state doesn't interfere
+  const isGuestSubmission =
+    method === "POST" &&
+    (cleanEndpoint === "/leads" ||
+      cleanEndpoint.endsWith("/register") ||
+      cleanEndpoint.startsWith("/newsletter") ||
+      cleanEndpoint.startsWith("/consent") ||
+      cleanEndpoint === "/pitches" ||
+      cleanEndpoint.startsWith("/auth/send-otp") ||
+      cleanEndpoint.startsWith("/auth/verify-otp"));
+
   const headers: HeadersInit = {
     "Content-Type": "application/json",
-    ...(token ? { Authorization: `Bearer ${token}` } : {}),
+    ...(token && !isGuestSubmission ? { Authorization: `Bearer ${token}` } : {}),
     ...(options.headers || {}),
   };
 
-  const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
   const targetUrl = `${API_BASE_URL}${cleanEndpoint}`;
 
   let response = await fetch(targetUrl, {
@@ -44,6 +59,7 @@ async function request<T>(endpoint: string, options: RequestInit = {}): Promise<
   }
 
   if (!response.ok) {
+
     let errorMsg = `HTTP ${response.status}: ${response.statusText}`;
     try {
       const errorJson = await response.json();

@@ -13,7 +13,7 @@ export async function GET(
       sql`
         SELECT ar.*, u.name as "userName", u.email as "userEmail", u.role as "userRole", u."avatarUrl"
         FROM attendance_records ar
-        JOIN users u ON ar."userId" = u.id
+        LEFT JOIN users u ON ar."userId" = u.id
         WHERE ar."eventId" = ${id}
         ORDER BY ar."confirmedAt" ASC
       `.catch(() => []),
@@ -23,14 +23,24 @@ export async function GET(
       return NextResponse.json({ success: false, error: "Event not found" }, { status: 404 });
     }
 
-    const manifest = (attendanceRows || []).map((ar: any) => ({
-      userId: ar.userId,
-      userName: ar.userName || "Staff Member",
-      userRole: ar.userRole || "Staff",
-      avatarUrl: ar.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(ar.userName || "Staff")}&background=0090ad&color=fff&bold=true`,
-      confirmedAt: ar.confirmedAt ? new Date(ar.confirmedAt).toISOString() : null,
-      status: ar.status === "ATTENDING" ? "Attending" : ar.status === "DECLINED" ? "Declined" : "Maybe",
-    }));
+    const manifest = (attendanceRows || []).map((ar: any) => {
+      const name = ar.userName || "Staff Member";
+      return {
+        userId: ar.userId,
+        userName: name,
+        userRole: ar.userRole || "Staff",
+        avatarUrl: ar.avatarUrl || `https://ui-avatars.com/api/?name=${encodeURIComponent(name)}&background=0090ad&color=fff&bold=true`,
+        confirmedAt: ar.confirmedAt ? new Date(ar.confirmedAt).toISOString() : null,
+        status: ar.status === "ATTENDING" ? "Attending" : ar.status === "DECLINED" ? "Declined" : "Maybe",
+        user: {
+          id: ar.userId,
+          name: name,
+          role: ar.userRole || "Staff",
+          avatarUrl: ar.avatarUrl || null,
+          email: ar.userEmail || null,
+        },
+      };
+    });
 
     const event = {
       id: row.id,

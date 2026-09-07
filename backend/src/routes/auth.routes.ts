@@ -66,8 +66,9 @@ authRouter.post("/send-otp", async (req: Request, res: Response): Promise<void> 
       user?.name ||
       normalizedEmail
         .split("@")[0]
-        .split(".")
-        .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
+        .split(/[._-]/)
+        .filter(Boolean)
+        .map((p) => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase())
         .join(" ");
 
     if (!user) {

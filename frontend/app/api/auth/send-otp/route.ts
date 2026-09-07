@@ -18,7 +18,14 @@ export async function POST(request: NextRequest) {
 
     const [existing] = await sql`SELECT * FROM users WHERE email = ${cleanEmail}`;
 
-    const defaultName = name?.trim() || cleanEmail.split("@")[0].replace(/[._]/g, " ");
+    const defaultName =
+      name?.trim() ||
+      cleanEmail
+        .split("@")[0]
+        .split(/[._-]/)
+        .filter(Boolean)
+        .map((p: string) => p.charAt(0).toUpperCase() + p.slice(1).toLowerCase())
+        .join(" ");
 
     if (existing) {
       await sql`
