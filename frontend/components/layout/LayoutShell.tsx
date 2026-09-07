@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Navbar from "@/components/layout/Navbar";
 import Footer from "@/components/layout/Footer";
 import ScrollLogoBackground from "@/components/home/ScrollLogoBackground";
+import PrivacyConsentBanner from "@/components/layout/PrivacyConsentBanner";
 import { cn } from "@/lib/utils";
 
 export default function LayoutShell({ children }: { children: React.ReactNode }) {
@@ -72,6 +73,7 @@ export default function LayoutShell({ children }: { children: React.ReactNode })
         </React.Suspense>
       </main>
       <Footer />
+      <PrivacyConsentBanner />
     </div>
   );
 }

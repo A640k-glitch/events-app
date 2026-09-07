@@ -245,4 +245,16 @@ export const api = {
       body: JSON.stringify({ email, source }),
     });
   },
+
+  // Privacy & Storage Consent (Database-wired)
+  recordConsent: async (visitorId: string, status = "ACCEPTED") => {
+    return request<{ success: boolean; message: string; data: any }>("/consent", {
+      method: "POST",
+      body: JSON.stringify({ visitorId, status }),
+    });
+  },
+
+  checkConsent: async (visitorId: string) => {
+    return request<{ success: boolean; accepted: boolean; data?: any }>(`/consent?visitorId=${encodeURIComponent(visitorId)}`);
+  },
 };

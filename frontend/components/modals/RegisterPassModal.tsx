@@ -2,12 +2,13 @@
 
 import { useState, useEffect } from "react";
 import { createPortal } from "react-dom";
-import { X, Ticket, ArrowRight, ShieldCheck, User, Mail, Building, Phone } from "lucide-react";
+import { X, Ticket, ArrowRight, User, Mail, Building, Phone } from "lucide-react";
 import { api } from "@/lib/api-client";
 import { useApp } from "@/context/AppContext";
 import TicketPassModal, { TicketPassData } from "./TicketPassModal";
 import PrivacyModal from "./PrivacyModal";
 import TermsModal from "./TermsModal";
+import { FifthEventsEmblem } from "@/components/brand/FifthEventsLogo";
 import { BrandButton } from "@/components/ui/BrandButtons";
 import { cn } from "@/lib/utils";
 import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
@@ -284,7 +285,7 @@ export default function RegisterPassModal(props: RegisterPassModalProps) {
 
             {/* Data Privacy Notice */}
             <div className="p-3 bg-gray-50 border border-gray-200 rounded-xl flex items-start gap-2 text-[11px] text-[#5F5F7A]">
-              <ShieldCheck className="w-4 h-4 text-[#0090AD] shrink-0 mt-0.5" />
+              <FifthEventsEmblem size={15} className="shrink-0 mt-0.5" />
               <span>
                 By registering, your badge information is securely processed under our{" "}
                 <button

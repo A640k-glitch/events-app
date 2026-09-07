@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { createPortal } from "react-dom";
-import { X, FileText } from "lucide-react";
+import { X } from "lucide-react";
+import { FifthEventsEmblem } from "@/components/brand/FifthEventsLogo";
 import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 
 interface TermsModalProps {
@@ -36,7 +37,7 @@ export default function TermsModal({ isOpen, onClose }: TermsModalProps) {
       role="dialog"
       aria-modal="true"
       aria-labelledby="terms-modal-title"
-      className="fixed inset-0 z-50 bg-black/45 backdrop-blur-2xs flex items-center justify-center p-3 sm:p-5 animate-in fade-in duration-150 overscroll-contain"
+      className="fixed inset-0 z-[150] bg-black/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-5 animate-in fade-in duration-150 overscroll-contain"
       onClick={onClose}
       onTouchMove={(e) => {
         if (e.target === e.currentTarget) e.preventDefault();
@@ -50,7 +51,7 @@ export default function TermsModal({ isOpen, onClose }: TermsModalProps) {
         <div className="flex items-start justify-between border-b border-slate-100 pb-4">
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <FileText className="w-5 h-5 text-[#0090AD]" />
+              <FifthEventsEmblem size={22} className="shrink-0" />
               <h2 id="terms-modal-title" className="text-base sm:text-lg font-bold text-slate-900">
                 Terms of Service
               </h2>

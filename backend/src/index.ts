@@ -10,6 +10,7 @@ import { authRouter } from "./routes/auth.routes.js";
 import { statsRouter } from "./routes/stats.routes.js";
 import { newsletterRouter } from "./routes/newsletter.routes.js";
 import { realtimeRouter } from "./routes/realtime.routes.js";
+import { consentRouter } from "./routes/consent.routes.js";
 import { errorHandler } from "./middleware/error.middleware.js";
 
 dotenv.config();
@@ -77,6 +78,9 @@ app.use("/newsletter", newsletterRouter);
 
 app.use("/api/realtime", realtimeRouter);
 app.use("/realtime", realtimeRouter);
+
+app.use("/api/consent", consentRouter);
+app.use("/consent", consentRouter);
 
 // Global Error Handler
 app.use(errorHandler);

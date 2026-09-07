@@ -13,13 +13,13 @@ import {
   ArrowRight, 
   ArrowLeft, 
   CheckCircle2, 
-  ShieldCheck,
   ChevronRight,
   Check
 } from "lucide-react";
 import { useApp } from "@/context/AppContext";
 import { BrandButton } from "@/components/ui/BrandButtons";
 import FingerprintPattern from "@/components/brand/FingerprintPattern";
+import CwgLogo from "@/components/brand/CwgLogo";
 import DataPrivacyModal from "@/components/modals/DataPrivacyModal";
 import { cn } from "@/lib/utils";
 import confetti from "canvas-confetti";
@@ -576,7 +576,7 @@ function DemoBookingContent() {
                   onClick={() => setIsSecurityModalOpen(true)}
                   className="flex items-center gap-2 text-[11px] text-gray-500 hover:text-gray-800 font-mono transition-colors cursor-pointer text-left group"
                 >
-                  <ShieldCheck className="w-4 h-4 text-[#0090AD] group-hover:scale-110 transition-transform shrink-0" />
+                  <CwgLogo size={14} color="#0090AD" className="group-hover:scale-105 transition-transform shrink-0" />
                   <span className="underline decoration-dotted underline-offset-2">Data Privacy & Enterprise Security Compliant</span>
                 </button>
 
