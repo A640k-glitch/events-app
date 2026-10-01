@@ -26,7 +26,10 @@ interface CorporateUser {
 }
 
 export default function TeamPage() {
-  const { refreshData } = useApp();
+  const { refreshData, user } = useApp();
+  // Role changes and staff removal are ADMIN-only server-side. The whole control set is
+  // hidden for other roles so a non-admin cannot even attempt the call.
+  const isAdmin = user?.role === "ADMIN";
   const [users, setUsers] = useState<CorporateUser[]>([]);
   const [searchQuery, setSearchQuery] = useState("");
   const [roleFilter, setRoleFilter] = useState("ALL");
@@ -267,30 +270,36 @@ export default function TeamPage() {
                         {/* Actions */}
                         <td className="py-2 px-2 sm:py-2.5 sm:px-3 text-right whitespace-nowrap">
                           <div className="flex items-center justify-end gap-1 sm:gap-1.5">
-                            <select
-                              value={u.role}
-                              disabled={updatingUserId === u.id}
-                              onChange={(e) => handleRoleChange(u.id, e.target.value)}
-                              className="bg-white border border-slate-300 rounded px-1.5 py-0.5 text-[10px] sm:text-[10.5px] text-slate-900 font-medium focus:outline-none focus:border-[#005B6E] cursor-pointer h-6.5"
-                            >
-                              <option value="STAFF">Staff</option>
-                              <option value="PRODUCT_OWNER">Product Owner</option>
-                              <option value="ADMIN">Admin</option>
-                            </select>
+                            {isAdmin ? (
+                              <>
+                                <select
+                                  value={u.role}
+                                  disabled={updatingUserId === u.id}
+                                  onChange={(e) => handleRoleChange(u.id, e.target.value)}
+                                  className="bg-white border border-slate-300 rounded px-1.5 py-0.5 text-[10px] sm:text-[10.5px] text-slate-900 font-medium focus:outline-none focus:border-[#005B6E] cursor-pointer h-6.5"
+                                >
+                                  <option value="STAFF">Staff</option>
+                                  <option value="PRODUCT_OWNER">Product Owner</option>
+                                  <option value="ADMIN">Admin</option>
+                                </select>
 
-                            <button
-                              type="button"
-                              onClick={() => handleDeleteUser(u.id, u.name)}
-                              disabled={deletingUserId === u.id}
-                              title="Delete Team Member"
-                              className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors cursor-pointer disabled:opacity-50"
-                            >
-                              {deletingUserId === u.id ? (
-                                <AppleSpinner size={12} color="#E11D48" />
-                              ) : (
-                                <Trash2 className="w-3.5 h-3.5" />
-                              )}
-                            </button>
+                                <button
+                                  type="button"
+                                  onClick={() => handleDeleteUser(u.id, u.name)}
+                                  disabled={deletingUserId === u.id}
+                                  title="Delete Team Member"
+                                  className="p-1 text-slate-400 hover:text-rose-600 hover:bg-rose-50 rounded transition-colors cursor-pointer disabled:opacity-50"
+                                >
+                                  {deletingUserId === u.id ? (
+                                    <AppleSpinner size={12} color="#E11D48" />
+                                  ) : (
+                                    <Trash2 className="w-3.5 h-3.5" />
+                                  )}
+                                </button>
+                              </>
+                            ) : (
+                              <span className="text-[10px] text-slate-400">View only</span>
+                            )}
                           </div>
                         </td>
                       </tr>

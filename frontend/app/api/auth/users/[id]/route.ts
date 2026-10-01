@@ -1,12 +1,16 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
+import { requireSession, resolveCurrentRole, STAFF_ROLES } from "@/lib/api-auth";
 
 // GET /api/auth/users/:id
 export async function GET(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const auth = requireSession(request, STAFF_ROLES);
+    if (!auth.ok) return auth.response;
+
     const { id } = await params;
     const [user] = await sql`
       SELECT id, name, email, role, "avatarUrl", timezone, "workingHours", "createdAt"
@@ -26,11 +30,42 @@ export async function GET(
 
 // DELETE /api/auth/users/:id
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const auth = requireSession(request);
+    if (!auth.ok) return auth.response;
+
+    // Re-read the caller's role from the database so a demoted token loses admin rights.
+    const callerRole = await resolveCurrentRole(auth.session.userId);
+    if (callerRole !== "ADMIN") {
+      return NextResponse.json(
+        { success: false, error: "Forbidden: Only administrators may remove staff members." },
+        { status: 403 },
+      );
+    }
+
     const { id } = await params;
+
+    if (id === auth.session.userId) {
+      return NextResponse.json(
+        { success: false, error: "You cannot remove your own account." },
+        { status: 400 },
+      );
+    }
+
+    // Removing the last administrator would lock everyone out of staff management.
+    const [target] = await sql`SELECT role FROM users WHERE id = ${id}`;
+    if (target && String(target.role) === "ADMIN") {
+      const [{ count }] = await sql`SELECT COUNT(*)::int as count FROM users WHERE role = 'ADMIN'::"UserRole"`;
+      if (Number(count) <= 1) {
+        return NextResponse.json(
+          { success: false, error: "Cannot remove the last remaining administrator." },
+          { status: 400 },
+        );
+      }
+    }
 
     // 1. Return any assigned leads back to the General Pool (unassigned)
     await sql`

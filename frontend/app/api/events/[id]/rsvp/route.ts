@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
+import { requireSession, STAFF_ROLES } from "@/lib/api-auth";
 
 // POST /api/events/[id]/rsvp - Staff / Admin RSVP or Assign to event
 export async function POST(
@@ -7,6 +8,9 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const auth = requireSession(request, STAFF_ROLES);
+    if (!auth.ok) return auth.response;
+
     const { id: eventId } = await params;
     const body = await request.json();
     const { userId, status = "ATTENDING" } = body;
@@ -63,6 +67,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const auth = requireSession(request, STAFF_ROLES);
+    if (!auth.ok) return auth.response;
+
     const { id: eventId } = await params;
     const { searchParams } = new URL(request.url);
     const userId = searchParams.get("userId");

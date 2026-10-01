@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
+import { requireSession, ADMIN_ONLY } from "@/lib/api-auth";
 
 // PATCH /api/pitches/[id]/status
 export async function PATCH(
@@ -7,6 +8,10 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Approving or declining a paid partnership is an admin decision.
+    const auth = requireSession(request, ADMIN_ONLY);
+    if (!auth.ok) return auth.response;
+
     const { id } = await params;
     const body = await request.json();
     const { status, adminReviewNotes, autoPublishEvent } = body;

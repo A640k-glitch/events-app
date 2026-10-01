@@ -103,13 +103,16 @@ export default function DashboardOverviewPage() {
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
-            <button
-              onClick={() => setIsAddEventOpen(true)}
-              className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-800 transition-all cursor-pointer shadow-2xs whitespace-nowrap shrink-0"
-            >
-              <Plus className="w-3.5 h-3.5 text-[#005B6E] shrink-0" />
-              <span>Create Event</span>
-            </button>
+            {/* Event creation and pitch decisions are admin-only server-side. */}
+            {user?.role === "ADMIN" && (
+              <button
+                onClick={() => setIsAddEventOpen(true)}
+                className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-md border border-slate-300 bg-white hover:bg-slate-50 text-xs font-semibold text-slate-800 transition-all cursor-pointer shadow-2xs whitespace-nowrap shrink-0"
+              >
+                <Plus className="w-3.5 h-3.5 text-[#005B6E] shrink-0" />
+                <span>Create Event</span>
+              </button>
+            )}
 
             <button
               onClick={() => setIsAddLeadOpen(true)}
@@ -296,18 +299,23 @@ export default function DashboardOverviewPage() {
             </div>
 
             <div className="flex items-center gap-2 shrink-0">
-              <button
-                onClick={() => approvePitch(pendingPitches[0].id, true, "Approved via Admin Center")}
-                className="h-7 px-3 rounded-md bg-[#005B6E] text-white text-xs font-semibold hover:bg-[#004754] transition-colors cursor-pointer"
-              >
-                Approve
-              </button>
-              <button
-                onClick={() => declinePitch(pendingPitches[0].id, "Declined")}
-                className="h-7 px-2.5 rounded-md border border-amber-300 bg-white text-xs font-semibold text-amber-900 hover:bg-amber-100 transition-colors cursor-pointer"
-              >
-                Decline
-              </button>
+              {/* Approving or declining a paid partnership is an admin decision. */}
+              {user?.role === "ADMIN" && (
+                <>
+                  <button
+                    onClick={() => approvePitch(pendingPitches[0].id, true, "Approved via Admin Center")}
+                    className="h-7 px-3 rounded-md bg-[#005B6E] text-white text-xs font-semibold hover:bg-[#004754] transition-colors cursor-pointer"
+                  >
+                    Approve
+                  </button>
+                  <button
+                    onClick={() => declinePitch(pendingPitches[0].id, "Declined")}
+                    className="h-7 px-2.5 rounded-md border border-amber-300 bg-white text-xs font-semibold text-amber-900 hover:bg-amber-100 transition-colors cursor-pointer"
+                  >
+                    Decline
+                  </button>
+                </>
+              )}
             </div>
           </motion.div>
         )}

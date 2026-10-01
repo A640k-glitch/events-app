@@ -31,6 +31,8 @@ export interface FifthLabEvent {
   confirmedStaffCount: number;
   isFifthLabAttending: boolean;
   attendanceManifest: AttendanceRecord[];
+  /** The signed-in user's own RSVP state, or null when not signed in. */
+  currentUserRsvp?: string | null;
 }
 
 export type LeadStatus = "Unread" | "Followed Up" | "Qualified" | "Converted" | "Closed";

@@ -1,9 +1,14 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
+import { requireSession, STAFF_ROLES } from "@/lib/api-auth";
 
 // GET /api/stats
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // Internal KPIs: lead volume, staff counts and pitch pipeline are not public figures.
+    const auth = requireSession(request, STAFF_ROLES);
+    if (!auth.ok) return auth.response;
+
     const [eventsCount] = await sql`SELECT COUNT(*)::int as count FROM events WHERE "isPublished" = true`;
     const [leadsCount] = await sql`SELECT COUNT(*)::int as count FROM leads`;
     const [unreadLeads] = await sql`SELECT COUNT(*)::int as count FROM leads WHERE status = 'UNREAD'`;

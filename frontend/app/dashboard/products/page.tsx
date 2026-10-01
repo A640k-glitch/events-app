@@ -28,7 +28,9 @@ import { cn } from "@/lib/utils";
 import { useBodyScrollLock } from "@/lib/useBodyScrollLock";
 
 export default function ProductsPage() {
-  const { products, addProduct, isLoading, owners, leads, updateLeadStatus, updateLead } = useApp();
+  const { products, addProduct, isLoading, owners, leads, updateLeadStatus, updateLead, user } = useApp();
+  // Adding a catalogue product is admin-only server-side.
+  const isAdmin = user?.role === "ADMIN";
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [selectedProduct, setSelectedProduct] = useState<FifthLabProduct | null>(null);
   const [activeFilter, setActiveFilter] = useState<"ALL" | "FIFTHLAB" | "CWG">("ALL");
@@ -153,13 +155,15 @@ export default function ProductsPage() {
               <ExternalLink className="w-3.5 h-3.5 text-slate-500 shrink-0" />
             </Link>
 
-            <button
-              onClick={() => setIsAddModalOpen(true)}
-              className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-md bg-[#005B6E] hover:bg-[#004754] text-white text-xs font-semibold shadow-xs transition-all cursor-pointer whitespace-nowrap shrink-0"
-            >
-              <Plus className="w-3.5 h-3.5 shrink-0" />
-              <span>Add Product</span>
-            </button>
+            {isAdmin && (
+              <button
+                onClick={() => setIsAddModalOpen(true)}
+                className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-md bg-[#005B6E] hover:bg-[#004754] text-white text-xs font-semibold shadow-xs transition-all cursor-pointer whitespace-nowrap shrink-0"
+              >
+                <Plus className="w-3.5 h-3.5 shrink-0" />
+                <span>Add Product</span>
+              </button>
+            )}
           </div>
         </div>
 

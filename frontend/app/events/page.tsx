@@ -173,7 +173,8 @@ export default function EventsPublicCatalogPage() {
           {filteredEvents.length > 0 ? (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 text-left">
               {filteredEvents.map((evt, idx) => {
-                const manifestCount = evt.attendanceManifest?.length || evt.confirmedStaffCount || 0;
+                // The API returns a count-only delegation summary for public callers.
+                const manifestCount = evt.confirmedStaffCount || evt.attendanceManifest?.length || 0;
                 
                 // thefifthlab.com Signature Pastel Card Palette mapping
                 const cardPalettes = [

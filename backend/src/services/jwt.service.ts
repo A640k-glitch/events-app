@@ -1,7 +1,15 @@
 import jwt, { SignOptions, Secret } from "jsonwebtoken";
 import { UserRole } from "@prisma/client";
 
-const JWT_SECRET: Secret = process.env.JWT_SECRET || "fifthlab-super-secret-production-jwt-key-2026";
+// A hardcoded fallback would make every deployment share one signing key, so a leaked
+// source tree would be enough to forge tokens. JWT_SECRET is required.
+const JWT_SECRET: Secret = (() => {
+  const secret = process.env.JWT_SECRET;
+  if (!secret) {
+    throw new Error("JWT_SECRET must be set before the API can sign or verify tokens.");
+  }
+  return secret as Secret;
+})();
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || "7d";
 
 export interface AuthUserPayload {

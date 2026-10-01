@@ -6,8 +6,6 @@ export interface AuthenticatedRequest extends Request {
   user?: AuthUserPayload;
 }
 
-import prisma from "../db/prisma.js";
-
 /**
  * Enforces verified JWT Bearer token authentication.
  * Restricted to verified corporate @thefifthlab.com and @cwg-plc.com domains.
@@ -26,34 +24,10 @@ export async function requireAuth(req: AuthenticatedRequest, res: Response, next
   const token = authHeader.slice(7).trim();
 
   try {
-    let decodedUser: AuthUserPayload;
-
-    if (token.startsWith("jwt-")) {
-      const match = token.match(/^jwt-(.+)-(\d+)$/);
-      const userId = match ? match[1] : token.replace(/^jwt-/, "");
-      const dbUser = await prisma.user.findFirst({
-        where: {
-          OR: [{ id: userId }, { email: userId }],
-        },
-      });
-
-      if (!dbUser) {
-        res.status(401).json({
-          success: false,
-          error: "Unauthorized: User account not found.",
-        });
-        return;
-      }
-
-      decodedUser = {
-        id: dbUser.id,
-        email: dbUser.email,
-        name: dbUser.name,
-        role: dbUser.role,
-      };
-    } else {
-      decodedUser = verifyAuthToken(token);
-    }
+    // Every token must carry a valid signature. The previous implementation also accepted
+    // any string beginning with "jwt-" and looked the user up by id or email, which let an
+    // attacker authenticate as any user by guessing their id. Only signed tokens pass.
+    const decodedUser: AuthUserPayload = verifyAuthToken(token);
 
     const email = decodedUser.email.toLowerCase();
     const isAllowedDomain =

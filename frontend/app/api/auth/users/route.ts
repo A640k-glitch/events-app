@@ -1,9 +1,13 @@
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
+import { requireSession, STAFF_ROLES } from "@/lib/api-auth";
 
 // GET /api/auth/users
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    const auth = requireSession(request, STAFF_ROLES);
+    if (!auth.ok) return auth.response;
+
     const rows = await sql`
       SELECT 
         u.id, u.name, u.email, u.role, u."avatarUrl", u.timezone, u."workingHours",

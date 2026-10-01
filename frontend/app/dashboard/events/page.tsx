@@ -45,6 +45,10 @@ export default function EventsPage() {
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [isEditModalOpen, setIsEditModalOpen] = useState(false);
   const [editingEvent, setEditingEvent] = useState<any>(null);
+
+  // Creating, editing and deleting catalogue entries are admin-only server-side, so the
+  // controls are hidden for other roles rather than left to fail with a 403.
+  const isAdmin = user?.role === "ADMIN";
   const [viewTab, setViewTab] = useState<"CATALOG" | "MY_EVENTS" | "ATTENDEES_ROSTER" | "PITCHES">("CATALOG");
 
   const [attendeeRoster, setAttendeeRoster] = useState<any[]>([]);
@@ -406,13 +410,15 @@ export default function EventsPage() {
           </div>
 
           <div className="flex items-center gap-2 shrink-0">
-            <button
-              onClick={() => setIsAddModalOpen(true)}
-              className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-md bg-[#005B6E] hover:bg-[#004754] text-white text-xs font-semibold shadow-xs transition-all cursor-pointer whitespace-nowrap shrink-0"
-            >
-              <Plus className="w-3.5 h-3.5" />
-              <span>Create Event</span>
-            </button>
+            {isAdmin && (
+              <button
+                onClick={() => setIsAddModalOpen(true)}
+                className="inline-flex items-center justify-center gap-1.5 h-8 px-3 rounded-md bg-[#005B6E] hover:bg-[#004754] text-white text-xs font-semibold shadow-xs transition-all cursor-pointer whitespace-nowrap shrink-0"
+              >
+                <Plus className="w-3.5 h-3.5" />
+                <span>Create Event</span>
+              </button>
+            )}
           </div>
         </div>
 
@@ -523,28 +529,32 @@ export default function EventsPage() {
                         </div>
 
                         <div className="flex items-center gap-0.5 shrink-0">
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              setEditingEvent(evt);
-                              setIsEditModalOpen(true);
-                            }}
-                            title="Edit Event"
-                            className="p-1 text-slate-400 hover:text-[#005B6E] rounded hover:bg-slate-100 transition-colors cursor-pointer"
-                          >
-                            <Edit3 className="w-3.5 h-3.5" />
-                          </button>
+                          {isAdmin && (
+                            <>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  setEditingEvent(evt);
+                                  setIsEditModalOpen(true);
+                                }}
+                                title="Edit Event"
+                                className="p-1 text-slate-400 hover:text-[#005B6E] rounded hover:bg-slate-100 transition-colors cursor-pointer"
+                              >
+                                <Edit3 className="w-3.5 h-3.5" />
+                              </button>
 
-                          <button
-                            onClick={(e) => {
-                              e.stopPropagation();
-                              deleteEvent(evt.id);
-                            }}
-                            title="Delete Event"
-                            className="p-1 text-slate-400 hover:text-rose-600 rounded hover:bg-rose-50 transition-colors cursor-pointer"
-                          >
-                            <Trash2 className="w-3.5 h-3.5" />
-                          </button>
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  deleteEvent(evt.id);
+                                }}
+                                title="Delete Event"
+                                className="p-1 text-slate-400 hover:text-rose-600 rounded hover:bg-rose-50 transition-colors cursor-pointer"
+                              >
+                                <Trash2 className="w-3.5 h-3.5" />
+                              </button>
+                            </>
+                          )}
                         </div>
                       </div>
 

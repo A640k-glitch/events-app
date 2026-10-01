@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
+import { requireSession, ADMIN_ONLY } from "@/lib/api-auth";
 
 // GET /api/products
 export async function GET() {
@@ -86,6 +87,10 @@ export async function GET() {
 // POST /api/products
 export async function POST(request: NextRequest) {
   try {
+    // Adding a corporate product to the public catalogue is an admin action.
+    const auth = requireSession(request, ADMIN_ONLY);
+    if (!auth.ok) return auth.response;
+
     const body = await request.json();
     const { slug, name, tagline, description, iconName = "Briefcase", ownerId } = body;
 

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
+import { requireSession, ADMIN_ONLY, STAFF_ROLES } from "@/lib/api-auth";
 
 // Helper to format event objects from raw DB rows with attendance records
 function formatEvent(row: any, attendanceRows: any[] = []) {
@@ -54,48 +55,84 @@ export async function GET(request: NextRequest) {
     const category = searchParams.get("category");
     const priority = searchParams.get("priority");
     const search = searchParams.get("search");
-    const publishedOnly = searchParams.get("publishedOnly") !== "false";
+    const publishedOnlyParam = searchParams.get("publishedOnly");
+    // Default: published events only, for everyone. Staff additionally get unpublished
+    // events and the full attendance manifest.
+    const session = requireSession(request, STAFF_ROLES);
+    const isStaff = session.ok;
+
+    if (publishedOnlyParam === "false" && !isStaff) {
+      return NextResponse.json(
+        { success: false, error: "Authentication required to view unpublished events." },
+        { status: 401 },
+      );
+    }
+
+    // A signed-in staff member's default view includes unpublished events so the dashboard
+    // keeps working without an explicit opt-in. `publishedOnly=true` forces published-only.
+    const includeUnpublished = isStaff && publishedOnlyParam !== "true";
 
     let rows: any[];
 
-    const attendancePromise = sql`
-      SELECT ar.*, u.name as "userName", u.email as "userEmail", u.role as "userRole", u."avatarUrl"
-      FROM attendance_records ar
-      LEFT JOIN users u ON ar."userId" = u.id
-      ORDER BY ar."confirmedAt" ASC
-    `;
+    // Only query the manifest when it will actually be returned: an unawaited Neon
+    // query promise would otherwise surface as an unhandled rejection.
+    const attendancePromise = isStaff
+      ? sql`
+        SELECT ar.*, u.name as "userName", u.email as "userEmail", u.role as "userRole", u."avatarUrl"
+        FROM attendance_records ar
+        LEFT JOIN users u ON ar."userId" = u.id
+        ORDER BY ar."confirmedAt" ASC
+      `
+      : null;
 
     if (search) {
       const term = `%${search}%`;
       rows = await sql`
-        SELECT * FROM events 
-        WHERE (${publishedOnly} = false OR "isPublished" = true)
+        SELECT * FROM events
+        WHERE (${includeUnpublished} = false OR "isPublished" = true)
         AND (title ILIKE ${term} OR description ILIKE ${term} OR location ILIKE ${term} OR city ILIKE ${term})
         ORDER BY date ASC
       `;
     } else if (category && category !== "All") {
       rows = await sql`
-        SELECT * FROM events 
-        WHERE (${publishedOnly} = false OR "isPublished" = true)
+        SELECT * FROM events
+        WHERE (${includeUnpublished} = false OR "isPublished" = true)
         AND category = ${category.toUpperCase().replace(/\s+/g, "_")}
         ORDER BY date ASC
       `;
     } else if (priority && priority !== "All") {
       rows = await sql`
-        SELECT * FROM events 
-        WHERE (${publishedOnly} = false OR "isPublished" = true)
+        SELECT * FROM events
+        WHERE (${includeUnpublished} = false OR "isPublished" = true)
         AND priority = ${priority.toUpperCase()}
         ORDER BY date ASC
       `;
     } else {
       rows = await sql`
-        SELECT * FROM events 
-        WHERE (${publishedOnly} = false OR "isPublished" = true)
+        SELECT * FROM events
+        WHERE (${includeUnpublished} = false OR "isPublished" = true)
         ORDER BY date ASC
       `;
     }
 
-    const attendanceRows = await attendancePromise.catch(() => []);
+    // The public catalogue must not expose the internal attendance manifest, which carries
+    // staff names, emails and RSVP status. Publish an aggregate count instead so the
+    // public event cards can still show delegation size.
+    if (!isStaff) {
+      const [{ count }] = await sql`
+        SELECT COUNT(*)::int as count
+        FROM attendance_records
+        WHERE status = 'ATTENDING'::"AttendanceStatus"
+      `.catch(() => [{ count: 0 }]);
+      const data = rows.map((r) => ({
+        ...formatEvent(r, []),
+        attendanceManifest: [],
+        confirmedStaffCount: Number(count) || 0,
+      }));
+      return NextResponse.json({ success: true, count: data.length, data });
+    }
+
+    const attendanceRows = attendancePromise ? await attendancePromise.catch(() => []) : [];
     const data = rows.map((r) => formatEvent(r, attendanceRows));
     return NextResponse.json({ success: true, count: data.length, data });
   } catch (error: any) {
@@ -106,6 +143,9 @@ export async function GET(request: NextRequest) {
 // POST /api/events
 export async function POST(request: NextRequest) {
   try {
+    const auth = requireSession(request, ADMIN_ONLY);
+    if (!auth.ok) return auth.response;
+
     const body = await request.json();
     const {
       title,

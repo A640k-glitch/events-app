@@ -1,32 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
-
-function extractUserId(token: string): string | null {
-  if (!token) return null;
-  const match = token.match(/^jwt-(.+)-(\d+)$/);
-  if (match) return match[1];
-  return token.replace(/^jwt-/, "");
-}
+import { requireSession, resolveCurrentRole } from "@/lib/api-auth";
 
 // GET /api/auth/profile
 export async function GET(request: NextRequest) {
   try {
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return NextResponse.json({ success: false, error: "Unauthenticated" }, { status: 401 });
-    }
+    const auth = requireSession(request);
+    if (!auth.ok) return auth.response;
 
-    const token = authHeader.split(" ")[1];
-    const userId = extractUserId(token);
-
-    if (!userId) {
-      return NextResponse.json({ success: false, error: "Invalid session token" }, { status: 401 });
-    }
+    const { userId } = auth.session;
 
     const [user] = await sql`
-      SELECT id, name, email, role, "avatarUrl", timezone, "workingHours" 
-      FROM users 
-      WHERE id = ${userId} OR email = ${userId}
+      SELECT id, name, email, role, "avatarUrl", timezone, "workingHours"
+      FROM users
+      WHERE id = ${userId}
     `;
 
     if (!user) {
@@ -42,36 +29,38 @@ export async function GET(request: NextRequest) {
 // PATCH /api/auth/profile
 export async function PATCH(request: NextRequest) {
   try {
-    const authHeader = request.headers.get("Authorization");
-    if (!authHeader || !authHeader.startsWith("Bearer ")) {
-      return NextResponse.json({ success: false, error: "Unauthenticated" }, { status: 401 });
-    }
+    const auth = requireSession(request);
+    if (!auth.ok) return auth.response;
 
-    const token = authHeader.split(" ")[1];
-    const userId = extractUserId(token);
+    const { userId } = auth.session;
 
-    if (!userId) {
-      return NextResponse.json({ success: false, error: "Invalid session token" }, { status: 401 });
+    // Read the live role rather than trusting the token, so a demotion takes effect now.
+    const currentRole = await resolveCurrentRole(userId);
+    if (!currentRole) {
+      return NextResponse.json({ success: false, error: "User record not found." }, { status: 404 });
     }
 
     const body = await request.json();
     const { name, timezone, workingHours, avatarUrl, role } = body;
 
-    const validRoles = ["ADMIN", "STAFF", "SALES", "OPS", "PRODUCT_OWNER", "VISITOR"];
-    if (role && !validRoles.includes(role)) {
-      return NextResponse.json({ success: false, error: "Invalid role specified" }, { status: 400 });
+    // Self-service profile edits can never change a role. Promotion is an ADMIN-only
+    // action performed through /api/auth/users/:id/role.
+    if (role !== undefined && role !== null && String(role) !== currentRole) {
+      return NextResponse.json(
+        { success: false, error: "Forbidden: Roles can only be changed by an administrator." },
+        { status: 403 },
+      );
     }
 
     const [updatedUser] = await sql`
       UPDATE users
-      SET 
+      SET
         name = COALESCE(${name !== undefined && name !== null ? name.trim() : null}, name),
         timezone = COALESCE(${timezone !== undefined && timezone !== null ? timezone : null}, timezone),
         "workingHours" = COALESCE(${workingHours !== undefined && workingHours !== null ? workingHours : null}, "workingHours"),
-        role = COALESCE(${role !== undefined && role !== null ? role : null}::"UserRole", role),
         "avatarUrl" = COALESCE(${avatarUrl !== undefined && avatarUrl !== null ? avatarUrl : null}, "avatarUrl"),
         "updatedAt" = NOW()
-      WHERE id = ${userId} OR email = ${userId}
+      WHERE id = ${userId}
       RETURNING id, name, email, role, "avatarUrl", timezone, "workingHours"
     `;
 

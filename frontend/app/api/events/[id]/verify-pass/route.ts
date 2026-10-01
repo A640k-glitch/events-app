@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
+import { requireSession, STAFF_ROLES } from "@/lib/api-auth";
 
 // POST /api/events/[id]/verify-pass
 export async function POST(
@@ -7,6 +8,10 @@ export async function POST(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    // Door check-in: only event staff may validate passes and mark attendees.
+    const auth = requireSession(request, STAFF_ROLES);
+    if (!auth.ok) return auth.response;
+
     const { id: eventId } = await params;
     const body = await request.json();
     const { qrPassCode } = body;

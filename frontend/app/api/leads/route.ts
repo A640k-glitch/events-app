@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
+import { requireSession, STAFF_ROLES } from "@/lib/api-auth";
 
 // GET /api/leads
 export async function GET(request: NextRequest) {
   try {
+    // The lead pipeline is internal CRM data. POST below stays public for the contact form.
+    const auth = requireSession(request, STAFF_ROLES);
+    if (!auth.ok) return auth.response;
+
     const { searchParams } = new URL(request.url);
     const status = searchParams.get("status");
     const search = searchParams.get("search");

@@ -20,20 +20,26 @@ const PORT = process.env.PORT || 5000;
 const FRONTEND_URL = process.env.FRONTEND_URL || "http://localhost:3000";
 
 // Middleware
+const ALLOWED_ORIGINS = new Set(
+  [
+    FRONTEND_URL,
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+    "https://fifthlab-events.vercel.app",
+  ].filter(Boolean)
+);
+
 app.use(
   cors({
     origin: (origin, callback) => {
+      // Same-origin and non-browser clients send no Origin header.
       if (!origin) return callback(null, true);
-      if (
-        origin === FRONTEND_URL ||
-        origin === "http://localhost:3000" ||
-        origin === "http://127.0.0.1:3000" ||
-        origin === "https://fifthlab-events.vercel.app" ||
-        origin.endsWith(".vercel.app")
-      ) {
-        return callback(null, true);
-      }
-      return callback(null, true);
+      if (ALLOWED_ORIGINS.has(origin)) return callback(null, true);
+      // Vercel preview deployments for this project.
+      if (origin.endsWith(".vercel.app")) return callback(null, true);
+      // Previously this returned success for every origin, which with credentials:true
+      // let any site issue authenticated cross-site requests.
+      return callback(new Error(`Origin ${origin} is not allowed by CORS`));
     },
     credentials: true,
   })

@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
+import { createSessionToken, isCorporateEmail } from "@/lib/session";
 
 // POST /api/auth/verify-otp
 export async function POST(request: NextRequest) {
@@ -18,8 +19,18 @@ export async function POST(request: NextRequest) {
       return NextResponse.json({ success: false, error: "User record not found" }, { status: 404 });
     }
 
-    // Bypass check if in dev or matches stored OTP
-    const isValid = user.otpCode === otp.trim() || otp.trim() === "123456";
+    // Only a real, unexpired OTP issued to this address is accepted. A universal
+    // fallback code must never exist here — it would let anyone log in as any user.
+    if (!isCorporateEmail(String(user.email))) {
+      return NextResponse.json(
+        { success: false, error: "Only authorized corporate accounts may sign in." },
+        { status: 403 },
+      );
+    }
+
+    const code = otp.trim();
+    const isValid =
+      Boolean(user.otpCode) && user.otpCode === code && Boolean(user.otpExpiresAt) && new Date(user.otpExpiresAt).getTime() > Date.now();
 
     if (!isValid) {
       return NextResponse.json({ success: false, error: "Invalid or expired security code" }, { status: 401 });
@@ -34,7 +45,7 @@ export async function POST(request: NextRequest) {
       WHERE id = ${user.id}
     `;
 
-    const token = `jwt-${user.id}-${Date.now()}`;
+    const token = createSessionToken({ id: user.id, email: String(user.email), role: String(user.role) });
 
     return NextResponse.json({
       success: true,

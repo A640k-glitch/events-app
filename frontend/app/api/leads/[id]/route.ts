@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
+import { requireSession, STAFF_ROLES } from "@/lib/api-auth";
 
 // PATCH /api/leads/[id]
 export async function PATCH(
@@ -7,6 +8,9 @@ export async function PATCH(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const auth = requireSession(request, STAFF_ROLES);
+    if (!auth.ok) return auth.response;
+
     const { id } = await params;
     const body = await request.json();
     const { status, notes, assignedProductOwnerId, bookingDate, bookingTime } = body;
@@ -50,10 +54,13 @@ export async function PATCH(
 
 // DELETE /api/leads/[id]
 export async function DELETE(
-  _request: NextRequest,
+  request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
+    const auth = requireSession(request, STAFF_ROLES);
+    if (!auth.ok) return auth.response;
+
     const { id } = await params;
     await sql`DELETE FROM leads WHERE id = ${id}`;
     return NextResponse.json({ success: true, message: "Lead removed successfully." });

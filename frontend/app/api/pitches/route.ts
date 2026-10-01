@@ -1,9 +1,14 @@
 import { NextRequest, NextResponse } from "next/server";
 import { sql } from "@/lib/db";
+import { requireSession, STAFF_ROLES } from "@/lib/api-auth";
 
 // GET /api/pitches
-export async function GET() {
+export async function GET(request: NextRequest) {
   try {
+    // The pitch inbox is internal; POST below stays public for organizer submissions.
+    const auth = requireSession(request, STAFF_ROLES);
+    if (!auth.ok) return auth.response;
+
     const rows = await sql`
       SELECT * FROM event_pitches 
       ORDER BY "createdAt" DESC

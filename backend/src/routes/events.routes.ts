@@ -469,17 +469,3 @@ eventsRouter.patch("/:id", requireAuth, async (req: Request, res: Response): Pro
   }
 });
 
-// DELETE /api/events/:id - Delete Event from Catalog (Protected Admin)
-eventsRouter.delete("/:id", requireAuth, async (req: Request, res: Response): Promise<void> => {
-  try {
-    const eventId = getParam(req.params.id);
-    await prisma.event.delete({
-      where: { id: eventId },
-    });
-
-    res.json({ success: true, message: "Event deleted from catalog successfully." });
-  } catch (error: unknown) {
-    const message = error instanceof Error ? error.message : "Failed to delete event";
-    res.status(400).json({ success: false, error: message });
-  }
-});

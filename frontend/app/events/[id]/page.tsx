@@ -64,8 +64,9 @@ export default function EventDetailPage() {
             boothNumber: raw.boothNumber,
             imageUrl: raw.imageUrl,
             expectedAttendance: raw.expectedAttendance || 1000,
-            confirmedStaffCount: raw.attendanceManifest?.length || 0,
+            confirmedStaffCount: raw.confirmedStaffCount ?? raw.attendanceManifest?.length ?? 0,
             isFifthLabAttending: Boolean(raw.isFifthLabAttending),
+            currentUserRsvp: raw.currentUserRsvp ?? null,
             attendanceManifest: (raw.attendanceManifest || []).map((m: any) => {
               const rawName = m.userName || m.user?.name;
               const staffName = (rawName && rawName !== "Staff") ? rawName : (user && user.id === (m.userId || m.user?.id) ? user.name : "Staff Member");
@@ -118,9 +119,13 @@ export default function EventDetailPage() {
     );
   }
 
-  const userRsvp = user && event.attendanceManifest
-    ? event.attendanceManifest.find((m) => m.userId === user.id)?.status
-    : null;
+  // Prefer the server-resolved RSVP for this user; fall back to the manifest when the
+  // signed-in user is staff (who can see the full delegation).
+  const userRsvp =
+    (event as any).currentUserRsvp ??
+    (user && event.attendanceManifest
+      ? event.attendanceManifest.find((m) => m.userId === user.id)?.status
+      : null);
 
   const handleShare = () => {
     if (typeof window !== "undefined") {
@@ -260,7 +265,7 @@ export default function EventDetailPage() {
                   <p className="text-xs text-gray-500">Confirmed engineering and product team members attending this summit.</p>
                 </div>
                 <span className="text-xs font-mono font-medium px-2.5 py-0.5 rounded bg-gray-100 text-gray-700">
-                  {event.attendanceManifest?.length || 0} Staff
+                  {event.attendanceManifest?.length || event.confirmedStaffCount || 0} Staff
                 </span>
               </div>
 
@@ -307,6 +312,14 @@ export default function EventDetailPage() {
                     </span>
                   </div>
                 ))}
+
+                {/* Staff names are internal. Visitors see the delegation size only. */}
+                {(event.attendanceManifest || []).length === 0 && (event.confirmedStaffCount || 0) > 0 && (
+                  <p className="text-xs text-gray-500 sm:col-span-2">
+                    {event.confirmedStaffCount} FifthLab team member{event.confirmedStaffCount === 1 ? "" : "s"} confirmed
+                    attending. Sign in to the staff portal to view the delegation.
+                  </p>
+                )}
               </div>
             </div>
 
