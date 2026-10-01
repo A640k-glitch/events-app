@@ -51,7 +51,7 @@ export async function POST(request: NextRequest) {
         "sponsorshipRequested", status, "createdAt", "updatedAt"
       ) VALUES (
         ${id}, ${organizerName}, ${organization}, ${email.toLowerCase()}, ${phone || ""}, ${eventTitle}, 
-        ${parsedDate}::timestamp, ${proposedCity || "Lagos"}, ${Number(expectedAudience)}, ${pitchDescription}, 
+        ${parsedDate}::timestamptz, ${proposedCity || "Lagos"}, ${Number(expectedAudience)}, ${pitchDescription}, 
         ${sponsorshipRequested}, 'SUBMITTED'::"PitchStatus", NOW(), NOW()
       )
       RETURNING *

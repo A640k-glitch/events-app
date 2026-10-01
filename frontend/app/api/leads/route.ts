@@ -97,7 +97,7 @@ export async function POST(request: NextRequest) {
         "bookingDate", "bookingTime", status, notes, "createdAt", "updatedAt"
       ) VALUES (
         ${id}, ${visitorName}, ${company || ""}, ${email.toLowerCase()}, ${phone || ""}, 
-        ${productInterested}, ${parsedDate}::timestamp, ${bookingTime || ""}, 
+        ${productInterested}, ${parsedDate}::timestamptz, ${bookingTime || ""},
         'UNREAD'::"LeadStatus", ${notes}, NOW(), NOW()
       )
       RETURNING *

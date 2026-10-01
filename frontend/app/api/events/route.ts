@@ -186,7 +186,7 @@ export async function POST(request: NextRequest) {
         "createdAt", "updatedAt"
       ) VALUES (
         ${id}, ${title}, ${normalizedCategory}::"EventCategory", ${normalizedPriority}::"EventPriority", 
-        ${parsedDate}::timestamp, ${time}, ${location}, ${city}, ${country}, 
+        ${parsedDate}::timestamptz, ${time}, ${location}, ${city}, ${country},
         ${description}, ${strategicNotes}, ${boothNumber}, ${imageUrl}, 
         ${Boolean(isFeatured)}, ${Boolean(isPublished)}, ${Number(expectedAttendance)}, ${Boolean(isFifthLabAttending)}, 
         NOW(), NOW()

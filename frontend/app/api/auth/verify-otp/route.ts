@@ -13,7 +13,15 @@ export async function POST(request: NextRequest) {
     }
 
     const cleanEmail = email.trim().toLowerCase();
-    const [user] = await sql`SELECT * FROM users WHERE email = ${cleanEmail}`;
+    // The otpExpiresAt column is `timestamp without time zone`, and the Node driver
+    // re-parses such values in the server's local zone, which shifts the instant. Doing
+    // the expiry comparison in Postgres keeps it in one frame; the code is still compared
+    // here because it is a plain string.
+    const [user] = await sql`
+      SELECT *, ("otpExpiresAt" IS NOT NULL AND "otpExpiresAt" > (NOW() AT TIME ZONE 'UTC')) AS otp_still_valid
+      FROM users
+      WHERE email = ${cleanEmail}
+    `;
 
     if (!user) {
       return NextResponse.json({ success: false, error: "User record not found" }, { status: 404 });
@@ -29,11 +37,16 @@ export async function POST(request: NextRequest) {
     }
 
     const code = otp.trim();
-    const isValid =
-      Boolean(user.otpCode) && user.otpCode === code && Boolean(user.otpExpiresAt) && new Date(user.otpExpiresAt).getTime() > Date.now();
+    const isValid = Boolean(user.otpCode) && user.otpCode === code && Boolean(user.otp_still_valid);
 
     if (!isValid) {
-      return NextResponse.json({ success: false, error: "Invalid or expired security code" }, { status: 401 });
+      // Distinguish the two failures so the user knows whether to retype or resend.
+      const message = !user.otpCode
+        ? "No active verification code found. Please request a new code."
+        : user.otp_still_valid
+          ? "Invalid verification code. Please check your email and try again."
+          : "Verification code has expired. Please request a new code.";
+      return NextResponse.json({ success: false, error: message }, { status: 401 });
     }
 
     const isFirstTime = !user.lastLoginAt;

@@ -144,7 +144,7 @@ export async function PUT(
         title = ${title !== undefined ? title : existing.title},
         category = ${normalizedCategory}::"EventCategory",
         priority = ${normalizedPriority}::"EventPriority",
-        date = ${parsedDate}::timestamp,
+        date = ${parsedDate}::timestamptz,
         time = ${time !== undefined ? time : existing.time},
         location = ${location !== undefined ? location : existing.location},
         city = ${city !== undefined ? city : existing.city},

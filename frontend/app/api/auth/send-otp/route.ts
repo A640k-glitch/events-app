@@ -14,6 +14,9 @@ export async function POST(request: NextRequest) {
 
     const cleanEmail = email.trim().toLowerCase();
     const otp = Math.floor(100000 + Math.random() * 900000).toString();
+    // otpExpiresAt is a naive `timestamp without time zone` column, so store UTC
+    // wall-clock. Cast through timestamptz first, otherwise the Z is discarded and the
+    // value is read as local time, making the code look expired the moment it is issued.
     const expiresAt = new Date(Date.now() + 10 * 60 * 1000).toISOString();
 
     const [existing] = await sql`SELECT * FROM users WHERE email = ${cleanEmail}`;
@@ -30,7 +33,7 @@ export async function POST(request: NextRequest) {
     if (existing) {
       await sql`
         UPDATE users 
-        SET "otpCode" = ${otp}, "otpExpiresAt" = ${expiresAt}::timestamp, "otpLastSentAt" = NOW()
+        SET "otpCode" = ${otp}, "otpExpiresAt" = ${expiresAt}::timestamptz, "otpLastSentAt" = NOW()
         WHERE id = ${existing.id}
       `;
     } else {
@@ -39,7 +42,7 @@ export async function POST(request: NextRequest) {
         INSERT INTO users (
           id, name, email, role, "otpCode", "otpExpiresAt", "otpLastSentAt", "createdAt", "updatedAt"
         ) VALUES (
-          ${id}, ${defaultName}, ${cleanEmail}, 'STAFF'::"UserRole", ${otp}, ${expiresAt}::timestamp, NOW(), NOW(), NOW()
+          ${id}, ${defaultName}, ${cleanEmail}, 'STAFF'::"UserRole", ${otp}, ${expiresAt}::timestamptz, NOW(), NOW(), NOW()
         )
       `;
     }
